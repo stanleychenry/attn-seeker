@@ -40,8 +40,6 @@ export default function GameEmbed({ game }: GameEmbedProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [iframeHeight, setIframeHeight] = useState(700);
 
-  const config = GAME_CONFIG[game];
-
   useEffect(() => {
     const handler = async (event: MessageEvent) => {
       if (!event.data || typeof event.data !== "object") return;
@@ -87,6 +85,7 @@ export default function GameEmbed({ game }: GameEmbedProps) {
     return () => window.removeEventListener("message", handler);
   }, [game, user?.email]);
 
+  const config = GAME_CONFIG[game];
   if (!config) return null;
 
   return (

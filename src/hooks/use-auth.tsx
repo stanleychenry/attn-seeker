@@ -97,8 +97,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const sendSignupCode = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- optional param for API compatibility
-    async (email: string, name?: string) => {
+    async (email: string, name?: string) => { // eslint-disable-line @typescript-eslint/no-unused-vars -- API signature
       const ms = await getMemberstack();
       if (!ms) throw new Error("MemberStack is not configured");
       await ms.sendMemberSignupPasswordlessEmail({ email });

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
 import { Heading, Section, Container } from "@/components/ui";
 import { useAuth } from "@/hooks/use-auth";
 import {
@@ -18,7 +19,7 @@ export default function StoreClient() {
   const [error, setError] = useState<string | null>(null);
   const [redeemingId, setRedeemingId] = useState<string | number | null>(null);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     if (!isLoggedIn || !user?.email) {
       setBalance(null);
       setItems([]);
@@ -41,11 +42,11 @@ export default function StoreClient() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [isLoggedIn, user?.email]);
 
   useEffect(() => {
     load();
-  }, [isLoggedIn, user?.email]);
+  }, [load]);
 
   const handleRedeem = async (item: XanoStoreItem) => {
     if (!user?.email) return;
@@ -135,12 +136,13 @@ export default function StoreClient() {
                     key={String(product.id)}
                     className="overflow-hidden rounded-lg bg-white"
                   >
-                    <div className="aspect-square w-full overflow-hidden bg-black/5">
+                    <div className="relative aspect-square w-full overflow-hidden bg-black/5">
                       {product.image_url ? (
-                        <img
+                        <Image
                           src={product.image_url}
                           alt={product.name}
-                          className="h-full w-full object-cover"
+                          fill
+                          className="object-cover"
                         />
                       ) : (
                         <div className="flex h-full w-full items-center justify-center">

@@ -376,7 +376,7 @@ export default function AkariGameClient() {
       return next;
     });
     setBulbHistory((prev) => prev.slice(0, -1));
-  }, [bulbHistory.length]);
+  }, [bulbHistory]);
 
   const handleReset = useCallback(() => {
     setBulbs(new Set());

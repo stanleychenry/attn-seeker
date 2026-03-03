@@ -136,6 +136,7 @@ export function useSeekers(): UseSeekersReturn {
 
   useEffect(() => {
     fetchSeekers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- fetchSeekers intentionally omitted to run only when auth changes
   }, [isLoggedIn, authUser?.id, authUser?.email]);
 
   return {
