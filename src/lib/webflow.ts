@@ -30,7 +30,15 @@ async function getCollectionId(collectionName: string): Promise<string> {
   return id;
 }
 
-async function webflowFetch<T>(path: string): Promise<T> {
+const WEBFLOW_RETRY_STATUSES = [406, 429, 502, 503];
+const WEBFLOW_RETRY_ATTEMPTS = 3;
+const WEBFLOW_RETRY_DELAY_MS = 1500;
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function webflowFetch<T>(path: string, attempt = 1): Promise<T> {
   const url = `${WEBFLOW_API_BASE}${path}`;
   const res = await fetch(url, {
     headers: {
@@ -42,9 +50,18 @@ async function webflowFetch<T>(path: string): Promise<T> {
   if (!res.ok) {
     const body = await res.text();
     const detail = body ? ` ${body.slice(0, 200)}` : "";
-    throw new Error(
+    const error = new Error(
       `Webflow API error: ${res.status} ${res.statusText}${detail}`
     );
+    const canRetry =
+      attempt < WEBFLOW_RETRY_ATTEMPTS &&
+      WEBFLOW_RETRY_STATUSES.includes(res.status);
+    if (canRetry) {
+      const delay = WEBFLOW_RETRY_DELAY_MS * Math.pow(2, attempt - 1);
+      await sleep(delay);
+      return webflowFetch<T>(path, attempt + 1);
+    }
+    throw error;
   }
   return res.json() as Promise<T>;
 }
