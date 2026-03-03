@@ -100,7 +100,9 @@ export async function getCollectionItems(
         detail ? `\n${detail}` : ""
       );
     }
-    collectionItemsCache.set(collectionName, []);
+    // Do NOT cache empty on failure: other workers or retries may succeed.
+    // Caching [] here was causing all subsequent requests in the same process
+    // to get empty data and trigger NEXT_NOT_FOUND during static generation.
     return [];
   }
 }

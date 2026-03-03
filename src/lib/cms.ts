@@ -248,13 +248,27 @@ export async function getShowEpisodeBySlug(
   episodeSlug: string
 ): Promise<ShowEpisode | null> {
   const show = await getShowBySlug(showSlug);
-  if (!show) return null;
+  if (!show) {
+    if (process.env.NODE_ENV === "development" || process.env.VERCEL) {
+      console.warn("[CMS] getShowEpisodeBySlug: no show for slug", showSlug);
+    }
+    return null;
+  }
   const items = await getCollectionItems("Show Episodes");
-  const episode = items.find(
-    (i) =>
-      (i.fieldData?.slug as string) === episodeSlug &&
-      (i.fieldData?.show as string) === show.id
-  );
+  const episode = items.find((i) => {
+    const slugMatch = (i.fieldData?.slug as string) === episodeSlug;
+    const rawShow = i.fieldData?.show;
+    const showId =
+      typeof rawShow === "string"
+        ? rawShow
+        : typeof rawShow === "object" && rawShow !== null && "id" in rawShow
+          ? (rawShow as { id: string }).id
+          : "";
+    return slugMatch && showId === show.id;
+  });
+  if (!episode && (process.env.NODE_ENV === "development" || process.env.VERCEL)) {
+    console.warn("[CMS] getShowEpisodeBySlug: no episode", { showSlug, episodeSlug, showId: show.id });
+  }
   return episode
     ? mapShowEpisode(episode as { id: string; fieldData: Record<string, unknown> })
     : null;
@@ -305,7 +319,12 @@ export async function getPodcastEpisodeBySlug(
   episodeSlug: string
 ): Promise<PodcastEpisode | null> {
   const podcast = await getPodcastBySlug(podcastSlug);
-  if (!podcast) return null;
+  if (!podcast) {
+    if (process.env.NODE_ENV === "development" || process.env.VERCEL) {
+      console.warn("[CMS] getPodcastEpisodeBySlug: no podcast for slug", podcastSlug);
+    }
+    return null;
+  }
   const items = await getCollectionItems("Podcast Episodes");
   const episode = items.find((i) => {
     const slugMatch = (i.fieldData?.slug as string) === episodeSlug;
@@ -322,6 +341,9 @@ export async function getPodcastEpisodeBySlug(
     const podcastMatch = refId === podcast.id;
     return slugMatch && podcastMatch;
   });
+  if (!episode && (process.env.NODE_ENV === "development" || process.env.VERCEL)) {
+    console.warn("[CMS] getPodcastEpisodeBySlug: no episode", { podcastSlug, episodeSlug, podcastId: podcast.id });
+  }
   return episode
     ? mapPodcastEpisode(episode as { id: string; fieldData: Record<string, unknown> })
     : null;
