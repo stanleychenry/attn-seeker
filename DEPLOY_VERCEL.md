@@ -124,3 +124,32 @@ These are the secret keys and settings your site needs (same as in your `.env.lo
 - **Google:** The site is set up so search engines don’t index it. You don’t need to do anything extra for that.
 
 If something doesn’t match what you see on screen (e.g. button names or menu items), say what you’re on and we can adjust the steps.
+
+---
+
+## CMS (team, podcasts, events, etc.) shows no data
+
+The site pulls content from **Webflow** via an API. If team, podcasts, events, learn topics, etc. are empty:
+
+1. **Get a Webflow API token**
+   - In Webflow: **Account Settings** (profile icon) → **Integrations** → **API Access** (or **Apps & Integrations** → **API**).
+   - Create a token with read access to your site’s collections.
+
+2. **Set it where the app runs**
+   - **Locally:** In the project folder, create or edit `.env.local` and add:
+     ```env
+     WEBFLOW_API_KEY=your_token_here
+     ```
+     (You can use `WEBFLOW_API_TOKEN` instead of `WEBFLOW_API_KEY`; the app accepts either.)
+   - **On Vercel:** Project → **Settings** → **Environment Variables** → add `WEBFLOW_API_KEY` (or `WEBFLOW_API_TOKEN`) with the same token. Apply to **Production** (and Preview if you want CMS data in preview deploys).
+
+3. **Redeploy**
+   - After adding or changing the variable on Vercel, trigger a new deploy (e.g. **Deployments** → **⋯** on latest → **Redeploy**), or push a small change to GitHub so Vercel rebuilds.
+
+Once the key is set and the project has been redeployed, the next build will fetch collections and pages like team, podcasts, and events will show content.
+
+**If the key is already in Vercel but CMS is still empty:**
+
+- **Confirm the key is visible to the app:** Open **https://your-app.vercel.app/api/debug/env** in a browser. It returns `webflowConfigured: true` or `false`. If `false`, the app doesn’t see the variable (check the exact name: `WEBFLOW_API_KEY` or `WEBFLOW_API_TOKEN`, no typos or extra spaces).
+- **Redeploy after adding the variable:** CMS data is fetched during the **build**. If you added the variable after the last deploy, that build ran without it. Redeploy once (Deployments → Redeploy) so the new build has the key.
+- **Check Vercel logs:** If `webflowConfigured` is `true` but pages are still empty, the Webflow API may be failing (e.g. wrong token, wrong site). In the Vercel dashboard go to **Deployments** → your deployment → **Building** or **Functions** and look for a log line like `Webflow API request failed [CollectionName]:` — the message after it is the real error (e.g. 401 = bad token).

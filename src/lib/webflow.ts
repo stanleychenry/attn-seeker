@@ -91,7 +91,13 @@ export async function getCollectionItems(
   } catch (err) {
     if (!webflowFailureLogged) {
       webflowFailureLogged = true;
-      console.warn("Webflow API request failed during build:", err);
+      const msg = err instanceof Error ? err.message : String(err);
+      const detail = err instanceof Error ? err.stack : "";
+      console.warn(
+        `Webflow API request failed [${collectionName}]:`,
+        msg,
+        detail ? `\n${detail}` : ""
+      );
     }
     collectionItemsCache.set(collectionName, []);
     return [];
