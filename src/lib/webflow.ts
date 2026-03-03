@@ -36,6 +36,7 @@ async function webflowFetch<T>(path: string): Promise<T> {
     headers: {
       Authorization: `Bearer ${API_KEY}`,
       Accept: "application/json",
+      "User-Agent": "attn-seeker-cms/1.0 (https://api.webflow.com)",
     },
   });
   if (!res.ok) {
