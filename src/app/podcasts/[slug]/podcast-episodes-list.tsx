@@ -101,7 +101,7 @@ export function PodcastEpisodesList({ episodes, podcastSlug }: Props) {
                 </div>
               </div>
 
-              {hasEmbed && (
+              {Boolean(hasEmbed) && (
                 <div className="hidden w-[80px] shrink-0 md:block">
                   <div className="flex h-[80px] w-[80px] items-center justify-center rounded-full bg-[#1DB954]/10">
                     <svg

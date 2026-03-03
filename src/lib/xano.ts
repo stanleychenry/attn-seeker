@@ -168,7 +168,7 @@ export async function getUserProfile(email: string): Promise<XanoUserProfile> {
 export async function updateProfile(
   payload: XanoUpdateProfilePayload
 ): Promise<{ message?: string }> {
-  return post<{ message?: string }>("update_profile", payload);
+  return post<{ message?: string }>("update_profile", payload as unknown as Record<string, unknown>);
 }
 
 export async function updateEmailFrequency(
@@ -202,5 +202,5 @@ export async function getGameLeaderboard(params: {
 export async function submitGameResult(
   payload: XanoSubmitGamePayload
 ): Promise<XanoSubmitGameResult> {
-  return post<XanoSubmitGameResult>("submit_game_result", payload);
+  return post<XanoSubmitGameResult>("submit_game_result", payload as unknown as Record<string, unknown>);
 }

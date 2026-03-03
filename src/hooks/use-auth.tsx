@@ -65,8 +65,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       ms.getCurrentMember()
         .then((res) => {
           const data = res?.data ?? res;
-          const member = data?.member ?? data;
-          if (member?.id) {
+          const member = (data as { member?: { id?: string } } | undefined)?.member ?? data;
+          if (member && typeof member === "object" && "id" in member && member.id) {
             setUser(memberToUser(member as Parameters<typeof memberToUser>[0]));
           }
         })
@@ -90,8 +90,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await ms.loginMemberPasswordless({ email, passwordlessToken: code.trim() });
     const res = await ms.getCurrentMember();
     const data = res?.data ?? res;
-    const member = data?.member ?? data;
-    if (member?.id) setUser(memberToUser(member as Parameters<typeof memberToUser>[0]));
+    const member = (data as { member?: { id?: string } } | undefined)?.member ?? data;
+    if (member && typeof member === "object" && "id" in member && member.id) {
+      setUser(memberToUser(member as Parameters<typeof memberToUser>[0]));
+    }
   }, []);
 
   const sendSignupCode = useCallback(
@@ -114,8 +116,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
     const res = await ms.getCurrentMember();
     const data = res?.data ?? res;
-    const member = data?.member ?? data;
-    if (member?.id) setUser(memberToUser(member as Parameters<typeof memberToUser>[0]));
+    const member = (data as { member?: { id?: string } } | undefined)?.member ?? data;
+    if (member && typeof member === "object" && "id" in member && member.id) {
+      setUser(memberToUser(member as Parameters<typeof memberToUser>[0]));
+    }
   }, []);
 
   const logout = useCallback(async () => {
