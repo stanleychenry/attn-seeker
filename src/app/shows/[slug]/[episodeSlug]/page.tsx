@@ -4,8 +4,6 @@ import {
   getShowBySlug,
   getShowEpisodeBySlug,
   getEpisodesByShow,
-  getShowEpisodes,
-  getShows,
 } from "@/lib/cms";
 import { notFound } from "next/navigation";
 import { Heading, Body, Section, Container } from "@/components/ui";
@@ -13,28 +11,9 @@ import { TranscriptSection } from "@/components/ui";
 
 type PageParams = { params: { slug: string; episodeSlug: string } };
 
+export const revalidate = 3600;
 export async function generateStaticParams() {
-  try {
-    const [episodes, shows] = await Promise.all([
-      getShowEpisodes(),
-      getShows(),
-    ]);
-    const showIdToSlug = Object.fromEntries(
-      shows.map((s) => [s.id, s.slug])
-    );
-    return episodes
-      .map((ep) => {
-        const showId =
-          typeof ep.show === "string" ? ep.show : (ep.show as { id?: string })?.id;
-        const showSlug = showId ? showIdToSlug[showId] : undefined;
-        return showSlug
-          ? { slug: showSlug, episodeSlug: ep.slug }
-          : null;
-      })
-      .filter((p): p is { slug: string; episodeSlug: string } => p != null);
-  } catch {
-    return [];
-  }
+  return [];
 }
 
 export async function generateMetadata({ params }: PageParams) {

@@ -1,18 +1,14 @@
 import Link from "next/link";
 import Image from "next/image";
-import { getShowBySlug, getShowSlugs, getEpisodesByShow } from "@/lib/cms";
+import { getShowBySlug, getEpisodesByShow } from "@/lib/cms";
 import { notFound } from "next/navigation";
 import { Heading, Body, Section, Container } from "@/components/ui";
 
 type PageParams = { params: { slug: string } };
 
+export const revalidate = 3600;
 export async function generateStaticParams() {
-  try {
-    const slugs = await getShowSlugs();
-    return slugs.map((slug) => ({ slug }));
-  } catch {
-    return [];
-  }
+  return [];
 }
 
 export async function generateMetadata({ params }: PageParams) {

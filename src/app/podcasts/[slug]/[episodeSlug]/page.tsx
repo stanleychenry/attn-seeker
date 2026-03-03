@@ -4,38 +4,15 @@ import {
   getPodcastBySlug,
   getPodcastEpisodeBySlug,
   getEpisodesByPodcast,
-  getPodcastEpisodes,
-  getPodcasts,
 } from "@/lib/cms";
 import { notFound } from "next/navigation";
 import { Heading, Body, Section, Container, TranscriptSection } from "@/components/ui";
 
 type PageParams = { params: { slug: string; episodeSlug: string } };
 
+export const revalidate = 3600;
 export async function generateStaticParams() {
-  try {
-    const [episodes, podcasts] = await Promise.all([
-      getPodcastEpisodes(),
-      getPodcasts(),
-    ]);
-    const podcastIdToSlug = Object.fromEntries(
-      podcasts.map((p) => [p.id, p.slug])
-    );
-    return episodes
-      .map((ep) => {
-        const podcastId =
-          typeof ep.podcast === "string"
-            ? ep.podcast
-            : (ep.podcast as { id?: string })?.id;
-        const podcastSlug = podcastId ? podcastIdToSlug[podcastId] : undefined;
-        return podcastSlug
-          ? { slug: podcastSlug, episodeSlug: ep.slug }
-          : null;
-      })
-      .filter((p): p is { slug: string; episodeSlug: string } => p != null);
-  } catch {
-    return [];
-  }
+  return [];
 }
 
 export async function generateMetadata({ params }: PageParams) {

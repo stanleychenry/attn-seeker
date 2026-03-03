@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { getTopicBySlug, getTopicSlugs, getTopicById, getArticlesByTopicId, getSubTopics, getPillarTopics } from "@/lib/cms";
+import { getTopicBySlug, getTopicById, getArticlesByTopicId, getSubTopics, getPillarTopics } from "@/lib/cms";
 import { notFound } from "next/navigation";
 import {
   Heading,
@@ -22,13 +22,9 @@ function formatDate(dateStr?: string): string {
 
 type PageParams = { params: { topicSlug: string } };
 
+export const revalidate = 3600;
 export async function generateStaticParams() {
-  try {
-    const slugs = await getTopicSlugs();
-    return slugs.map((topicSlug) => ({ topicSlug }));
-  } catch {
-    return [];
-  }
+  return [];
 }
 
 export async function generateMetadata({ params }: PageParams) {

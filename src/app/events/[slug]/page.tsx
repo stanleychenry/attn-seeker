@@ -2,7 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   getEventBySlug,
-  getEventSlugs,
   getUpcomingEvents,
   getEventSeries,
   getTeamById,
@@ -13,13 +12,9 @@ import { Heading, Section, Container, Caption } from "@/components/ui";
 
 type PageParams = { params: { slug: string } };
 
+export const revalidate = 3600;
 export async function generateStaticParams() {
-  try {
-    const slugs = await getEventSlugs();
-    return slugs.map((slug) => ({ slug }));
-  } catch {
-    return [];
-  }
+  return [];
 }
 
 export async function generateMetadata({ params }: PageParams) {

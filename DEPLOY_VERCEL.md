@@ -127,6 +127,28 @@ If something doesn’t match what you see on screen (e.g. button names or menu i
 
 ---
 
+## Why it works on localhost but used to fail on Vercel
+
+**Local (npm run dev):** When you open a page like `/podcasts/some-show/episode-1`, Next.js runs the page **once, on demand**. It calls the Webflow API for that request. You might open a few pages, so only a few API calls happen. The app’s in-memory cache helps, and there’s no parallel storm.
+
+**Vercel (production build):** During `next build`, Next.js used to **pre-render every CMS URL** (every team member, podcast episode, show episode, event, article, etc.). So it ran the page component hundreds of times in a short window, each calling the Webflow API. That led to:
+
+1. **Many parallel or rapid requests** → Webflow rate limits or transient 406/429 errors.
+2. **Per-process cache** → If the build uses multiple workers, each worker has its own cache. So the same collection was fetched over and over.
+3. **One failure poisoning the build** → If one request failed and we cached “empty,” every later request in that process got no data → `notFound()` → build errors.
+
+**What we changed:**
+
+1. **No pre-render of CMS detail pages at build time.** All CMS-backed dynamic routes (team, podcasts, shows, events, books, articles, case studies, etc.) now use `generateStaticParams` that returns `[]`. So the build does **not** run the page component for those URLs. The build finishes without calling Webflow for hundreds of paths.
+2. **On-demand generation with caching.** When someone visits e.g. `/podcasts/my-show/episode-1`, the server runs the page once, fetches from Webflow, and caches the result for 1 hour (`revalidate = 3600`). So the first visit generates the page; later visits are fast and don’t hit Webflow every time.
+3. **Webflow API:** We retry failed requests (406, 429, 502, 503) with backoff, and we no longer cache empty results on failure, so a single bad response doesn’t break the rest of the build or request.
+
+Result: **Build succeeds on Vercel**, and CMS pages work when users (or crawlers) visit them, with responses cached for an hour.
+
+**Security:** Keep `.env.local` out of version control (it should be in `.gitignore`). Never commit API keys or tokens. If you add Vercel/GitHub tokens to `.env.local` for local debugging, they stay on your machine only; production uses the environment variables you set in the Vercel project dashboard.
+
+---
+
 ## CMS (team, podcasts, events, etc.) shows no data
 
 The site pulls content from **Webflow** via an API. If team, podcasts, events, learn topics, etc. are empty:

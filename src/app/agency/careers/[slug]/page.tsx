@@ -1,4 +1,4 @@
-import { getJobBySlug, getJobSlugs, getOpenJobs } from "@/lib/cms";
+import { getJobBySlug, getOpenJobs } from "@/lib/cms";
 import { notFound } from "next/navigation";
 import {
   Heading,
@@ -12,13 +12,9 @@ import {
 
 type PageParams = { params: { slug: string } };
 
+export const revalidate = 3600;
 export async function generateStaticParams() {
-  try {
-    const slugs = await getJobSlugs();
-    return slugs.map((slug) => ({ slug }));
-  } catch {
-    return [];
-  }
+  return [];
 }
 
 export async function generateMetadata({ params }: PageParams) {

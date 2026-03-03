@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { getTeamBySlug, getTeamSlugs, getTeams } from "@/lib/cms";
+import { getTeamBySlug, getTeams } from "@/lib/cms";
 import { notFound } from "next/navigation";
 import {
   Heading,
@@ -12,13 +12,10 @@ import { TeamMemberCard, TeamSocialLinks } from "../team-social-links";
 
 type PageParams = { params: { slug: string } };
 
+// Generate on first request (not at build) so Vercel build doesn't hit Webflow for every path
+export const revalidate = 3600;
 export async function generateStaticParams() {
-  try {
-    const slugs = await getTeamSlugs();
-    return slugs.map((slug) => ({ slug }));
-  } catch {
-    return [];
-  }
+  return [];
 }
 
 export async function generateMetadata({ params }: PageParams) {

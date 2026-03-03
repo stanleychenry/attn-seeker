@@ -1,18 +1,14 @@
 import Image from "next/image";
-import { getPodcastBySlug, getPodcastSlugs, getEpisodesByPodcast } from "@/lib/cms";
+import { getPodcastBySlug, getEpisodesByPodcast } from "@/lib/cms";
 import { notFound } from "next/navigation";
 import { Section, Container } from "@/components/ui";
 import { PodcastEpisodesList } from "./podcast-episodes-list";
 
 type PageParams = { params: { slug: string } };
 
+export const revalidate = 3600;
 export async function generateStaticParams() {
-  try {
-    const slugs = await getPodcastSlugs();
-    return slugs.map((slug) => ({ slug }));
-  } catch {
-    return [];
-  }
+  return [];
 }
 
 export async function generateMetadata({ params }: PageParams) {
