@@ -1,5 +1,9 @@
 const WEBFLOW_API_BASE = "https://api.webflow.com/v2";
-const API_KEY = process.env.WEBFLOW_API_KEY || "";
+// Support both names so Vercel/env can use either
+const API_KEY =
+  process.env.WEBFLOW_API_KEY ||
+  process.env.WEBFLOW_API_TOKEN ||
+  "";
 
 const KNOWN_COLLECTION_IDS: Record<string, string> = {
   Teams: "6903fbac0e9ee52349381d09",
@@ -31,32 +35,67 @@ async function webflowFetch<T>(path: string): Promise<T> {
   const res = await fetch(url, {
     headers: {
       Authorization: `Bearer ${API_KEY}`,
-      accept: "application/json",
+      Accept: "application/json",
     },
   });
-  if (!res.ok) throw new Error(`Webflow API error: ${res.status} ${res.statusText}`);
+  if (!res.ok) {
+    const body = await res.text();
+    const detail = body ? ` ${body.slice(0, 200)}` : "";
+    throw new Error(
+      `Webflow API error: ${res.status} ${res.statusText}${detail}`
+    );
+  }
   return res.json() as Promise<T>;
 }
 
 const ITEMS_PAGE_SIZE = 100;
 
+/** If true, we've already logged a Webflow failure (avoid log spam during build). */
+let webflowFailureLogged = false;
+
+/** Cache per collection so parallel build requests get consistent data (avoid 406 on one call after success on another). */
+const collectionItemsCache = new Map<string, WebflowItem[]>();
+
 export async function getCollectionItems(
   collectionName: string
 ): Promise<WebflowItem[]> {
-  const collectionId = await getCollectionId(collectionName);
-  const all: WebflowItem[] = [];
-  let offset = 0;
-  let hasMore = true;
-  while (hasMore) {
-    const data = await webflowFetch<{ items: WebflowItem[] }>(
-      `/collections/${collectionId}/items?limit=${ITEMS_PAGE_SIZE}&offset=${offset}`
-    );
-    const items = data.items || [];
-    all.push(...items);
-    hasMore = items.length === ITEMS_PAGE_SIZE;
-    offset += items.length;
+  const cached = collectionItemsCache.get(collectionName);
+  if (cached !== undefined) return cached;
+
+  if (!API_KEY) {
+    if (!webflowFailureLogged) {
+      webflowFailureLogged = true;
+      console.warn(
+        "WEBFLOW_API_KEY (or WEBFLOW_API_TOKEN) is not set. Returning empty collection data."
+      );
+    }
+    collectionItemsCache.set(collectionName, []);
+    return [];
   }
-  return all;
+  try {
+    const collectionId = await getCollectionId(collectionName);
+    const all: WebflowItem[] = [];
+    let offset = 0;
+    let hasMore = true;
+    while (hasMore) {
+      const data = await webflowFetch<{ items: WebflowItem[] }>(
+        `/collections/${collectionId}/items?limit=${ITEMS_PAGE_SIZE}&offset=${offset}`
+      );
+      const items = data.items || [];
+      all.push(...items);
+      hasMore = items.length === ITEMS_PAGE_SIZE;
+      offset += items.length;
+    }
+    collectionItemsCache.set(collectionName, all);
+    return all;
+  } catch (err) {
+    if (!webflowFailureLogged) {
+      webflowFailureLogged = true;
+      console.warn("Webflow API request failed during build:", err);
+    }
+    collectionItemsCache.set(collectionName, []);
+    return [];
+  }
 }
 
 export async function getCollectionItemBySlug(
@@ -87,11 +126,15 @@ export async function getCollectionFields(
   if (fieldSchemaCache[collectionId])
     return fieldSchemaCache[collectionId] as { slug: string; validations?: { options?: { id: string; name: string }[] } }[];
 
-  const data = await webflowFetch<{
-    fields: { slug: string; validations?: { options?: { id: string; name: string }[] } }[];
-  }>(`/collections/${collectionId}`);
-
-  fieldSchemaCache[collectionId] = data.fields || [];
+  if (!API_KEY) return [];
+  try {
+    const data = await webflowFetch<{
+      fields: { slug: string; validations?: { options?: { id: string; name: string }[] } }[];
+    }>(`/collections/${collectionId}`);
+    fieldSchemaCache[collectionId] = data.fields || [];
+  } catch {
+    fieldSchemaCache[collectionId] = [];
+  }
   return (fieldSchemaCache[collectionId] as { slug: string; validations?: { options?: { id: string; name: string }[] } }[]) || [];
 }
 

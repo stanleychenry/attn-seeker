@@ -87,7 +87,8 @@ These are the secret keys and settings your site needs (same as in your `.env.lo
 2. For each row below, type the **Name** exactly, then paste the **Value** from your `.env.local` (same value you use locally). Add one at a time, then click **Add** or the next row.
 
    - **Name:** `WEBFLOW_API_KEY`  
-     **Value:** (paste from .env.local)
+     **Value:** (paste from .env.local)  
+     _(You can use `WEBFLOW_API_TOKEN` instead of `WEBFLOW_API_KEY`—the app accepts either.)_
 
    - **Name:** `NEXT_PUBLIC_MEMBERSTACK_PUBLIC_KEY`  
      **Value:** (paste from .env.local)
