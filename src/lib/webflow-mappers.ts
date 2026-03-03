@@ -342,7 +342,8 @@ function extractPodcastRefFromItem(fieldData: Record<string, unknown>): string {
 
 // CMS field name can vary: "episode Number", "episode-number", "episodeNumber", or custom slug.
 // Try known keys first, then any key containing both "episode" and "number".
-function extractEpisodeNumber(f: Record<string, unknown>): number {
+function extractEpisodeNumber(f: Record<string, unknown> | null | undefined): number {
+  if (f == null || typeof f !== "object") return 0;
   const knownKeys = ["episode Number", "episode-number", "episodeNumber", "episode_number"];
   for (const key of knownKeys) {
     const raw = f[key];
@@ -370,9 +371,9 @@ function extractEpisodeNumber(f: Record<string, unknown>): number {
 
 export function mapPodcastEpisode(item: {
   id: string;
-  fieldData: Record<string, unknown>;
+  fieldData?: Record<string, unknown> | null;
 }): PodcastEpisode {
-  const f = item.fieldData;
+  const f = item.fieldData ?? {};
   const thumbUrl = extractImageUrl(f.thumbnail ?? f["og-image"]);
   return {
     id: item.id,
