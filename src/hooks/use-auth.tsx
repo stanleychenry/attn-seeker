@@ -94,13 +94,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (member?.id) setUser(memberToUser(member as Parameters<typeof memberToUser>[0]));
   }, []);
 
-  const sendSignupCode = useCallback(async (email: string, _name?: string) => {
+  const sendSignupCode = useCallback(async (email: string, name?: string) => {
     const ms = await getMemberstack();
     if (!ms) throw new Error("MemberStack is not configured");
     await ms.sendMemberSignupPasswordlessEmail({ email });
   }, []);
 
-  const confirmSignupCode = useCallback(async (email: string, code: string, _name?: string) => {
+  const confirmSignupCode = useCallback(async (email: string, code: string, name?: string) => {
     const ms = await getMemberstack();
     if (!ms) throw new Error("MemberStack is not configured");
     await ms.signupMemberPasswordless({

@@ -34,6 +34,7 @@ export default function ProfilePageClient() {
   const { user: seekersUser, activity, isLoading: seekersLoading } = useSeekers();
 
   const [profile, setProfile] = useState<XanoUserProfile | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- used by setProfileLoading for future loading UI
   const [profileLoading, setProfileLoading] = useState(true);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
