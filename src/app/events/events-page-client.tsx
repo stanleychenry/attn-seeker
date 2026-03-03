@@ -73,7 +73,7 @@ export function EventsPageClient({ events: initialEvents, eventSeriesList, fetch
         <Container width="standard">
           <p className="font-obviously text-sm font-medium text-red">events</p>
           <Heading level={1} className="mt-4">
-            what's on
+            what&apos;s on
           </Heading>
           <Body size="large" className="mt-4 text-black/80">
             workshops, talks, and gatherings for people who want to learn.

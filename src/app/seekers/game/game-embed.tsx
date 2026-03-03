@@ -41,7 +41,6 @@ export default function GameEmbed({ game }: GameEmbedProps) {
   const [iframeHeight, setIframeHeight] = useState(700);
 
   const config = GAME_CONFIG[game];
-  if (!config) return null;
 
   useEffect(() => {
     const handler = async (event: MessageEvent) => {
@@ -87,6 +86,8 @@ export default function GameEmbed({ game }: GameEmbedProps) {
     window.addEventListener("message", handler);
     return () => window.removeEventListener("message", handler);
   }, [game, user?.email]);
+
+  if (!config) return null;
 
   return (
     <div className="min-h-screen bg-bone px-4 pb-12">

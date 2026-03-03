@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Image from "next/image";
 import { getPodcastBySlug, getPodcastSlugs, getEpisodesByPodcast } from "@/lib/cms";
 import { notFound } from "next/navigation";
