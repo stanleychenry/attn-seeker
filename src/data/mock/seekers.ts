@@ -1,0 +1,167 @@
+import type {
+  SeekersUser,
+  StoreProduct,
+  LeaderboardEntry,
+  ActivityItem,
+} from "@/types/seekers";
+
+const AVATAR = "https://placehold.co/80x80/FF0000/FAF6E7?text=user";
+const PRODUCT_IMG = "https://placehold.co/400x400/FAF6E7/000000?text=product";
+
+export const MOCK_SEEKERS_USER: SeekersUser = {
+  id: "user-seekers-1",
+  name: "Alex Seeker",
+  email: "alex@example.com",
+  tier: "gold",
+  statusPoints: 4200,
+  yapDollars: 85,
+  currentStreak: 12,
+  longestStreak: 18,
+  gamesPlayed: 47,
+  articlesRead: 89,
+  joinedDate: "2024-08-15",
+  avatarUrl: AVATAR,
+  tierProgress: {
+    current: "gold",
+    next: "platinum",
+    pointsToNext: 800,
+    percentComplete: 81,
+  },
+};
+
+export const MOCK_STORE_PRODUCTS: StoreProduct[] = [
+  {
+    id: "product-1",
+    name: "attn:seeker cap",
+    description: "Bone cap with red attn:seeker monogram. One size.",
+    imageUrl: PRODUCT_IMG,
+    priceYapDollars: 45,
+    category: "Merch",
+    quantityRemaining: 50,
+    featured: true,
+  },
+  {
+    id: "product-2",
+    name: "yap newsletter archive access",
+    description: "Full archive of your attention please. Every edition, searchable.",
+    imageUrl: PRODUCT_IMG,
+    priceYapDollars: 120,
+    category: "Digital",
+    quantityRemaining: 999,
+    featured: true,
+  },
+  {
+    id: "product-3",
+    name: "strategy template pack",
+    description: "Content strategy and calendar templates we use with clients.",
+    imageUrl: PRODUCT_IMG,
+    priceYapDollars: 60,
+    category: "Digital",
+    quantityRemaining: 999,
+    featured: true,
+  },
+  {
+    id: "product-4",
+    name: "pizza hut voucher $20",
+    description: "Twenty dollars off your next order. Sponsored by Pizza Hut.",
+    imageUrl: "https://placehold.co/400x400/FF0000/FAF6E7?text=pizza+hut",
+    priceYapDollars: 80,
+    category: "Partner",
+    sponsor: "Pizza Hut",
+    quantityRemaining: 200,
+    featured: false,
+  },
+  {
+    id: "product-5",
+    name: "one nz prepaid sim",
+    description: "Prepaid SIM with 10GB data. Sponsored by One NZ.",
+    imageUrl: "https://placehold.co/400x400/FF0000/FAF6E7?text=one+nz",
+    priceYapDollars: 150,
+    category: "Partner",
+    sponsor: "One NZ",
+    quantityRemaining: 30,
+    featured: false,
+  },
+  {
+    id: "product-6",
+    name: "attention live early bird",
+    description: "Early bird ticket to attention live 2025. Limited stock.",
+    imageUrl: "https://placehold.co/400x400/FF0000/FAF6E7?text=attention+live",
+    priceYapDollars: 200,
+    category: "Events",
+    quantityRemaining: 25,
+    featured: true,
+  },
+];
+
+export const MOCK_LEADERBOARD: LeaderboardEntry[] = [
+  { rank: 1, userId: "u1", name: "scroll_stopper_99", tier: "platinum", score: 2840, time: 92, avatarUrl: AVATAR },
+  { rank: 2, userId: "u2", name: "content_queen", tier: "gold", score: 2650, time: 98, avatarUrl: AVATAR },
+  { rank: 3, userId: "u3", name: "algorithm_hacker", tier: "gold", score: 2510, time: 105, avatarUrl: AVATAR },
+  { rank: 4, userId: "u4", name: "stanley_fan", tier: "gold", score: 2390, time: 112, avatarUrl: AVATAR },
+  { rank: 5, userId: "u5", name: "yap_reader", tier: "silver", score: 2180, time: 118, avatarUrl: AVATAR },
+  { rank: 6, userId: "u6", name: "seekers_rookie", tier: "silver", score: 1950, time: 125, avatarUrl: AVATAR },
+  { rank: 7, userId: "u7", name: "attention_seeker", tier: "silver", score: 1820, time: 130, avatarUrl: AVATAR },
+  { rank: 8, userId: "u8", name: "organic_only", tier: "bronze", score: 1640, time: 142, avatarUrl: AVATAR },
+  { rank: 9, userId: "u9", name: "hook_master", tier: "bronze", score: 1510, time: 148, avatarUrl: AVATAR },
+  { rank: 10, userId: "u10", name: "new_seeker", tier: "bronze", score: 1380, time: 155, avatarUrl: AVATAR },
+];
+
+export const MOCK_ACTIVITY: ActivityItem[] = [
+  {
+    id: "act-1",
+    type: "game_complete",
+    description: "Completed Shikaku puzzle in 92 seconds",
+    pointsEarned: 25,
+    timestamp: "2025-02-15T14:32:00Z",
+  },
+  {
+    id: "act-2",
+    type: "article_read",
+    description: "Read why your brand needs to stop trying to go viral",
+    pointsEarned: 10,
+    timestamp: "2025-02-15T11:20:00Z",
+  },
+  {
+    id: "act-3",
+    type: "streak_bonus",
+    description: "7 day streak bonus",
+    pointsEarned: 50,
+    timestamp: "2025-02-14T00:00:00Z",
+  },
+  {
+    id: "act-4",
+    type: "game_complete",
+    description: "Completed Akari puzzle",
+    pointsEarned: 20,
+    timestamp: "2025-02-13T19:15:00Z",
+  },
+  {
+    id: "act-5",
+    type: "store_redeem",
+    description: "Redeemed attn:seeker cap (45 yap dollars)",
+    pointsEarned: 0,
+    timestamp: "2025-02-12T09:00:00Z",
+  },
+  {
+    id: "act-6",
+    type: "email_open",
+    description: "Opened your attention please newsletter",
+    pointsEarned: 5,
+    timestamp: "2025-02-11T08:45:00Z",
+  },
+  {
+    id: "act-7",
+    type: "referral",
+    description: "Referred a friend who joined the seekers",
+    pointsEarned: 100,
+    timestamp: "2025-02-10T16:00:00Z",
+  },
+  {
+    id: "act-8",
+    type: "article_read",
+    description: "Read the algorithm doesn't hate you, your content does",
+    pointsEarned: 10,
+    timestamp: "2025-02-09T13:22:00Z",
+  },
+];

@@ -1,0 +1,163 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Design system: bone default, no drop shadows, no grey */
+:root {
+  --background: #faf6e7;
+  --foreground: #000000;
+  --font-obviously: "Obviously", sans-serif;
+  --font-tiempos-text: "Tiempos Text", serif;
+  --font-tiempos-headline: "Tiempos Headline", serif;
+  --font-tiempos-fine: "Tiempos Fine", serif;
+}
+
+/* Obviously Wide */
+@font-face {
+  font-family: "Obviously";
+  src: url("/brand/fonts/ObviouslyWide-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Obviously";
+  src: url("/brand/fonts/ObviouslyWide-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Obviously";
+  src: url("/brand/fonts/ObviouslyWide-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Obviously";
+  src: url("/brand/fonts/ObviouslyWide-Black.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+/* Obviously (normal width) */
+@font-face {
+  font-family: "Obviously";
+  src: url("/brand/fonts/Obviously-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Obviously";
+  src: url("/brand/fonts/Obviously-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+/* Obviously Narrow (separate family for episode numbers, stats) */
+@font-face {
+  font-family: "Obviously Narrow";
+  src: url("/brand/fonts/ObviouslyNarrow-Black.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+/* Obviously Wide (separate family for heading components) */
+@font-face {
+  font-family: "Obviously Wide";
+  src: url("/brand/fonts/ObviouslyWide-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Obviously Wide";
+  src: url("/brand/fonts/ObviouslyWide-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Obviously Wide";
+  src: url("/brand/fonts/ObviouslyWide-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Obviously Wide";
+  src: url("/brand/fonts/ObviouslyWide-Black.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+/* Tiempos Text */
+@font-face {
+  font-family: "Tiempos Text";
+  src: url("/brand/fonts/TiemposText-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Tiempos Text";
+  src: url("/brand/fonts/TiemposText-Semibold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+/* Tiempos Headline */
+@font-face {
+  font-family: "Tiempos Headline";
+  src: url("/brand/fonts/TiemposHeadline-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Tiempos Headline";
+  src: url("/brand/fonts/TiemposHeadline-Semibold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+/* Tiempos Fine */
+@font-face {
+  font-family: "Tiempos Fine";
+  src: url("/brand/fonts/TiemposFine-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Tiempos Fine";
+  src: url("/brand/fonts/TiemposFine-RegularItalic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #faf6e7;
+  color: #000000;
+  font-family: var(--font-tiempos-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: #ff0000;
+  color: #faf6e7;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

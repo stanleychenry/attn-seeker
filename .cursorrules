@@ -1,0 +1,87 @@
+# attn:seeker brand rules
+
+You are building the attn:seeker website. Follow these rules on every file you create or modify. No exceptions.
+
+## Fonts
+- Display/headlines: Obviously (geometric sans). Always lowercase.
+- Body/editorial: Tiempos (warm serif). Always sentence case.
+- Obviously leads, Tiempos follows. Never stack two Obviously elements without Tiempos between, except in navigation/UI.
+- Personal quotes from Stanley Henry: sentence case in Tiempos (exception to lowercase rule).
+
+## Font variants
+- H1: Obviously Wide Bold, 72px desktop / 40px mobile
+- H2: Obviously Wide SemiBold, 48px / 32px
+- H3: Obviously Wide SemiBold, 32px / 24px
+- H4: Obviously Wide Medium, 24px / 20px
+- Labels/buttons/nav: Obviously Medium, 16px / 14px
+- Stat numbers: Obviously Narrow Black, 64px / 40px
+- Captions/metadata: Obviously Regular, 13px / 12px
+- Body large: Tiempos Text Regular, 20px / 18px
+- Body standard: Tiempos Text Regular, 18px / 16px
+- Pull quotes: Tiempos Headline Medium, 28px / 22px
+
+## Colours
+- Red: #FF0000 (spotlight, CTAs, headlines in Obviously only)
+- Bone: #FAF6E7 (default background for everything)
+- Black: #000000 (text, structure)
+- White: #FFFFFF (functional elements on bone: inputs, cards, modals)
+- Dark red: #CC0000 (hover states only)
+- Secondary text: black at 55% opacity
+- NO GREY ANYWHERE. Not as text, backgrounds, or borders.
+- No desaturated reds. No salmon, coral, burgundy.
+- No drop shadows.
+
+## Surfaces
+- Bone = default background
+- White = inputs, cards, modals, panels (things that sit ON bone)
+- Black = footer, streaming mode, earned impact moments
+- Red = hero blocks, CTAs, sparingly
+- On dark/red surfaces, use bone (#FAF6E7) for text, not white
+
+## Components
+- Images/video: 0px radius (sharp corners, always)
+- Buttons/inputs/cards: 8px radius
+- Tags/pills: 20px radius (full round)
+- Buttons: primary (red bg, bone text), secondary (black bg, bone text), ghost (transparent, red border, red text)
+- Cards: white bg on bone, no border, no shadow, 24px padding, 8px radius. Use sparingly.
+- Line borders: 1px black at 10-15% opacity. For dividing content groups, not sections.
+- No drop shadows anywhere.
+
+## Spacing (8px base grid)
+- xs: 8px, sm: 16px, md: 24px, lg: 32px, xl: 48px, 2xl: 64px, 3xl: 96px, 4xl: 128px
+- Containers: narrow 600px, content 800px, standard 900px, wide 1000px, full 1100px
+
+## Three design modes
+1. Editorial (articles, learn, topics): bone bg, line borders for structure, Tiempos leads, dense but readable
+2. Brand (homepage, agency, about, services, contact): bone bg, generous spacing, Obviously leads, spacious
+3. Streaming (shows, podcasts, episodes): dark/black bg, thumbnail-driven, Obviously for everything, Netflix/Spotify feel
+
+## Writing rules
+- NO EM DASHES. Use commas or periods.
+- All headings, labels, buttons: lowercase
+- Body text: normal sentence case
+- Direct, confident tone
+- No corporate jargon
+
+## Technical
+- Next.js 14 App Router with TypeScript
+- Tailwind CSS for styling
+- All data currently uses mock data from src/data/mock/
+- Auth: Memberstack (stubbed with useAuth hook)
+- Search: Algolia (stubbed with useSearch hook)
+- Backend: Xano API (stubbed with mock data)
+- Always include loading states and error states
+- Mobile-first responsive design
+- All images use next/image with proper alt text
+
+## File patterns
+- Page components: src/app/[route]/page.tsx
+- Shared components: src/components/ui/ for design system, src/components/layout/ for global
+- Types: src/types/
+- Mock data: src/data/mock/
+- Utilities: src/lib/
+
+## Reference docs
+- Read docs/design-system.md for full brand specifications
+- Read docs/cms-structure.md for CMS field definitions
+- Read docs/page-map.md for page list and design modes
