@@ -1,9 +1,6 @@
-import Link from "next/link";
 import Image from "next/image";
-import { Linkedin, Instagram, Youtube } from "lucide-react";
 import { getTeamBySlug, getTeamSlugs, getTeams } from "@/lib/cms";
 import { notFound } from "next/navigation";
-import { TikTokIcon } from "@/components/icons/tiktok-icon";
 import {
   Heading,
   Body,
@@ -11,6 +8,7 @@ import {
   Section,
   Container,
 } from "@/components/ui";
+import { TeamMemberCard, TeamSocialLinks } from "../team-social-links";
 
 type PageParams = { params: { slug: string } };
 
@@ -77,59 +75,11 @@ export default async function TeamMemberPage({ params }: PageParams) {
             <div className="flex flex-1 flex-col">
               <Heading level={1}>{member.name}</Heading>
               <Caption className="mt-1 block text-red">{member.role}</Caption>
-              <div
+              <TeamSocialLinks
+                urls={member}
+                iconSize={18}
                 className="mt-3 flex gap-3"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {member.linkedinUrl && (
-                  <a
-                    href={member.linkedinUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-black/40 transition-colors hover:text-red"
-                    onClick={(e) => e.stopPropagation()}
-                    aria-label="LinkedIn"
-                  >
-                    <Linkedin size={18} />
-                  </a>
-                )}
-                {member.tiktokUrl && (
-                  <a
-                    href={member.tiktokUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-black/40 transition-colors hover:text-red"
-                    onClick={(e) => e.stopPropagation()}
-                    aria-label="TikTok"
-                  >
-                    <TikTokIcon size={18} />
-                  </a>
-                )}
-                {member.instagramUrl && (
-                  <a
-                    href={member.instagramUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-black/40 transition-colors hover:text-red"
-                    onClick={(e) => e.stopPropagation()}
-                    aria-label="Instagram"
-                  >
-                    <Instagram size={18} />
-                  </a>
-                )}
-                {member.youtubeUrl && (
-                  <a
-                    href={member.youtubeUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-black/40 transition-colors hover:text-red"
-                    onClick={(e) => e.stopPropagation()}
-                    aria-label="YouTube"
-                  >
-                    <Youtube size={18} />
-                  </a>
-                )}
-              </div>
+              />
               <hr className="mt-6 border-black/10" />
               {member.bio && (
                 <div className="mt-6">
@@ -154,29 +104,22 @@ export default async function TeamMemberPage({ params }: PageParams) {
           <Heading level={2}>more of the team</Heading>
           <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-8 md:grid-cols-4">
             {otherMembers.map((other) => (
-              <Link
+              <TeamMemberCard
                 key={other.id}
-                href={`/agency/team/${other.slug}`}
-                className="group block"
-              >
-                <div className="relative aspect-square w-full overflow-hidden bg-black/5">
-                  {other.headshot ? (
-                    <Image
-                      src={other.headshot}
-                      alt=""
-                      fill
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
-                      sizes="(max-width: 768px) 50vw, 25vw"
-                    />
-                  ) : null}
-                </div>
-                  <h3 className="mt-2 font-obviously font-semibold text-sm lowercase text-black">
-                    {other.name}
-                  </h3>
-                <Caption className="mt-0.5 block text-xs text-black/50">
-                  {other.role}
-                </Caption>
-              </Link>
+                member={{
+                  id: other.id,
+                  slug: other.slug,
+                  name: other.name,
+                  role: other.role ?? null,
+                  headshot: other.headshot ?? null,
+                  linkedinUrl: other.linkedinUrl ?? null,
+                  tiktokUrl: other.tiktokUrl ?? null,
+                  instagramUrl: other.instagramUrl ?? null,
+                  youtubeUrl: other.youtubeUrl ?? null,
+                }}
+                imageSizes="(max-width: 768px) 50vw, 25vw"
+                compact
+              />
             ))}
           </div>
         </Container>
