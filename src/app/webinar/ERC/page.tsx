@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import {
-  EVENT_DATE,
-  IMAGE_BASE,
-  STRIPE_PAYMENT_URL,
-} from "./constants";
+import { EVENT_DATE, IMAGE_BASE } from "./constants";
 import { ErcLandingClient, CTA } from "./erc-landing-client";
 
 export const metadata: Metadata = {
@@ -161,16 +157,16 @@ export default function ErcWebinarPage() {
             Problem
           </p>
           <p className="mt-3 font-tiempos-text text-body-mobile text-white/90 md:text-body">
-            You're posting every day and nothing's moving.
+            You&apos;re posting every day and nothing&apos;s moving.
           </p>
           <p className="mt-4 font-tiempos-text text-body-mobile text-white/90 md:text-body">
-            You're making reels, carousels, stories, TikToks. You're jumping on
-            trending audio. You're trying five different content pillars. You're
+            You&apos;re making reels, carousels, stories, TikToks. You&apos;re jumping on
+            trending audio. You&apos;re trying five different content pillars. You&apos;re
             spending hours every week creating content that gets 200 views and
             zero leads.
           </p>
           <p className="mt-4 font-tiempos-text text-body-mobile text-white/90 md:text-body">
-            It's not because you're bad at content. It's because you're making
+            It&apos;s not because you&apos;re bad at content. It&apos;s because you&apos;re making
             it too hard.
           </p>
         </div>
@@ -183,8 +179,8 @@ export default function ErcWebinarPage() {
             Agitation
           </p>
           <p className="mt-3 font-tiempos-text text-body-mobile text-white/90 md:text-body">
-            Here's what nobody tells you about social media growth: the biggest
-            creators and the fastest-growing brands don't create more content.
+            Here&apos;s what nobody tells you about social media growth: the biggest
+            creators and the fastest-growing brands don&apos;t create more content.
             They create less. Way less. They find one thing that works and they
             repeat it. Every single day.
           </p>
@@ -194,8 +190,8 @@ export default function ErcWebinarPage() {
             repetition.
           </p>
           <p className="mt-4 font-tiempos-text text-body-mobile text-white/90 md:text-body">
-            Meanwhile, you're burning out trying to come up with something new
-            every day. And the algorithm doesn't know what to do with you
+            Meanwhile, you&apos;re burning out trying to come up with something new
+            every day. And the algorithm doesn&apos;t know what to do with you
             because you keep changing the recipe.
           </p>
         </div>
@@ -208,20 +204,20 @@ export default function ErcWebinarPage() {
             Solution
           </p>
           <p className="mt-3 font-tiempos-text text-body-mobile text-white/90 md:text-body">
-            There's a better way. We call it an Easily Repeatable Content series,
+            There&apos;s a better way. We call it an Easily Repeatable Content series,
             or ERC.
           </p>
           <p className="mt-4 font-tiempos-text text-body-mobile text-white/90 md:text-body">
             One format. One variable. 20 minutes a day. Posted daily.
           </p>
           <p className="mt-4 font-tiempos-text text-body-mobile text-white/90 md:text-body">
-            That's the entire system. And it's responsible for over a billion
+            That&apos;s the entire system. And it&apos;s responsible for over a billion
             organic views across our agency and our clients in the last year
             alone.
           </p>
           <p className="mt-4 font-tiempos-text text-body-mobile text-white/90 md:text-body">
-            On {EVENT_DATE}, we're teaching the full system in a live 90-minute
-            workshop. No fluff. No "content pillars" lecture. Just the exact
+            On {EVENT_DATE}, we&apos;re teaching the full system in a live 90-minute
+            workshop. No fluff. No &quot;content pillars&quot; lecture. Just the exact
             framework we use for every client, broken down step by step so you
             can build your own ERC and start posting it the next day.
           </p>
@@ -235,7 +231,7 @@ export default function ErcWebinarPage() {
       <section className="border-t border-white/10 py-16 md:py-24">
         <div className="mx-auto max-w-[900px] px-4">
           <h2 className="font-obviously-wide text-h2-mobile font-black md:text-h2">
-            This system works. Here's what happened when our clients used it.
+            This system works. Here&apos;s what happened when our clients used it.
           </h2>
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {CASE_STUDIES.map((c) => (
@@ -280,7 +276,7 @@ export default function ErcWebinarPage() {
       <section className="border-t border-white/10 py-16 md:py-24">
         <div className="mx-auto max-w-[600px] px-4">
           <h2 className="font-obviously-wide text-h2-mobile font-black md:text-h2">
-            What we'll cover in 90 minutes
+            What we&apos;ll cover in 90 minutes
           </h2>
           <ol className="mt-8 space-y-6">
             {LEARN_ITEMS.map((text, i) => (
@@ -297,7 +293,7 @@ export default function ErcWebinarPage() {
         </div>
       </section>
 
-      {/* Section 7: What's Included */}
+      {/* Section 7: What\u2019s Included */}
       <section className="border-t border-white/10 py-16 md:py-24">
         <div className="mx-auto max-w-[600px] px-4">
           <h2 className="font-obviously-wide text-h2-mobile font-black md:text-h2">
@@ -347,7 +343,7 @@ export default function ErcWebinarPage() {
       <section className="border-t border-white/10 py-16 md:py-24">
         <div className="mx-auto max-w-[600px] px-4 md:max-w-[800px]">
           <h2 className="font-obviously-wide text-h2-mobile font-black md:text-h2">
-            Who's teaching this?
+            Who&apos;s teaching this?
           </h2>
           <div className="mt-8 md:flex md:gap-10 md:items-start">
             <div className="relative aspect-[4/3] w-full max-w-[400px] overflow-hidden rounded-lg md:flex-shrink-0">
@@ -373,7 +369,7 @@ export default function ErcWebinarPage() {
               </p>
               <p className="mt-4 font-tiempos-text text-body-mobile text-white/90 md:text-body">
                 We built a global agency by following one basic principle:
-                Easily Repeatable Content. This workshop is the first time we're
+                Easily Repeatable Content. This workshop is the first time we&apos;re
                 teaching the full system publicly, step by step.
               </p>
             </div>
