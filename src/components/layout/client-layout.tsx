@@ -7,18 +7,20 @@ import { Nav } from "./nav";
 import { Footer } from "./footer";
 
 const AUTH_PATHS = ["/seekers/login", "/seekers/signup"];
+const NO_NAV_FOOTER_PATHS = ["/webinar"];
 
 export function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isHomepage = pathname === "/";
   const isAuthPage = AUTH_PATHS.some((p) => pathname?.startsWith(p));
+  const hideNavFooter = NO_NAV_FOOTER_PATHS.some((p) => pathname?.startsWith(p));
 
   return (
     <AuthProvider>
       <SearchProvider>
-        {!isAuthPage && <Nav />}
+        {!isAuthPage && !hideNavFooter && <Nav />}
         <main className={isHomepage ? "" : "min-h-screen"}>{children}</main>
-        {!isHomepage && !isAuthPage && <Footer />}
+        {!isHomepage && !isAuthPage && !hideNavFooter && <Footer />}
       </SearchProvider>
     </AuthProvider>
   );
