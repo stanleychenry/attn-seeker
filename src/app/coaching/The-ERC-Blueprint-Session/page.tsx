@@ -224,22 +224,7 @@ export default function ErcBlueprintSessionPage() {
         </div>
       </section>
 
-      {/* Section 6: Guarantee — light, accent block */}
-      <section className="bg-bone px-4 py-16 md:py-24">
-        <div className="mx-auto max-w-[800px] border-l-4 border-red bg-white/50 py-6 pl-6 pr-6 md:pl-8 md:pr-8">
-          <h2 className="font-obviously-wide text-[24px] font-black leading-tight text-black md:text-[32px]">
-            the &apos;you&apos;ll know exactly what to create&apos; guarantee
-          </h2>
-          <p className="mt-4 font-tiempos-text text-base text-black/90 md:text-lg leading-relaxed">
-            If you don&apos;t walk away from your Blueprint Session with a clear, actionable content series plan tailored to your business, we&apos;ll refund every cent. No questions, no hoops.
-          </p>
-          <p className="mt-4 font-tiempos-text text-base text-black/90 md:text-lg leading-relaxed">
-            We can make this guarantee because we&apos;ve never had someone complete the session and leave without a plan. The combination of pre-call research, a structured framework, and a senior strategist guiding the conversation means you will leave with clarity. That&apos;s the whole point.
-          </p>
-        </div>
-      </section>
-
-      {/* Section 7: FAQ — light, accordion */}
+      {/* Section 6: FAQ — light, accordion */}
       <section className="bg-bone">
         <div className="mx-auto max-w-[800px] px-4">
           <h2 className="font-obviously-wide pt-16 text-[28px] font-black leading-tight text-black md:text-[40px]">
@@ -249,7 +234,7 @@ export default function ErcBlueprintSessionPage() {
         <ErcBlueprintFAQ />
       </section>
 
-      {/* Section 8: Final CTA — dark, bookend */}
+      {/* Section 7: Final CTA — dark, bookend */}
       <section className="bg-black px-4 py-20 md:py-28">
         <div className="mx-auto max-w-[800px] text-center">
           <h2 className="font-obviously-wide text-[28px] font-black leading-tight text-white md:text-[40px]">
