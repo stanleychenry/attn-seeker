@@ -78,20 +78,34 @@ const DELIVERABLES = [
 export default function ErcBlueprintSessionPage() {
   return (
     <div className="min-h-screen">
-      {/* Section 1: Hero — dark, full-width, centred */}
+      {/* Section 1: Hero — dark, text + hero-stanley image */}
       <section className="bg-black px-4 pt-[120px] pb-20 md:pt-[140px] md:pb-24">
-        <div className="mx-auto max-w-[800px] text-center">
-          <h1 className="font-obviously-wide text-[32px] font-black leading-tight text-white md:text-[56px]">
-            the erc blueprint session
-          </h1>
-          <p className="mt-6 font-tiempos-text text-lg text-white/85 md:text-xl leading-relaxed">
-            Stop guessing what to post. Walk away with a content series built around your business in 60 minutes.
-          </p>
-          <p className="mt-3 font-tiempos-text text-base text-white/75 md:text-lg">
-            You learned the Easily Repeatable Content framework. Now let us build yours, with you, in a single focused session.
-          </p>
-          <div id="hero-cta" className="mt-8">
-            <CTA fullWidthMobile={true} />
+        <div className="mx-auto w-full max-w-[900px]">
+          <div className="md:grid md:grid-cols-[1fr,minmax(0,340px)] md:gap-10 md:items-start">
+            <div className="min-w-0 max-w-full text-center md:text-left">
+              <h1 className="font-obviously-wide text-[32px] font-black leading-tight text-white md:text-[56px]">
+                the erc blueprint session
+              </h1>
+              <p className="mt-6 font-tiempos-text text-lg text-white/85 md:text-xl leading-relaxed">
+                Stop guessing what to post. Walk away with a content series built around your business in 60 minutes.
+              </p>
+              <p className="mt-3 font-tiempos-text text-base text-white/75 md:text-lg">
+                You learned the Easily Repeatable Content framework. Now let us build yours, with you, in a single focused session.
+              </p>
+              <div id="hero-cta" className="mt-8">
+                <CTA fullWidthMobile={true} />
+              </div>
+            </div>
+            <div className="relative mt-8 aspect-[3/4] w-full min-w-0 overflow-hidden rounded-lg md:mt-0 md:w-[340px] md:justify-self-end">
+              <Image
+                src={`${IMAGE_BASE}/hero-stanley.jpg`}
+                alt="Stanley Henry"
+                fill
+                className="object-cover object-center"
+                priority
+                sizes="(max-width: 768px) 100vw, 340px"
+              />
+            </div>
           </div>
         </div>
       </section>
