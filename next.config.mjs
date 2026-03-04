@@ -1,5 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  async redirects() {
+    return [
+      {
+        source: "/coaching/the-erc-blueprint-session",
+        destination: "/coaching/The-ERC-Blueprint-Session",
+        permanent: true,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {
