@@ -26,6 +26,7 @@ const CASE_STUDIES = [
     name: "Fresh Start Advisory",
     metric: "10,000 to 110,000 followers in 19 days",
     copy: "One content series. One variable. Posted daily. Tens of millions of views.",
+    url: "https://www.instagram.com/reel/DQuv9RCk2yy",
   },
   {
     image: `${IMAGE_BASE}/case-harification.png`,
@@ -33,6 +34,7 @@ const CASE_STUDIES = [
     name: "Harification",
     metric: "16 to 170,000 followers in 30 days",
     copy: "The series? A girl wearing a pot on her head talking about not washing her hair. 78 million views. 5x their sales.",
+    url: "https://www.tiktok.com/@hairification_haircare/video/7340830092773297415",
   },
   {
     image: `${IMAGE_BASE}/case-toughyarns.png`,
@@ -40,6 +42,7 @@ const CASE_STUDIES = [
     name: "Tough Yarns",
     metric: "0 to 100,000 followers in 100 days",
     copy: "A guy from Queenstown doing difficult things with strangers. Same format every day. The only variable was who he talked to. He didn't know how to edit. He just sped up the boring parts. 10 million views.",
+    url: "https://www.instagram.com/reel/DM7IJ4ZTaq7",
   },
   {
     image: `${IMAGE_BASE}/case-sparkmedia.jpg`,
@@ -47,6 +50,7 @@ const CASE_STUDIES = [
     name: "Spark Media App",
     metric: "0 to 25,000 followers in 2 weeks",
     copy: "No followers. No budget. No team. Just a founder and his retired dad doing simple videos in the same format every day.",
+    url: "https://www.instagram.com/reel/DTtztiZAaoI/",
   },
   {
     image: `${IMAGE_BASE}/case-extraordinary.png`,
@@ -54,6 +58,7 @@ const CASE_STUDIES = [
     name: "Extraordinary",
     metric: "0 to 120,000 followers in 24 hours",
     copy: "Not a fluke. A system. When you have one focused content series the algorithm can latch onto, these numbers aren't magic. They're expected.",
+    url: "https://www.tiktok.com/@extraordinary_global/video/7370940304003779860",
   },
   {
     image: `${IMAGE_BASE}/case-ragebait.png`,
@@ -61,6 +66,7 @@ const CASE_STUDIES = [
     name: "RAGEBAIT (our own series)",
     metric: "100 million views",
     copy: "Filmed in 20 minutes a day. Our agency had five content ideas last year. Five. We repeated them all year and generated hundreds of millions of views.",
+    url: "https://www.instagram.com/reel/DNe5gMgJ2kp",
   },
 ];
 
@@ -115,13 +121,13 @@ const AUDIENCE_ITEMS = [
 export default function ErcWebinarPage() {
   return (
     <div className="min-h-screen bg-[#0d0d0d] pb-20 text-white md:pb-0">
-      {/* Section 1: Hero */}
+      {/* Section 1: Hero — text block first, portrait image (hero-stanley) beside on desktop, below on mobile */}
       <section className="px-4 pt-8 pb-12 md:pt-16 md:pb-20">
-        <div className="mx-auto max-w-[600px] md:max-w-[900px]">
-          <div className="md:grid md:grid-cols-[1fr,1fr] md:gap-12 md:items-start">
-            <div className="min-w-0">
-              <h1 className="font-obviously-wide text-h1-mobile font-black leading-tight md:text-h1">
-                The Easily Repeatable Content System
+        <div className="mx-auto w-full max-w-[900px]">
+          <div className="md:grid md:grid-cols-[1fr,minmax(0,340px)] md:gap-10 md:items-start">
+            <div className="min-w-0 max-w-full">
+              <h1 className="font-obviously-wide text-h1-mobile font-black leading-tight lowercase text-white md:text-h1">
+                get your first 10K followers
               </h1>
               <p className="mt-4 font-tiempos-text text-body-lg-mobile text-white/90 md:text-body-lg">
                 The exact framework behind 1 billion+ organic views, taught live
@@ -134,14 +140,14 @@ export default function ErcWebinarPage() {
                 <CTA>Get Your Spot for $79 NZD</CTA>
               </div>
             </div>
-            <div className="relative mt-8 min-h-[280px] min-w-0 overflow-hidden rounded-lg md:mt-0 md:aspect-[4/5] md:min-h-0">
+            <div className="relative mt-8 aspect-[3/4] w-full min-w-0 overflow-hidden rounded-lg md:mt-0 md:w-[340px]">
               <Image
                 src={`${IMAGE_BASE}/hero-stanley.jpg`}
                 alt="Stanley Henry presenting"
                 fill
-                className="object-cover"
+                className="object-cover object-center"
                 priority
-                sizes="(max-width: 768px) 100vw, 450px"
+                sizes="(max-width: 768px) 100vw, 340px"
               />
             </div>
           </div>
@@ -231,23 +237,26 @@ export default function ErcWebinarPage() {
           <h2 className="font-obviously-wide text-h2-mobile font-black md:text-h2">
             This system works. Here's what happened when our clients used it.
           </h2>
-          <div className="mt-10 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {CASE_STUDIES.map((c) => (
-              <div
+              <a
                 key={c.name}
-                className="overflow-hidden rounded-lg border border-white/10 bg-white/5"
+                href={c.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex flex-col overflow-hidden rounded-lg border border-white/10 bg-white/5 transition-colors hover:border-white/20 hover:bg-white/10"
               >
-                <div className="relative aspect-[4/3]">
+                <div className="relative aspect-[9/16] w-full">
                   <Image
                     src={c.image}
                     alt={c.alt}
                     fill
                     className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     loading="lazy"
                   />
                 </div>
-                <div className="p-4">
+                <div className="flex flex-1 flex-col p-4">
                   <p className="font-obviously text-body-sm font-semibold text-red">
                     {c.metric}
                   </p>
@@ -258,7 +267,7 @@ export default function ErcWebinarPage() {
                     {c.copy}
                   </p>
                 </div>
-              </div>
+              </a>
             ))}
           </div>
           <div className="mt-10 text-center">
@@ -320,12 +329,12 @@ export default function ErcWebinarPage() {
             {AUDIENCE_ITEMS.map((a) => (
               <div
                 key={a.title}
-                className="rounded-lg border border-white/10 bg-white/5 p-4"
+                className="group rounded-lg border border-white/10 bg-white/5 p-4 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-red hover:bg-red hover:shadow-lg"
               >
-                <p className="font-obviously text-body font-semibold text-white">
+                <p className="font-obviously text-body font-semibold text-white transition-colors duration-200 group-hover:text-white">
                   {a.title}
                 </p>
-                <p className="mt-2 font-tiempos-text text-body-sm-mobile text-white/90 md:text-body">
+                <p className="mt-2 font-tiempos-text text-body-sm-mobile text-white/90 transition-colors duration-200 group-hover:text-white/95 md:text-body">
                   {a.body}
                 </p>
               </div>
@@ -351,7 +360,7 @@ export default function ErcWebinarPage() {
                 loading="lazy"
               />
             </div>
-            <div className="mt-6 md:mt-0">
+            <div className="mt-6 flex flex-1 flex-col md:mt-0">
               <p className="font-tiempos-text text-body-mobile text-white/90 md:text-body">
                 Stanley Henry, founder of a 20-person agency based in Auckland,
                 New Zealand.
@@ -367,15 +376,21 @@ export default function ErcWebinarPage() {
                 Easily Repeatable Content. This workshop is the first time we're
                 teaching the full system publicly, step by step.
               </p>
-              <div className="mt-6">
-                <Image
-                  src={`${IMAGE_BASE}/logo-attnseeker.png`}
-                  alt="The Attention Seeker"
-                  width={160}
-                  height={48}
-                  loading="lazy"
-                />
-              </div>
+            </div>
+          </div>
+          <div className="mt-10 w-full">
+            <Image
+              src={`${IMAGE_BASE}/logo-attnseeker.png`}
+              alt="The Attention Seeker"
+              width={800}
+              height={120}
+              className="h-auto w-full object-contain object-left"
+              loading="lazy"
+            />
+            <div className="mt-6 w-full">
+              <CTA className="block w-full text-center">
+                Get Your Spot for $79 NZD
+              </CTA>
             </div>
           </div>
         </div>

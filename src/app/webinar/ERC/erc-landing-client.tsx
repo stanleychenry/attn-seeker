@@ -99,11 +99,11 @@ export function ErcLandingClient() {
               <button
                 type="button"
                 onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                className="flex w-full items-center justify-between gap-4 py-4 text-left font-obviously text-base font-semibold text-white"
+                className="group flex w-full items-center justify-between gap-4 py-4 text-left font-obviously text-base font-semibold text-white"
               >
                 {item.q}
                 <span
-                  className={`text-2xl transition-transform ${
+                  className={`text-2xl transition-all duration-200 group-hover:text-red ${
                     openFaq === i ? "rotate-45" : ""
                   }`}
                 >
