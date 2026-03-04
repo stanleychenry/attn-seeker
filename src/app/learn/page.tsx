@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import Script from "next/script";
 import { getPillarTopics, getFeaturedArticles, getYapArticles, getTopics } from "@/lib/cms";
 import { LearnSearch } from "@/components/learn/learn-search";
 import type { Topic } from "@/types/cms";
@@ -66,7 +67,7 @@ export default async function LearnPage() {
           <Caption className="block text-red">learn</Caption>
           <div className="mt-4 w-full">
             <Image
-              src="/brand/logos/TAS-HighRes-_YAP wordmark - Red.png"
+              src="/brand/logos/TAS-HighRes-_YAP wordmark - Black.png"
               alt="YAP"
               width={800}
               height={200}
@@ -75,14 +76,41 @@ export default async function LearnPage() {
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
             />
           </div>
+
+          {/* Beehiiv newsletter subscribe form - left-aligned with search bar, same max width */}
+          <Script
+            src="https://subscribe-forms.beehiiv.com/embed.js"
+            strategy="afterInteractive"
+          />
+          <div className="mt-6 w-full max-w-[600px]">
+            <iframe
+              src="https://subscribe-forms.beehiiv.com/e66df1db-0e56-418b-96c5-5b6274a84204"
+              className="beehiiv-embed"
+              data-test-id="beehiiv-embed"
+              title="Subscribe to the newsletter"
+              frameBorder={0}
+              scrolling="no"
+              style={{
+                width: "100%",
+                height: 47,
+                margin: 0,
+                border: "none",
+                borderRadius: 0,
+                backgroundColor: "transparent",
+                boxShadow: "0 0 #0000",
+                maxWidth: "100%",
+              }}
+            />
+          </div>
+
           <Body
             size="large"
-            className="mt-4 max-w-[700px] text-black/70"
+            className="mt-6 max-w-[700px] text-black/70"
           >
             700+ articles on marketing, social media, and building brands that
             matter.
           </Body>
-          <div className="mt-8 w-full max-w-[600px]">
+          <div className="mt-6 w-full max-w-[600px]">
             <LearnSearch />
           </div>
         </Container>

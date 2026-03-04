@@ -85,6 +85,7 @@ function mapRecentActivity(
     id: `act-${i}-${a.created_at ?? ""}`,
     type: "game_complete" as const,
     description: (a.source ?? "").replace(/_/g, " "),
+    source: typeof a.source === "string" ? a.source : undefined,
     pointsEarned: a.amount ?? 0,
     timestamp: a.created_at ?? new Date().toISOString(),
   }));

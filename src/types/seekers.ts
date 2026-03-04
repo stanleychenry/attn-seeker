@@ -57,6 +57,8 @@ export interface ActivityItem {
     | "email_open"
     | "referral";
   description: string;
+  /** Raw source from Xano (e.g. "shikaku", "akari", "mastermind") for matching game type */
+  source?: string;
   pointsEarned: number;
   timestamp: string;
 }

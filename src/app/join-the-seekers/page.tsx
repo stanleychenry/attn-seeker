@@ -65,15 +65,6 @@ const TIERS = [
       "quarterly merch drop",
     ],
   },
-  {
-    name: "black",
-    threshold: "10,000 pts",
-    perks: [
-      "everything in platinum",
-      "1:1 strategy session",
-      "founding seeker status",
-    ],
-  },
 ];
 
 const GAMES = [
@@ -194,7 +185,7 @@ export default function JoinTheSeekersPage() {
           <p className="mt-2 font-tiempos-text text-base text-bone/60">
             earn status points to level up. higher tiers unlock better rewards.
           </p>
-          <div className="mt-10 flex gap-4 overflow-x-auto pb-4 md:grid md:max-w-none md:grid-cols-5 md:overflow-visible [&::-webkit-scrollbar]:hidden">
+          <div className="mt-10 flex gap-4 overflow-x-auto pb-4 md:grid md:max-w-none md:grid-cols-4 md:overflow-visible [&::-webkit-scrollbar]:hidden">
             {TIERS.map((tier) => (
               <div
                 key={tier.name}

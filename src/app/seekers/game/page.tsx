@@ -1,37 +1,8 @@
 import Link from "next/link";
 import { Heading, Section, Container } from "@/components/ui";
+import GameCardsClient from "./game-cards-client";
 
 const MOCK_USER_STREAK = 12;
-
-const MOCK_GAMES = [
-  {
-    id: "shikaku",
-    name: "shikaku",
-    emoji: "🟥",
-    description:
-      "divide the grid into rectangles. each rectangle must contain exactly one number equal to its area.",
-    playedToday: true,
-    href: "/seekers/game/shikaku",
-  },
-  {
-    id: "akari",
-    name: "akari",
-    emoji: "💡",
-    description:
-      "place light bulbs to illuminate every white cell. no two bulbs can shine on each other.",
-    playedToday: false,
-    href: "/seekers/game/akari",
-  },
-  {
-    id: "mastermind",
-    name: "mastermind",
-    emoji: "🧠",
-    description:
-      "crack the hidden colour code in six guesses or fewer. each guess gives you clues.",
-    playedToday: false,
-    href: "/seekers/game/mastermind",
-  },
-];
 
 const MOCK_LEADERBOARD_TODAY = [
   { rank: 1, name: "olivia t.", score: 45 },
@@ -73,46 +44,7 @@ export default function SeekersGamePage() {
       {/* 2. Game selection */}
       <Section background="bone" padding="none" className="py-8 md:py-16">
         <Container width="standard">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {MOCK_GAMES.map((game) => (
-              <div
-                key={game.id}
-                className="flex flex-col rounded-lg bg-white p-6"
-              >
-                <p className="mb-4 text-3xl">{game.emoji}</p>
-                <h2 className="font-obviously-wide text-lg font-bold">
-                  {game.name}
-                </h2>
-                <p className="mt-2 flex-1 font-tiempos-text text-sm text-black/55">
-                  {game.description}
-                </p>
-                <p
-                  className={`mt-4 font-obviously text-xs ${
-                    game.playedToday ? "text-green-600" : "text-red"
-                  }`}
-                >
-                  {game.playedToday ? "played ✓" : "not played"}
-                </p>
-                <div className="mt-4">
-                  {game.playedToday ? (
-                    <Link
-                      href={game.href}
-                      className="inline-block rounded-full border border-black/20 px-5 py-2.5 font-obviously text-xs font-medium text-black/60 transition-colors hover:border-black/40"
-                    >
-                      play again
-                    </Link>
-                  ) : (
-                    <Link
-                      href={game.href}
-                      className="inline-block rounded-full bg-red px-5 py-2.5 font-obviously text-xs font-medium text-bone transition-colors hover:bg-red/90"
-                    >
-                      play
-                    </Link>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+          <GameCardsClient />
         </Container>
       </Section>
 
