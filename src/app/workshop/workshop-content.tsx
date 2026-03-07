@@ -357,9 +357,33 @@ export function WorkshopContent() {
             the day
           </h2>
           <div className="mt-10 divide-y divide-bone/20">
+            {[
+              { time: "8:30am – 9:00am", label: "Welcome Tea & Coffee for everyone." },
+              { time: "9:00am – 10:30am", label: "Part 1a" },
+              { time: "10:30am – 11:00am", label: "Morning Tea" },
+              { time: "11:00am – 12:30pm", label: "Part 1b" },
+              { time: "12:30pm – 1:15pm", label: "Lunch" },
+              { time: "1:15pm – 3:00pm", label: "Part 2a" },
+              { time: "3:00pm – 3:30pm", label: "Afternoon Tea" },
+              { time: "3:30pm – 5:00pm", label: "Part 2b" },
+            ].map((item, i) => (
+              <div
+                key={i}
+                className="flex flex-col gap-1 py-5 first:pt-0 sm:flex-row sm:items-baseline sm:gap-8"
+              >
+                <span className="font-obviously text-caption-mobile font-medium tabular-nums text-bone sm:w-36 sm:shrink-0 sm:text-caption">
+                  {item.time}
+                </span>
+                <span className="font-tiempos-text text-body-mobile text-bone md:text-body">
+                  {item.label}
+                </span>
+              </div>
+            ))}
+          </div>
+          <div className="mt-12 divide-y divide-bone/20">
             <div className="py-8 first:pt-0">
               <p className="font-obviously-wide text-h3-mobile font-semibold lowercase text-bone md:text-h3">
-                part 1: foundational theory (4 hours)
+                part 1: foundational theory
               </p>
               <p className="mt-4 font-tiempos-text text-body-mobile text-bone md:text-body">
                 We start by getting your whole team onto the same page. This
@@ -372,7 +396,7 @@ export function WorkshopContent() {
             </div>
             <div className="py-8">
               <p className="font-obviously-wide text-h3-mobile font-semibold lowercase text-bone md:text-h3">
-                part 2: practical application (4 hours)
+                part 2: practical application
               </p>
               <p className="mt-4 font-tiempos-text text-body-mobile text-bone md:text-body">
                 Then we build. Your team gets hands-on, applying the theory to
