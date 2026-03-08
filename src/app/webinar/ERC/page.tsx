@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { EVENT_DATE, IMAGE_BASE } from "./constants";
+import { EVENT_DATE, EVENT_TIME, IMAGE_BASE } from "./constants";
 import { ErcLandingClient, CTA } from "./erc-landing-client";
 
 export const metadata: Metadata = {
@@ -130,7 +130,7 @@ export default function ErcWebinarPage() {
                 in 90 minutes.
               </p>
               <p className="mt-2 font-obviously text-body-sm text-red md:text-body">
-                Live Workshop | {EVENT_DATE} | 90 Minutes | $79 NZD
+                Live Workshop | {EVENT_DATE}, {EVENT_TIME} | 90 Minutes | $79 NZD
               </p>
               <div id="hero-cta" className="mt-6">
                 <CTA>Get Your Spot for $79 NZD</CTA>

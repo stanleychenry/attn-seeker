@@ -5,4 +5,6 @@ export const STRIPE_PAYMENT_URL =
 
 export const EVENT_DATE = "March 26";
 
+export const EVENT_TIME = "11am NZT / 9am AEST";
+
 export const IMAGE_BASE = "/Webinar Landing Page Photos";
