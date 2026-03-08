@@ -118,8 +118,8 @@ function GlobalHit({ hit }: { hit: Record<string, unknown> }) {
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    setIndexUiState((prev) => ({ ...prev, query: "" }));
     router.push(safeUrl);
+    setIndexUiState((prev) => ({ ...prev, query: "" }));
   };
 
   return (
@@ -188,8 +188,8 @@ function SearchHitsWithContact() {
 
   const closeAndNavigate = (path: string) => (e: React.MouseEvent) => {
     e.preventDefault();
-    setIndexUiState((prev) => ({ ...prev, query: "" }));
     router.push(path);
+    setIndexUiState((prev) => ({ ...prev, query: "" }));
   };
 
   return (
