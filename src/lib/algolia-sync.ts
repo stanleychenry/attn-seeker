@@ -42,7 +42,7 @@ function serviceKeywords(name: string, description: string): string {
   const text = `${name} ${description}`.toLowerCase();
   const terms = ["help", "socials", "social media", "tiktok", "instagram", "linkedin", "organic", "strategy", "content", "manage"];
   const extra = terms.filter((t) => text.includes(t) || name.toLowerCase().includes(t));
-  return [...new Set([name, description, ...extra])].join(" ");
+  return Array.from(new Set([name, description, ...extra])).join(" ");
 }
 
 export function buildGlobalSearchRecords(params: {
