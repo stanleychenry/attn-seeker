@@ -134,7 +134,10 @@ export default function ErcNaWebinarPage() {
                 in 90 minutes.
               </p>
               <p className="mt-2 font-obviously text-body-sm text-red md:text-body">
-                Live Workshop | {HERO_DATETIME} | 90 Minutes | {PRICE}
+                Live workshop | 90 Minutes | {PRICE}
+              </p>
+              <p className="mt-1 font-obviously text-body-sm text-red md:text-body">
+                {HERO_DATETIME}
               </p>
               <div id="hero-cta" className="mt-6">
                 <CTA>Get Your Spot for {PRICE}</CTA>
