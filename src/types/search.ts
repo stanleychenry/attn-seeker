@@ -9,7 +9,9 @@ export interface SearchResult {
     | "article"
     | "topic"
     | "show"
+    | "show-episode"
     | "podcast"
+    | "podcast-episode"
     | "event"
     | "team"
     | "page";

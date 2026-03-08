@@ -17,7 +17,10 @@ const HERO_PLACEHOLDERS = [
 const COMPACT_PLACEHOLDER = "search...";
 
 function typeLabel(type: string): string {
-  return type === "case-study" ? "case study" : type;
+  if (type === "case-study") return "case study";
+  if (type === "show-episode") return "show episode";
+  if (type === "podcast-episode") return "podcast episode";
+  return type;
 }
 
 export interface SearchBarProps {

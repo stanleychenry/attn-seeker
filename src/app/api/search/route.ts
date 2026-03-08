@@ -3,16 +3,30 @@ import {
   getServices,
   getCaseStudies,
   getTopics,
-  getYapArticles,
   getShows,
   getPodcasts,
+  getShowEpisodes,
+  getPodcastEpisodes,
   getEvents,
   getTeams,
   getBooks,
 } from "@/lib/cms";
+import { searchYapArticles } from "@/lib/algolia-server";
+import { resolveIntent } from "@/lib/search-intent";
 import type { SearchResult } from "@/types/search";
+import type { Show } from "@/types/cms";
+import type { Podcast } from "@/types/cms";
 
-const FIELDS_TO_MATCH = ["name", "title", "description", "summary", "headline", "shortDescription", "body"];
+const FIELDS_TO_MATCH = [
+  "name",
+  "title",
+  "description",
+  "summary",
+  "headline",
+  "shortDescription",
+  "body",
+  "transcript",
+];
 
 function matchQuery(item: Record<string, unknown>, q: string): boolean {
   const lower = q.toLowerCase();
@@ -23,41 +37,71 @@ function matchQuery(item: Record<string, unknown>, q: string): boolean {
   return false;
 }
 
+const CONTACT_RESULT: SearchResult = {
+  type: "page",
+  title: "Contact",
+  description: "Get in touch with the team",
+  url: "/agency/contact",
+  reason: "Get in touch with the team",
+};
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const query = typeof body?.query === "string" ? body.query.trim() : "";
     if (!query || query.length < 2) {
-      return Response.json({ results: [] }, {
-        headers: {
-          "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
-        },
-      });
+      return Response.json(
+        { results: [] },
+        {
+          headers: {
+            "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+          },
+        }
+      );
     }
 
-    const [
-      services,
-      caseStudies,
-      topics,
-      articles,
-      shows,
-      podcasts,
-      events,
-      teams,
-      books,
-    ] = await Promise.all([
-      getServices().catch(() => []),
-      getCaseStudies().catch(() => []),
-      getTopics().catch(() => []),
-      getYapArticles().catch(() => []),
-      getShows().catch(() => []),
-      getPodcasts().catch(() => []),
-      getEvents().catch(() => []),
-      getTeams().catch(() => []),
-      getBooks().catch(() => []),
-    ]);
+    const [intent, algoliaArticles, services, caseStudies, topics, showEpisodes, podcastEpisodes, shows, podcasts, events, teams, books] =
+      await Promise.all([
+        resolveIntent(query),
+        searchYapArticles(query, 15),
+        getServices().catch(() => []),
+        getCaseStudies().catch(() => []),
+        getTopics().catch(() => []),
+        getShowEpisodes().catch(() => []),
+        getPodcastEpisodes().catch(() => []),
+        getShows().catch(() => []),
+        getPodcasts().catch(() => []),
+        getEvents().catch(() => []),
+        getTeams().catch(() => []),
+        getBooks().catch(() => []),
+      ]);
+
+    const showIdToSlug = new Map<string, string>();
+    for (const s of shows) {
+      showIdToSlug.set(s.id, s.slug);
+    }
+    const podcastIdToSlug = new Map<string, string>();
+    for (const p of podcasts) {
+      podcastIdToSlug.set(p.id, p.slug);
+    }
 
     const results: SearchResult[] = [];
+
+    if (intent === "contact") {
+      results.push(CONTACT_RESULT);
+    }
+
+    for (const hit of algoliaArticles) {
+      const slug = hit.slug ?? hit.objectID;
+      const title = (hit.title ?? hit.name) as string;
+      results.push({
+        type: "article",
+        title: title || "Article",
+        description: (hit.summary as string) || "",
+        url: `/yap-articles/${slug}`,
+        thumbnailUrl: hit.thumbnail_url as string | undefined,
+      });
+    }
 
     for (const s of services) {
       if (matchQuery(s as unknown as Record<string, unknown>, query)) {
@@ -92,15 +136,38 @@ export async function POST(request: NextRequest) {
         });
       }
     }
-    for (const a of articles) {
-      if (matchQuery(a as unknown as Record<string, unknown>, query)) {
-        results.push({
-          type: "article",
-          title: a.name,
-          description: a.summary || "",
-          url: `/yap-articles/${a.slug}`,
-          thumbnailUrl: a.coverImage || a.thumbnailUrl,
-        });
+    for (const e of showEpisodes) {
+      if (matchQuery(e as unknown as Record<string, unknown>, query)) {
+        const showSlug =
+          typeof e.show === "object" && e.show && "slug" in e.show
+            ? (e.show as Show).slug
+            : showIdToSlug.get(typeof e.show === "string" ? e.show : (e.show as Show)?.id ?? "");
+        if (showSlug) {
+          results.push({
+            type: "show-episode",
+            title: e.name,
+            description: e.shortDescription || e.description || "",
+            url: `/shows/${showSlug}/${e.slug}`,
+            thumbnailUrl: e.thumbnailUrl || e.thumbnail,
+          });
+        }
+      }
+    }
+    for (const e of podcastEpisodes) {
+      if (matchQuery(e as unknown as Record<string, unknown>, query)) {
+        const podcastSlug =
+          typeof e.podcast === "object" && e.podcast && "slug" in e.podcast
+            ? (e.podcast as Podcast).slug
+            : podcastIdToSlug.get(typeof e.podcast === "string" ? e.podcast : (e.podcast as Podcast)?.id ?? "");
+        if (podcastSlug) {
+          results.push({
+            type: "podcast-episode",
+            title: e.name,
+            description: e.description || "",
+            url: `/podcasts/${podcastSlug}/${e.slug}`,
+            thumbnailUrl: e.thumbnailUrl || e.thumbnail,
+          });
+        }
       }
     }
     for (const s of shows) {
@@ -157,6 +224,14 @@ export async function POST(request: NextRequest) {
           thumbnailUrl: b.coverImage || b.coverUrl,
         });
       }
+    }
+
+    if (intent === "service") {
+      results.sort((a, b) => {
+        const aService = a.type === "service" ? 1 : 0;
+        const bService = b.type === "service" ? 1 : 0;
+        return bService - aService;
+      });
     }
 
     return Response.json(

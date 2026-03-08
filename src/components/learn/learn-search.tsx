@@ -15,8 +15,8 @@ import {
 } from "react-instantsearch";
 import { liteClient } from "algoliasearch/lite";
 
-const APP_ID = process.env.NEXT_PUBLIC_ALGOLIA_APP_ID ?? "IN9YQA8T86";
-const API_KEY = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY ?? "5bdded9a269637027ce5f8a477d3a3b5";
+const APP_ID = process.env.NEXT_PUBLIC_ALGOLIA_APP_ID ?? "";
+const API_KEY = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY ?? "";
 const INDEX_NAME = "yap_articles";
 
 const searchClient = liteClient(APP_ID, API_KEY);
