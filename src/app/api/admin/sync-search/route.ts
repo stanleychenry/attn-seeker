@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
       const batch = records.slice(i, i + BATCH_SIZE);
       await client.saveObjects({
         indexName: GLOBAL_INDEX_NAME,
-        objects: batch as Record<string, unknown>[],
+        objects: batch as unknown as Record<string, unknown>[],
       });
     }
 
