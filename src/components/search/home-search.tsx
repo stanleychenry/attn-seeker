@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useRef, useEffect } from "react";
 import { Search, X, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -104,6 +105,8 @@ function HeroSearchBox() {
 }
 
 function GlobalHit({ hit }: { hit: Record<string, unknown> }) {
+  const router = useRouter();
+  const { setIndexUiState } = useInstantSearch();
   const contentType = (hit.contentType as string) ?? "page";
   const title = (hit.title as string) ?? "";
   const description = (hit.description as string) ?? "";
@@ -111,10 +114,18 @@ function GlobalHit({ hit }: { hit: Record<string, unknown> }) {
   const thumbnailUrl = hit.thumbnailUrl as string | undefined;
   const meta = hit.meta as string | undefined;
   const highlightTitle = (hit._highlightResult as { title?: { value?: string } } | undefined)?.title?.value;
+  const safeUrl = url && url !== "#" ? url : "/";
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIndexUiState((prev) => ({ ...prev, query: "" }));
+    router.push(safeUrl);
+  };
 
   return (
     <Link
-      href={url}
+      href={safeUrl}
+      onClick={handleClick}
       className={`group flex ${CARD_HEIGHT} w-full items-center gap-3 overflow-hidden border-b border-black/10 bg-white px-4 transition-colors last:border-b-0 hover:bg-black/[0.03] hover:border-red/20`}
     >
       <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded bg-black/5">
@@ -153,8 +164,9 @@ function GlobalHit({ hit }: { hit: Record<string, unknown> }) {
 }
 
 function SearchHitsWithContact() {
+  const router = useRouter();
   const { hits } = useHits();
-  const { indexUiState } = useInstantSearch();
+  const { indexUiState, setIndexUiState } = useInstantSearch();
   const query = (indexUiState?.query ?? "").trim();
   const showContact = query.length >= 2 && isContactIntent(query);
 
@@ -174,6 +186,12 @@ function SearchHitsWithContact() {
 
   const showFallback = displayHits.length === 0;
 
+  const closeAndNavigate = (path: string) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIndexUiState((prev) => ({ ...prev, query: "" }));
+    router.push(path);
+  };
+
   return (
     <>
       {displayHits.length > 0 ? (
@@ -183,6 +201,7 @@ function SearchHitsWithContact() {
               {hit.url === "/agency/contact" ? (
                 <Link
                   href="/agency/contact"
+                  onClick={closeAndNavigate("/agency/contact")}
                   className={`group flex ${CARD_HEIGHT} w-full items-center gap-3 overflow-hidden border-b border-black/10 bg-white px-4 transition-colors last:border-b-0 hover:bg-black/[0.03] hover:border-red/20`}
                 >
                   <div className="min-w-0 flex-1">
@@ -215,6 +234,7 @@ function SearchHitsWithContact() {
               <li key={item.url}>
                 <Link
                   href={item.url}
+                  onClick={closeAndNavigate(item.url)}
                   className={`group flex ${CARD_HEIGHT} w-full items-center gap-3 overflow-hidden border-b border-black/10 bg-white px-4 transition-colors last:border-b-0 hover:bg-black/[0.03] hover:border-red/20`}
                 >
                   <div className="min-w-0 flex-1">
