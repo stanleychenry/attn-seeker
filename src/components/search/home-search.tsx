@@ -139,7 +139,7 @@ function GlobalHit({ hit }: { hit: Record<string, unknown> }) {
         <h3
           className="font-obviously-wide truncate text-sm font-semibold text-black [&_mark]:rounded [&_mark]:bg-amber-100 [&_mark]:text-inherit"
           dangerouslySetInnerHTML={{
-            __html: highlightTitle ?? title || "Untitled",
+            __html: (highlightTitle ?? title) || "Untitled",
           }}
         />
         {(description || meta) && (
