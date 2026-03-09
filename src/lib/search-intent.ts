@@ -43,12 +43,37 @@ const SERVICE_PHRASES = [
   "agency",
 ];
 
-export type SearchIntent = "contact" | "service" | "content";
+const PERSON_PHRASES = [
+  "who is",
+  "who are",
+  "team",
+  "staff",
+  "people",
+  "person",
+  "member",
+  "founder",
+  "ceo",
+  "director",
+];
+
+const EVENT_PHRASES = [
+  "event",
+  "events",
+  "upcoming",
+  "what's on",
+  "when is",
+  "workshop",
+  "webinar",
+];
+
+export type SearchIntent = "contact" | "service" | "person" | "event" | "content";
 
 export function getIntentFromKeywords(query: string): SearchIntent | null {
   const lower = query.toLowerCase().trim();
   if (CONTACT_PHRASES.some((p) => lower.includes(p))) return "contact";
   if (SERVICE_PHRASES.some((p) => lower.includes(p))) return "service";
+  if (PERSON_PHRASES.some((p) => lower.includes(p))) return "person";
+  if (EVENT_PHRASES.some((p) => lower.includes(p))) return "event";
   return null;
 }
 
@@ -72,7 +97,7 @@ export async function getIntentFromLLM(query: string): Promise<SearchIntent | nu
           {
             role: "system",
             content:
-              "You classify the user's search intent on a marketing agency website. Reply with exactly one word: contact, service, or content. contact = they want to get in touch, speak to someone, or reach the team. service = they want to know what the agency offers, pricing, or how to work with them. content = they are searching for articles, case studies, events, podcasts, team, or general content.",
+              "You classify the user's search intent on a marketing agency website. Reply with exactly one word: contact, service, person, event, or content. contact = they want to get in touch, speak to someone, or reach the team. service = they want to know what the agency offers, pricing, or how to work with them. person = they are looking for a specific person, team member, or staff (e.g. 'who is Stanley'). event = they are looking for events, workshops, webinars, or what's on. content = articles, case studies, podcasts, shows, or general content.",
           },
           {
             role: "user",
@@ -87,7 +112,7 @@ export async function getIntentFromLLM(query: string): Promise<SearchIntent | nu
     if (!res.ok) return null;
     const data = (await res.json()) as { choices?: { message?: { content?: string } }[] };
     const content = data.choices?.[0]?.message?.content?.trim().toLowerCase();
-    if (content === "contact" || content === "service" || content === "content") {
+    if (content === "contact" || content === "service" || content === "person" || content === "event" || content === "content") {
       return content as SearchIntent;
     }
     return null;

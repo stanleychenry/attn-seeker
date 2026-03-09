@@ -3,43 +3,21 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { Search, X, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  InstantSearch,
-  useSearchBox,
-  useHits,
-  useStats,
-  useInstantSearch,
-  Configure,
-} from "react-instantsearch";
-import { liteClient } from "algoliasearch/lite";
-import { GLOBAL_INDEX_NAME } from "@/lib/algolia-sync";
 
-const APP_ID = process.env.NEXT_PUBLIC_ALGOLIA_APP_ID || "";
-// Must be a search-only key (no Add/Edit/Delete). See docs/home-search-setup.md § Security.
-const API_KEY = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY || "";
-
-const searchClient = liteClient(APP_ID, API_KEY);
-
-const CONTACT_PHRASES = [
-  "contact",
-  "get in touch",
-  "talk to",
-  "speak to",
-  "reach out",
-  "email you",
-  "call you",
-  "hire you",
-  "work with you",
-  "contact us",
-  "contact you",
-];
-
-function isContactIntent(query: string): boolean {
-  const lower = query.toLowerCase().trim();
-  return CONTACT_PHRASES.some((p) => lower.includes(p));
+/** Hit shape returned by /api/search/home (matches Algolia global index). */
+interface HomeSearchHit {
+  objectID: string;
+  contentType: string;
+  title: string;
+  description: string;
+  url: string;
+  thumbnailUrl?: string;
+  meta?: string;
+  sortOrder?: number;
+  _highlightResult?: { title?: { value?: string } };
 }
 
 function contentTypeLabel(type: string): string {
@@ -52,7 +30,6 @@ function contentTypeLabel(type: string): string {
   return type;
 }
 
-/** When Algolia returns 0 hits, show these so we never show only "no results". */
 const FALLBACK_SUGGESTIONS = [
   { label: "contact", url: "/agency/contact", desc: "Get in touch with the team" },
   { label: "services", url: "/agency/services", desc: "How we can help" },
@@ -63,81 +40,51 @@ const FALLBACK_SUGGESTIONS = [
 ];
 
 const CARD_HEIGHT = "h-14";
+const DEBOUNCE_MS = 280;
 
-function HeroSearchBox() {
-  const { query, refine, clear, isSearchStalled } = useSearchBox();
-  const [inputValue, setInputValue] = useState(query);
-
-  // Keep input in sync when query changes from outside (e.g. clear, click outside)
-  useEffect(() => {
-    setInputValue(query);
-  }, [query]);
-
-  function handleChange(value: string) {
-    setInputValue(value);
-    refine(value);
-  }
-
-  function handleClear() {
-    setInputValue("");
-    clear();
-  }
-
-  return (
-    <div className="relative flex w-full max-w-[600px]">
-      <div className="relative flex h-14 w-full items-center rounded-lg bg-white px-6 shadow-[6px_6px_0px_0px_#000000] transition-all duration-100 ease-in-out hover:translate-x-[6px] hover:translate-y-[6px] hover:shadow-none">
-        <Search
-          size={20}
-          className="shrink-0 text-black/30"
-          strokeWidth={2}
-          aria-hidden
-        />
-        <input
-          type="search"
-          value={inputValue}
-          onChange={(e) => handleChange(e.target.value)}
-          placeholder="e.g. help with TikTok, case studies, contact..."
-          className="ml-3 flex-1 bg-transparent font-tiempos-text text-lg text-black outline-none placeholder:text-black/55 focus:outline-none"
-          aria-label="Search"
-          autoComplete="off"
-        />
-        {inputValue.length > 0 && (
-          <button
-            type="button"
-            onClick={handleClear}
-            className="shrink-0 p-1 text-black/30 hover:text-black"
-            aria-label="Clear search"
-          >
-            <X size={18} strokeWidth={2} />
-          </button>
-        )}
-      </div>
-      {isSearchStalled && (
-        <span className="absolute right-4 top-1/2 -translate-y-1/2 font-obviously text-[13px] text-black/40">
-          searching...
-        </span>
-      )}
-    </div>
-  );
-}
-
-function GlobalHit({ hit }: { hit: Record<string, unknown> }) {
-  const router = useRouter();
-  const { setIndexUiState } = useInstantSearch();
-  const contentType = (hit.contentType as string) ?? "page";
-  const title = (hit.title as string) ?? "";
-  const description = (hit.description as string) ?? "";
-  const url = (hit.url as string) ?? "#";
-  const thumbnailUrl = hit.thumbnailUrl as string | undefined;
-  const meta = hit.meta as string | undefined;
-  const highlightTitle = (hit._highlightResult as { title?: { value?: string } } | undefined)?.title?.value;
+function HitCard({
+  hit,
+  onNavigate,
+}: {
+  hit: HomeSearchHit;
+  onNavigate: (url: string) => void;
+}) {
+  const contentType = hit.contentType ?? "page";
+  const title = hit.title ?? "";
+  const description = hit.description ?? "";
+  const url = hit.url ?? "#";
+  const thumbnailUrl = hit.thumbnailUrl;
+  const meta = hit.meta;
+  const highlightTitle = hit._highlightResult?.title?.value;
   const safeUrl = url && url !== "#" ? url : "/";
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    router.push(safeUrl);
-    setIndexUiState((prev) => ({ ...prev, query: "" }));
+    onNavigate(safeUrl);
   };
+
+  if (url === "/agency/contact") {
+    return (
+      <Link
+        href="/agency/contact"
+        onClick={handleClick}
+        className={`group flex ${CARD_HEIGHT} w-full items-center gap-3 overflow-hidden border-b border-black/10 bg-white px-4 transition-colors last:border-b-0 hover:bg-black/[0.03] hover:border-red/20`}
+      >
+        <div className="min-w-0 flex-1">
+          <span className="font-obviously text-[10px] font-semibold uppercase tracking-wide text-red">
+            contact
+          </span>
+          <h3 className="font-obviously-wide truncate text-sm font-semibold text-black">
+            Contact
+          </h3>
+          <p className="font-obviously text-[11px] text-black/50">
+            Get in touch with the team
+          </p>
+        </div>
+        <ChevronRight size={18} className="text-black/20 shrink-0" />
+      </Link>
+    );
+  }
 
   return (
     <Link
@@ -180,130 +127,68 @@ function GlobalHit({ hit }: { hit: Record<string, unknown> }) {
   );
 }
 
-function SearchHitsWithContact() {
+export function HomeSearch() {
   const router = useRouter();
-  const { hits } = useHits();
-  const { indexUiState, setIndexUiState } = useInstantSearch();
-  const query = (indexUiState?.query ?? "").trim();
-  const showContact = query.length >= 2 && isContactIntent(query);
-
-  const withContact = showContact
-    ? [{ objectID: "contact", contentType: "page", title: "Contact", description: "Get in touch with the team", url: "/agency/contact" } as Record<string, unknown>, ...hits]
-    : hits;
-
-  const contactOnly = withContact.filter((h) => h.url === "/agency/contact");
-  const teamHits = withContact.filter((h) => (h.contentType as string) === "team");
-  const otherHits = withContact.filter(
-    (h) => h.url !== "/agency/contact" && (h.contentType as string) !== "team"
-  );
-  const teamSorted = [...teamHits].sort(
-    (a, b) => ((a.sortOrder as number) ?? 999) - ((b.sortOrder as number) ?? 999)
-  );
-  const displayHits = [...contactOnly, ...teamSorted, ...otherHits];
-
-  const showFallback = displayHits.length === 0;
-
-  const closeAndNavigate = (path: string) => (e: React.MouseEvent) => {
-    e.preventDefault();
-    router.push(path);
-    setIndexUiState((prev) => ({ ...prev, query: "" }));
-  };
-
-  return (
-    <>
-      {displayHits.length > 0 ? (
-        <ul className="list-none p-0">
-          {displayHits.map((hit) => (
-            <li key={(hit as { objectID: string }).objectID}>
-              {hit.url === "/agency/contact" ? (
-                <Link
-                  href="/agency/contact"
-                  onClick={closeAndNavigate("/agency/contact")}
-                  className={`group flex ${CARD_HEIGHT} w-full items-center gap-3 overflow-hidden border-b border-black/10 bg-white px-4 transition-colors last:border-b-0 hover:bg-black/[0.03] hover:border-red/20`}
-                >
-                  <div className="min-w-0 flex-1">
-                    <span className="font-obviously text-[10px] font-semibold uppercase tracking-wide text-red">
-                      contact
-                    </span>
-                    <h3 className="font-obviously-wide truncate text-sm font-semibold text-black">
-                      Contact
-                    </h3>
-                    <p className="font-obviously text-[11px] text-black/50">
-                      Get in touch with the team
-                    </p>
-                  </div>
-                  <ChevronRight size={18} className="text-black/20 shrink-0" />
-                </Link>
-              ) : (
-                <GlobalHit hit={hit as Record<string, unknown>} />
-              )}
-            </li>
-          ))}
-        </ul>
-      ) : null}
-      {showFallback ? (
-        <div className="border-t border-black/10">
-          <p className="px-4 py-2 font-obviously text-[11px] uppercase tracking-wide text-black/40">
-            you might be interested in
-          </p>
-          <ul className="list-none p-0">
-            {FALLBACK_SUGGESTIONS.map((item) => (
-              <li key={item.url}>
-                <Link
-                  href={item.url}
-                  onClick={closeAndNavigate(item.url)}
-                  className={`group flex ${CARD_HEIGHT} w-full items-center gap-3 overflow-hidden border-b border-black/10 bg-white px-4 transition-colors last:border-b-0 hover:bg-black/[0.03] hover:border-red/20`}
-                >
-                  <div className="min-w-0 flex-1">
-                    <span className="font-obviously text-[10px] font-semibold uppercase tracking-wide text-red">
-                      {item.label}
-                    </span>
-                    <h3 className="font-obviously-wide truncate text-sm font-semibold text-black">
-                      {item.label}
-                    </h3>
-                    <p className="font-obviously text-[11px] text-black/50 truncate">
-                      {item.desc}
-                    </p>
-                  </div>
-                  <ChevronRight size={18} className="text-black/20 shrink-0" />
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
-    </>
-  );
-}
-
-function SearchStats() {
-  const { nbHits } = useStats();
-  const { indexUiState } = useInstantSearch();
-  const query = (indexUiState?.query ?? "").trim();
-  const showContact = query.length >= 2 && isContactIntent(query);
-  const total = nbHits + (showContact ? 1 : 0);
-  const showFallback = total === 0;
-
-  if (showFallback) return <p className="font-obviously text-[13px] text-black/50">suggested for you</p>;
-  if (total === 1) return <p className="font-obviously text-[13px] text-black/50">1 result</p>;
-  return (
-    <p className="font-obviously text-[13px] text-black/50">
-      {total.toLocaleString()} results
-    </p>
-  );
-}
-
-function HomeSearchDropdown() {
+  const [query, setQuery] = useState("");
+  const [hits, setHits] = useState<HomeSearchHit[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const { indexUiState, setIndexUiState } = useInstantSearch();
-  const hasQuery = Boolean((indexUiState?.query ?? "").trim());
+
+  const handleNavigate = useCallback(
+    (url: string) => {
+      setQuery("");
+      router.push(url);
+    },
+    [router]
+  );
 
   useEffect(() => {
-    if (!hasQuery) return;
+    if (!query.trim()) {
+      setHits([]);
+      setIsSearching(false);
+      return;
+    }
+
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (abortRef.current) abortRef.current.abort();
+
+    setIsSearching(true);
+
+    debounceRef.current = setTimeout(async () => {
+      try {
+        const controller = new AbortController();
+        abortRef.current = controller;
+        const res = await fetch("/api/search/home", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: query.trim() }),
+          signal: controller.signal,
+        });
+        const data = await res.json();
+        setHits(data.hits ?? []);
+      } catch (err) {
+        if (err instanceof Error && err.name !== "AbortError") {
+          console.error("[HomeSearch] error:", err);
+          setHits([]);
+        }
+      } finally {
+        setIsSearching(false);
+      }
+    }, DEBOUNCE_MS);
+
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [query]);
+
+  useEffect(() => {
+    if (!query.trim()) return;
     function handleClickOutside(e: MouseEvent | TouchEvent) {
       const target = e.target as Node;
       if (containerRef.current && !containerRef.current.contains(target)) {
-        setIndexUiState((prev) => ({ ...prev, query: "" }));
+        setQuery("");
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -312,11 +197,49 @@ function HomeSearchDropdown() {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("touchstart", handleClickOutside);
     };
-  }, [hasQuery, setIndexUiState]);
+  }, [query]);
+
+  const hasQuery = query.trim().length > 0;
+  const showFallback = hasQuery && !isSearching && hits.length === 0;
+  const total = hits.length;
 
   return (
     <div ref={containerRef} className="relative w-full max-w-[600px]">
-      <HeroSearchBox />
+      <div className="relative flex w-full max-w-[600px]">
+        <div className="relative flex h-14 w-full items-center rounded-lg bg-white px-6 shadow-[6px_6px_0px_0px_#000000] transition-all duration-100 ease-in-out hover:translate-x-[6px] hover:translate-y-[6px] hover:shadow-none">
+          <Search
+            size={20}
+            className="shrink-0 text-black/30"
+            strokeWidth={2}
+            aria-hidden
+          />
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="e.g. help with TikTok, case studies, who is Stanley..."
+            className="ml-3 flex-1 bg-transparent font-tiempos-text text-lg text-black outline-none placeholder:text-black/55 focus:outline-none"
+            aria-label="Search"
+            autoComplete="off"
+          />
+          {query.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setQuery("")}
+              className="shrink-0 p-1 text-black/30 hover:text-black"
+              aria-label="Clear search"
+            >
+              <X size={18} strokeWidth={2} />
+            </button>
+          )}
+        </div>
+        {isSearching && (
+          <span className="absolute right-4 top-1/2 -translate-y-1/2 font-obviously text-[13px] text-black/40">
+            searching...
+          </span>
+        )}
+      </div>
+
       <AnimatePresence>
         {hasQuery && (
           <motion.div
@@ -328,32 +251,67 @@ function HomeSearchDropdown() {
           >
             <div className="max-h-[60vh] overflow-y-auto">
               <div className="border-b border-black/10 px-4 py-2">
-                <SearchStats />
+                {showFallback ? (
+                  <p className="font-obviously text-[13px] text-black/50">
+                    suggested for you
+                  </p>
+                ) : total === 1 ? (
+                  <p className="font-obviously text-[13px] text-black/50">
+                    1 result
+                  </p>
+                ) : (
+                  <p className="font-obviously text-[13px] text-black/50">
+                    {total.toLocaleString()} results
+                  </p>
+                )}
               </div>
-              <SearchHitsWithContact />
+              {hits.length > 0 ? (
+                <ul className="list-none p-0">
+                  {hits.map((hit) => (
+                    <li key={hit.objectID}>
+                      <HitCard hit={hit} onNavigate={handleNavigate} />
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+              {showFallback ? (
+                <div className="border-t border-black/10">
+                  <p className="px-4 py-2 font-obviously text-[11px] uppercase tracking-wide text-black/40">
+                    you might be interested in
+                  </p>
+                  <ul className="list-none p-0">
+                    {FALLBACK_SUGGESTIONS.map((item) => (
+                      <li key={item.url}>
+                        <Link
+                          href={item.url}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleNavigate(item.url);
+                          }}
+                          className={`group flex ${CARD_HEIGHT} w-full items-center gap-3 overflow-hidden border-b border-black/10 bg-white px-4 transition-colors last:border-b-0 hover:bg-black/[0.03] hover:border-red/20`}
+                        >
+                          <div className="min-w-0 flex-1">
+                            <span className="font-obviously text-[10px] font-semibold uppercase tracking-wide text-red">
+                              {item.label}
+                            </span>
+                            <h3 className="font-obviously-wide truncate text-sm font-semibold text-black">
+                              {item.label}
+                            </h3>
+                            <p className="font-obviously text-[11px] text-black/50 truncate">
+                              {item.desc}
+                            </p>
+                          </div>
+                          <ChevronRight size={18} className="text-black/20 shrink-0" />
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
     </div>
-  );
-}
-
-export function HomeSearch() {
-  if (!APP_ID || !API_KEY) {
-    return (
-      <div className="w-full max-w-[600px] rounded-lg border border-black/10 bg-white px-6 py-4 font-tiempos-text text-black/60">
-        Search is not configured. Add NEXT_PUBLIC_ALGOLIA_APP_ID and
-        NEXT_PUBLIC_ALGOLIA_SEARCH_KEY (search-only key), then sync the index via POST
-        /api/admin/sync-search.
-      </div>
-    );
-  }
-
-  return (
-    <InstantSearch searchClient={searchClient} indexName={GLOBAL_INDEX_NAME}>
-      <Configure hitsPerPage={20} />
-      <HomeSearchDropdown />
-    </InstantSearch>
   );
 }
