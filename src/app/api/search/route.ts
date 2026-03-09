@@ -247,7 +247,6 @@ function orderByIntent(
   showContact: boolean
 ): SearchResult[] {
   const {
-    contact,
     team,
     service,
     article,
