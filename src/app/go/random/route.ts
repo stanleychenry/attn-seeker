@@ -56,10 +56,17 @@ export async function GET(request: NextRequest) {
     ].filter(Boolean);
 
     const path = urls.length > 0 ? urls[Math.floor(Math.random() * urls.length)] ?? "/" : "/";
-    const destination = new URL(path, origin);
 
+    if (request.nextUrl.searchParams.get("json") === "1") {
+      return NextResponse.json({ path });
+    }
+
+    const destination = new URL(path, origin);
     return NextResponse.redirect(destination);
   } catch {
+    if (request.nextUrl.searchParams.get("json") === "1") {
+      return NextResponse.json({ path: "/" }, { status: 200 });
+    }
     return NextResponse.redirect(new URL("/", origin));
   }
 }
