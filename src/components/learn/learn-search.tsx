@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Search, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -26,6 +26,17 @@ const CARD_HEIGHT = "h-14"; // same as search bar (56px)
 
 function HeroStyleSearchBox() {
   const { query, refine, clear, isSearchStalled } = useSearchBox();
+  const [inputValue, setInputValue] = useState(query);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+    refine(e.target.value);
+  };
+
+  const handleClear = () => {
+    setInputValue("");
+    clear();
+  };
 
   return (
     <div className="relative flex w-full max-w-[600px]">
@@ -38,17 +49,17 @@ function HeroStyleSearchBox() {
         />
         <input
           type="search"
-          value={query}
-          onChange={(e) => refine(e.target.value)}
+          value={inputValue}
+          onChange={handleChange}
           placeholder="search articles, topics, or ideas..."
           className="ml-3 flex-1 bg-transparent font-tiempos-text text-lg text-black outline-none placeholder:text-black/55 focus:outline-none"
           aria-label="Search articles"
           autoComplete="off"
         />
-        {query.length > 0 && (
+        {inputValue.length > 0 && (
           <button
             type="button"
-            onClick={() => clear()}
+            onClick={handleClear}
             className="shrink-0 p-1 text-black/30 hover:text-black"
             aria-label="Clear search"
           >
