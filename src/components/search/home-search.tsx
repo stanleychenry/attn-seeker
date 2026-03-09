@@ -28,7 +28,7 @@ const FALLBACK_SUGGESTIONS = [
 ];
 
 const CARD_HEIGHT = "h-14";
-const DEBOUNCE_MS = 300;
+const DEBOUNCE_MS = 250;
 
 function HitCard({
   hit,
@@ -112,6 +112,7 @@ export function HomeSearch() {
   const [isSearching, setIsSearching] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const smartQueryRef = useRef<string>("");
   const containerRef = useRef<HTMLDivElement>(null);
 
   const handleNavigate = useCallback(
@@ -135,25 +136,48 @@ export function HomeSearch() {
     setIsSearching(true);
 
     debounceRef.current = setTimeout(async () => {
+      const q = query.trim();
+      const controller = new AbortController();
+      abortRef.current = controller;
+      const signal = controller.signal;
+
       try {
-        const controller = new AbortController();
-        abortRef.current = controller;
-        const res = await fetch("/api/search", {
+        const fastRes = await fetch("/api/search", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query: query.trim() }),
-          signal: controller.signal,
+          body: JSON.stringify({ query: q, fast: true }),
+          signal,
         });
-        const data = await res.json();
-        setResults(data.results ?? []);
+        const fastData = await fastRes.json();
+        if (!signal.aborted) setResults(fastData.results ?? []);
       } catch (err) {
         if (err instanceof Error && err.name !== "AbortError") {
-          console.error("[HomeSearch] error:", err);
-          setResults([]);
+          console.error("[HomeSearch] fast error:", err);
+          if (!signal.aborted) setResults([]);
         }
       } finally {
-        setIsSearching(false);
+        if (!signal.aborted) setIsSearching(false);
       }
+
+      smartQueryRef.current = q;
+      fetch("/api/search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: q }),
+        signal,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (signal.aborted) return;
+          if (smartQueryRef.current === q) {
+            setResults(data.results ?? []);
+          }
+        })
+        .catch((err) => {
+          if (err instanceof Error && err.name !== "AbortError") {
+            console.error("[HomeSearch] smart error:", err);
+          }
+        });
     }, DEBOUNCE_MS);
 
     return () => {
