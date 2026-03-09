@@ -6,21 +6,9 @@ import { useRouter } from "next/navigation";
 import { useRef, useEffect, useState, useCallback } from "react";
 import { Search, X, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import type { SearchResult } from "@/types/search";
 
-/** Hit shape returned by /api/search/home (matches Algolia global index). */
-interface HomeSearchHit {
-  objectID: string;
-  contentType: string;
-  title: string;
-  description: string;
-  url: string;
-  thumbnailUrl?: string;
-  meta?: string;
-  sortOrder?: number;
-  _highlightResult?: { title?: { value?: string } };
-}
-
-function contentTypeLabel(type: string): string {
+function typeLabel(type: string): string {
   if (type === "case-study") return "case study";
   if (type === "show-episode") return "show episode";
   if (type === "podcast-episode") return "podcast episode";
@@ -40,45 +28,38 @@ const FALLBACK_SUGGESTIONS = [
 ];
 
 const CARD_HEIGHT = "h-14";
-const DEBOUNCE_MS = 280;
+const DEBOUNCE_MS = 300;
 
 function HitCard({
   hit,
   onNavigate,
 }: {
-  hit: HomeSearchHit;
+  hit: SearchResult;
   onNavigate: (url: string) => void;
 }) {
-  const contentType = hit.contentType ?? "page";
-  const title = hit.title ?? "";
-  const description = hit.description ?? "";
-  const url = hit.url ?? "#";
-  const thumbnailUrl = hit.thumbnailUrl;
-  const meta = hit.meta;
-  const highlightTitle = hit._highlightResult?.title?.value;
-  const safeUrl = url && url !== "#" ? url : "/";
+  const safeUrl = hit.url && hit.url !== "#" ? hit.url : "/";
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     onNavigate(safeUrl);
   };
 
-  if (url === "/agency/contact") {
+  if (hit.url === "/agency/contact" || hit.type === "page") {
     return (
       <Link
-        href="/agency/contact"
+        href={safeUrl}
         onClick={handleClick}
         className={`group flex ${CARD_HEIGHT} w-full items-center gap-3 overflow-hidden border-b border-black/10 bg-white px-4 transition-colors last:border-b-0 hover:bg-black/[0.03] hover:border-red/20`}
       >
         <div className="min-w-0 flex-1">
           <span className="font-obviously text-[10px] font-semibold uppercase tracking-wide text-red">
-            contact
+            {hit.url === "/agency/contact" ? "contact" : typeLabel(hit.type)}
           </span>
           <h3 className="font-obviously-wide truncate text-sm font-semibold text-black">
-            Contact
+            {hit.title}
           </h3>
-          <p className="font-obviously text-[11px] text-black/50">
-            Get in touch with the team
+          <p className="font-obviously text-[11px] text-black/50 truncate">
+            {hit.reason ?? hit.description}
           </p>
         </div>
         <ChevronRight size={18} className="text-black/20 shrink-0" />
@@ -93,9 +74,9 @@ function HitCard({
       className={`group flex ${CARD_HEIGHT} w-full items-center gap-3 overflow-hidden border-b border-black/10 bg-white px-4 transition-colors last:border-b-0 hover:bg-black/[0.03] hover:border-red/20`}
     >
       <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded bg-black/5">
-        {thumbnailUrl ? (
+        {hit.thumbnailUrl ? (
           <Image
-            src={thumbnailUrl}
+            src={hit.thumbnailUrl}
             alt=""
             fill
             className="object-cover"
@@ -109,17 +90,14 @@ function HitCard({
       </div>
       <div className="min-w-0 flex-1">
         <span className="font-obviously text-[10px] font-semibold uppercase tracking-wide text-red">
-          {contentTypeLabel(contentType)}
+          {typeLabel(hit.type)}
         </span>
-        <h3
-          className="font-obviously-wide truncate text-sm font-semibold text-black [&_mark]:rounded [&_mark]:bg-amber-100 [&_mark]:text-inherit"
-          dangerouslySetInnerHTML={{
-            __html: (highlightTitle ?? title) || "Untitled",
-          }}
-        />
-        {(description || meta) && (
+        <h3 className="font-obviously-wide truncate text-sm font-semibold text-black">
+          {hit.title}
+        </h3>
+        {(hit.description || hit.reason) && (
           <p className="font-obviously text-[11px] text-black/50 truncate">
-            {meta || description}
+            {hit.reason ?? hit.description}
           </p>
         )}
       </div>
@@ -130,7 +108,7 @@ function HitCard({
 export function HomeSearch() {
   const router = useRouter();
   const [query, setQuery] = useState("");
-  const [hits, setHits] = useState<HomeSearchHit[]>([]);
+  const [results, setResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -146,7 +124,7 @@ export function HomeSearch() {
 
   useEffect(() => {
     if (!query.trim()) {
-      setHits([]);
+      setResults([]);
       setIsSearching(false);
       return;
     }
@@ -160,18 +138,18 @@ export function HomeSearch() {
       try {
         const controller = new AbortController();
         abortRef.current = controller;
-        const res = await fetch("/api/search/home", {
+        const res = await fetch("/api/search", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ query: query.trim() }),
           signal: controller.signal,
         });
         const data = await res.json();
-        setHits(data.hits ?? []);
+        setResults(data.results ?? []);
       } catch (err) {
         if (err instanceof Error && err.name !== "AbortError") {
           console.error("[HomeSearch] error:", err);
-          setHits([]);
+          setResults([]);
         }
       } finally {
         setIsSearching(false);
@@ -200,8 +178,8 @@ export function HomeSearch() {
   }, [query]);
 
   const hasQuery = query.trim().length > 0;
-  const showFallback = hasQuery && !isSearching && hits.length === 0;
-  const total = hits.length;
+  const showFallback = hasQuery && !isSearching && results.length === 0;
+  const total = results.length;
 
   return (
     <div ref={containerRef} className="relative w-full max-w-[600px]">
@@ -265,10 +243,10 @@ export function HomeSearch() {
                   </p>
                 )}
               </div>
-              {hits.length > 0 ? (
+              {results.length > 0 ? (
                 <ul className="list-none p-0">
-                  {hits.map((hit) => (
-                    <li key={hit.objectID}>
+                  {results.map((hit, i) => (
+                    <li key={`${hit.type}-${hit.url}-${i}`}>
                       <HitCard hit={hit} onNavigate={handleNavigate} />
                     </li>
                   ))}
