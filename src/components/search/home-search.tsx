@@ -6,17 +6,92 @@ import { useRouter } from "next/navigation";
 import { useRef, useEffect, useState, useCallback } from "react";
 import { Search, X, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  InstantSearch,
+  useSearchBox,
+  useHits,
+  useInstantSearch,
+  Configure,
+} from "react-instantsearch";
+import { liteClient } from "algoliasearch/lite";
+import { GLOBAL_INDEX_NAME } from "@/lib/algolia-sync";
 import type { SearchResult } from "@/types/search";
+
+const APP_ID = process.env.NEXT_PUBLIC_ALGOLIA_APP_ID ?? "";
+const API_KEY = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY ?? "";
+const searchClient = liteClient(APP_ID, API_KEY);
+
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+
+interface GlobalHit {
+  objectID: string;
+  contentType: string;
+  title: string;
+  description: string;
+  url: string;
+  thumbnailUrl?: string;
+  meta?: string;
+}
+
+// ---------------------------------------------------------------------------
+// Contact injection
+// ---------------------------------------------------------------------------
+
+const CONTACT_PHRASES = [
+  "contact",
+  "get in touch",
+  "talk to",
+  "speak to",
+  "reach out",
+  "email you",
+  "call you",
+  "hire you",
+  "work with you",
+  "contact us",
+  "contact you",
+  "hello",
+  "say hi",
+];
+
+const CONTACT_RESULT: SearchResult = {
+  type: "page",
+  title: "Contact",
+  description: "Get in touch with the team",
+  url: "/agency/contact",
+  reason: "Get in touch with the team",
+};
+
+function shouldInjectContact(query: string): boolean {
+  const lower = query.toLowerCase().trim();
+  return CONTACT_PHRASES.some((p) => lower.includes(p));
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
 
 function typeLabel(type: string): string {
   if (type === "case-study") return "case study";
   if (type === "show-episode") return "show episode";
   if (type === "podcast-episode") return "podcast episode";
-  if (type === "show") return "show";
-  if (type === "podcast") return "podcast";
-  if (type === "topic") return "topic";
   return type;
 }
+
+function mapHit(hit: GlobalHit): SearchResult {
+  return {
+    type: hit.contentType as SearchResult["type"],
+    title: hit.title,
+    description: hit.description,
+    url: hit.url,
+    thumbnailUrl: hit.thumbnailUrl,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Fallback suggestions
+// ---------------------------------------------------------------------------
 
 const FALLBACK_SUGGESTIONS = [
   { label: "contact", url: "/agency/contact", desc: "Get in touch with the team" },
@@ -27,8 +102,11 @@ const FALLBACK_SUGGESTIONS = [
   { label: "articles & learn", url: "/learn", desc: "Articles and topics" },
 ];
 
+// ---------------------------------------------------------------------------
+// HitCard
+// ---------------------------------------------------------------------------
+
 const CARD_HEIGHT = "h-14";
-const DEBOUNCE_MS = 250;
 
 function HitCard({
   hit,
@@ -105,92 +183,54 @@ function HitCard({
   );
 }
 
-export function HomeSearch() {
+// ---------------------------------------------------------------------------
+// Inner component (uses InstantSearch hooks)
+// ---------------------------------------------------------------------------
+
+function HomeSearchInner() {
   const router = useRouter();
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState<SearchResult[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const abortRef = useRef<AbortController | null>(null);
-  const smartQueryRef = useRef<string>("");
   const containerRef = useRef<HTMLDivElement>(null);
+  const { status } = useInstantSearch();
+
+  const { refine, clear } = useSearchBox({
+    queryHook(q, search) {
+      // Only fire Algolia for queries with 2+ characters
+      if (q.trim().length >= 2) search(q);
+    },
+  });
+
+  const { hits } = useHits<GlobalHit>();
+  const [inputValue, setInputValue] = useState("");
+
+  const hasQuery = inputValue.trim().length > 0;
+  const isSearching = status === "loading" || status === "stalled";
+  const showResults = inputValue.trim().length >= 2;
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setInputValue(val);
+    refine(val);
+  };
+
+  const handleClear = useCallback(() => {
+    setInputValue("");
+    clear();
+  }, [clear]);
 
   const handleNavigate = useCallback(
     (url: string) => {
-      setQuery("");
+      handleClear();
       router.push(url);
     },
-    [router]
+    [router, handleClear]
   );
 
+  // Close dropdown on outside click
   useEffect(() => {
-    if (!query.trim()) {
-      setResults([]);
-      setIsSearching(false);
-      return;
-    }
-
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    if (abortRef.current) abortRef.current.abort();
-
-    setIsSearching(true);
-
-    debounceRef.current = setTimeout(async () => {
-      const q = query.trim();
-      const controller = new AbortController();
-      abortRef.current = controller;
-      const signal = controller.signal;
-
-      try {
-        const fastRes = await fetch("/api/search", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query: q, fast: true }),
-          signal,
-        });
-        const fastData = await fastRes.json();
-        if (!signal.aborted) setResults(fastData.results ?? []);
-      } catch (err) {
-        if (err instanceof Error && err.name !== "AbortError") {
-          console.error("[HomeSearch] fast error:", err);
-          if (!signal.aborted) setResults([]);
-        }
-      } finally {
-        if (!signal.aborted) setIsSearching(false);
-      }
-
-      smartQueryRef.current = q;
-      fetch("/api/search", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: q }),
-        signal,
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (signal.aborted) return;
-          if (smartQueryRef.current === q) {
-            setResults(data.results ?? []);
-          }
-        })
-        .catch((err) => {
-          if (err instanceof Error && err.name !== "AbortError") {
-            console.error("[HomeSearch] smart error:", err);
-          }
-        });
-    }, DEBOUNCE_MS);
-
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-    };
-  }, [query]);
-
-  useEffect(() => {
-    if (!query.trim()) return;
+    if (!hasQuery) return;
     function handleClickOutside(e: MouseEvent | TouchEvent) {
-      const target = e.target as Node;
-      if (containerRef.current && !containerRef.current.contains(target)) {
-        setQuery("");
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        handleClear();
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -199,14 +239,18 @@ export function HomeSearch() {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("touchstart", handleClickOutside);
     };
-  }, [query]);
+  }, [hasQuery, handleClear]);
 
-  const hasQuery = query.trim().length > 0;
+  // Build results: Algolia hits + optional contact injection
+  const baseResults = showResults ? hits.map(mapHit) : [];
+  const injectContact = showResults && shouldInjectContact(inputValue);
+  const results = injectContact ? [CONTACT_RESULT, ...baseResults] : baseResults;
   const showFallback = hasQuery && !isSearching && results.length === 0;
   const total = results.length;
 
   return (
     <div ref={containerRef} className="relative w-full max-w-[600px]">
+      {/* Search input */}
       <div className="relative flex w-full max-w-[600px]">
         <div className="relative flex h-14 w-full items-center rounded-lg bg-white px-6 shadow-[6px_6px_0px_0px_#000000] transition-all duration-100 ease-in-out hover:translate-x-[6px] hover:translate-y-[6px] hover:shadow-none">
           <Search
@@ -217,17 +261,17 @@ export function HomeSearch() {
           />
           <input
             type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            value={inputValue}
+            onChange={handleChange}
             placeholder="e.g. help with TikTok, case studies, who is Stanley..."
             className="ml-3 flex-1 bg-transparent font-tiempos-text text-lg text-black outline-none placeholder:text-black/55 focus:outline-none"
             aria-label="Search"
             autoComplete="off"
           />
-          {query.length > 0 && (
+          {inputValue.length > 0 && (
             <button
               type="button"
-              onClick={() => setQuery("")}
+              onClick={handleClear}
               className="shrink-0 p-1 text-black/30 hover:text-black"
               aria-label="Clear search"
             >
@@ -242,6 +286,7 @@ export function HomeSearch() {
         )}
       </div>
 
+      {/* Results dropdown */}
       <AnimatePresence>
         {hasQuery && (
           <motion.div
@@ -263,11 +308,12 @@ export function HomeSearch() {
                   </p>
                 ) : (
                   <p className="font-obviously text-[13px] text-black/50">
-                    {total.toLocaleString()} results
+                    {total > 0 ? `${total.toLocaleString()} results` : ""}
                   </p>
                 )}
               </div>
-              {results.length > 0 ? (
+
+              {results.length > 0 && (
                 <ul className="list-none p-0">
                   {results.map((hit, i) => (
                     <li key={`${hit.type}-${hit.url}-${i}`}>
@@ -275,8 +321,9 @@ export function HomeSearch() {
                     </li>
                   ))}
                 </ul>
-              ) : null}
-              {showFallback ? (
+              )}
+
+              {showFallback && (
                 <div className="border-t border-black/10">
                   <p className="px-4 py-2 font-obviously text-[11px] uppercase tracking-wide text-black/40">
                     you might be interested in
@@ -309,11 +356,24 @@ export function HomeSearch() {
                     ))}
                   </ul>
                 </div>
-              ) : null}
+              )}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Public export
+// ---------------------------------------------------------------------------
+
+export function HomeSearch() {
+  return (
+    <InstantSearch searchClient={searchClient} indexName={GLOBAL_INDEX_NAME}>
+      <Configure hitsPerPage={12} />
+      <HomeSearchInner />
+    </InstantSearch>
   );
 }

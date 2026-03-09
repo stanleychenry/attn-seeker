@@ -132,6 +132,26 @@ To customize this workspace to your own needs, fill in your context documents in
 
 ---
 
+## Tool Access
+
+API keys for all services are in `.env.local`. Claude has full programmatic access to the entire stack:
+
+| Service | Access level |
+|---------|-------------|
+| **Codebase** | Full read/write — all Next.js source, config, scripts |
+| **Git** | Commit, branch, diff |
+| **Xano** | Full Meta API via MCP — tables, API endpoints, functions, middleware, tasks, files. Key in `XANO_API_KEY`. |
+| **Webflow** | Full CMS API — read/write content. Key in `WEBFLOW_API_KEY`. |
+| **Algolia** | Admin access — push records, manage indices. Keys in `NEXT_PUBLIC_ALGOLIA_APP_ID`, `ALGOLIA_ADMIN_KEY`, `NEXT_PUBLIC_ALGOLIA_SEARCH_KEY`. |
+| **Memberstack** | Public + secret key — full access. Keys in `NEXT_PUBLIC_MEMBERSTACK_PUBLIC_KEY`, `MEMBERSTACK_SECRET_KEY`. |
+| **Resend** | Send emails. Key in `RESEND_API_KEY`. |
+| **Vercel** | Deploy and manage project. Token in `VERCEL_TOKEN`. |
+| **GitHub** | Push, PRs, repo management. Token in `GITHUB_TOKEN`. |
+| **OpenAI** | API access. Key in `OPENAI_API_KEY`. |
+| **Stripe** | Secret key configured. Key in `STRIPE_SECRET_KEY`. |
+
+---
+
 ## Notes
 
 - Keep context minimal but sufficient — avoid bloat

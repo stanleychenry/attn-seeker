@@ -21,6 +21,7 @@ import {
   GLOBAL_INDEX_SETTINGS,
   buildGlobalSearchRecords,
 } from "@/lib/algolia-sync";
+import { pushRulesAndSynonyms } from "@/lib/algolia-rules";
 
 const BATCH_SIZE = 500;
 
@@ -98,6 +99,8 @@ export async function runAlgoliaSync(): Promise<SyncResult | SyncError> {
       indexName: GLOBAL_INDEX_NAME,
       indexSettings: GLOBAL_INDEX_SETTINGS,
     });
+
+    await pushRulesAndSynonyms(client);
 
     return {
       ok: true,
