@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Search, X, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -66,6 +66,22 @@ const CARD_HEIGHT = "h-14";
 
 function HeroSearchBox() {
   const { query, refine, clear, isSearchStalled } = useSearchBox();
+  const [inputValue, setInputValue] = useState(query);
+
+  // Keep input in sync when query changes from outside (e.g. clear, click outside)
+  useEffect(() => {
+    setInputValue(query);
+  }, [query]);
+
+  function handleChange(value: string) {
+    setInputValue(value);
+    refine(value);
+  }
+
+  function handleClear() {
+    setInputValue("");
+    clear();
+  }
 
   return (
     <div className="relative flex w-full max-w-[600px]">
@@ -78,17 +94,17 @@ function HeroSearchBox() {
         />
         <input
           type="search"
-          value={query}
-          onChange={(e) => refine(e.target.value)}
+          value={inputValue}
+          onChange={(e) => handleChange(e.target.value)}
           placeholder="e.g. help with TikTok, case studies, contact..."
           className="ml-3 flex-1 bg-transparent font-tiempos-text text-lg text-black outline-none placeholder:text-black/55 focus:outline-none"
           aria-label="Search"
           autoComplete="off"
         />
-        {query.length > 0 && (
+        {inputValue.length > 0 && (
           <button
             type="button"
-            onClick={() => clear()}
+            onClick={handleClear}
             className="shrink-0 p-1 text-black/30 hover:text-black"
             aria-label="Clear search"
           >
