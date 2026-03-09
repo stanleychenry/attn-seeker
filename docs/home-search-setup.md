@@ -1,6 +1,15 @@
 # Home search setup (Algolia global index)
 
-The home page search uses **client-side Algolia** (same pattern as /learn): one index, instant results, no server round-trip.
+The home page and learn page use **client-side Algolia** (InstantSearch): one index for home, one for learn. Search is instant and no server round-trip.
+
+## Security: two keys, different roles
+
+| Env var | Where used | **Rule** |
+|--------|-------------|----------|
+| **`NEXT_PUBLIC_ALGOLIA_SEARCH_KEY`** | Browser only (home + learn search) | Must be a **search-only** key. If it has Add/Edit/Delete, anyone could inject or delete index data. In Algolia Dashboard create a key with **only** "Search" checked. |
+| **`ALGOLIA_ADMIN_KEY`** | Server only (sync, `/api/search`) | Never expose in client or in any `NEXT_PUBLIC_*` variable. Used to sync the index and for server-side search. |
+
+**If you ever see fake records in search:** the value in `NEXT_PUBLIC_ALGOLIA_SEARCH_KEY` has write access. Replace it with a new search-only key from the Algolia Dashboard.
 
 ## 1. Algolia Admin API key
 
@@ -88,9 +97,9 @@ When the user types phrases like “contact”, “get in touch”, “talk to s
 
 ## Summary
 
-1. Set **ALGOLIA_ADMIN_KEY** in `.env.local` (Admin key with write access).
-2. Run **POST /api/admin/sync-search** (with `SYNC_SECRET` header if set).
-3. Home search uses **InstantSearch** and index **attn_seeker_global** (client-side, fast). Index includes: articles, services, case studies, show episodes, podcast episodes, **shows**, **podcasts**, **topics**, teams, events. Services and events have **keywords** so phrases like "help with socials" and "what events" match.
-4. When there are 0 hits, the UI shows **"Suggested for you"** (Contact, Services, Events, Podcasts, Shows, Articles) so the search never shows only "no results".
-5. Add **synonyms** in the Algolia dashboard (e.g. socials → social) for better natural-language matching.
+1. Set **ALGOLIA_ADMIN_KEY** in `.env.local` (server-only; for sync and server search). Never expose it.
+2. Set **NEXT_PUBLIC_ALGOLIA_APP_ID** and **NEXT_PUBLIC_ALGOLIA_SEARCH_KEY** (search-only key) for client-side search.
+3. Run **POST /api/admin/sync-search** (with `SYNC_SECRET` header if set).
+4. Home and learn search use InstantSearch in the browser with the search-only key. When there are 0 hits, home shows **"Suggested for you"**.
+5. Add **synonyms** in the Algolia dashboard (e.g. socials → social) for better matching.
 6. Optionally enable **Semantic Search** on the index if your plan supports it.

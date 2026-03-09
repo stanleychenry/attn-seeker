@@ -16,6 +16,7 @@ import {
 import { liteClient } from "algoliasearch/lite";
 
 const APP_ID = process.env.NEXT_PUBLIC_ALGOLIA_APP_ID ?? "";
+// Must be a search-only key (no Add/Edit/Delete). See docs/home-search-setup.md § Security.
 const API_KEY = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY ?? "";
 const INDEX_NAME = "yap_articles";
 

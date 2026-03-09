@@ -1,7 +1,9 @@
 /**
  * Xano API client for Seekers (dashboard, store, profile, games, leaderboard).
- * Uses the same base URL and email-based endpoints as the live Webflow site.
+ * Sends the Memberstack JWT when available so Xano can require auth and identify the user by the token's subject (not by email in the URL). See docs/xano-security.md.
  */
+
+import { getMemberstackToken } from "@/lib/memberstack-token";
 
 const BASE =
   typeof process !== "undefined"
@@ -16,10 +18,17 @@ function url(path: string, params?: Record<string, string>) {
   return `${u}${u.includes("?") ? "&" : "?"}${search}`;
 }
 
+function authHeaders(): Record<string, string> {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  const token = getMemberstackToken();
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+  return headers;
+}
+
 async function get<T>(path: string, params?: Record<string, string>): Promise<T> {
   const res = await fetch(url(path, params), {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: authHeaders(),
   });
   if (!res.ok) throw new Error(`Xano GET ${path}: ${res.status}`);
   return res.json() as Promise<T>;
@@ -28,7 +37,7 @@ async function get<T>(path: string, params?: Record<string, string>): Promise<T>
 async function post<T>(path: string, body: Record<string, unknown>): Promise<T> {
   const res = await fetch(url(path), {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: authHeaders(),
     body: JSON.stringify(body),
   });
   if (!res.ok) throw new Error(`Xano POST ${path}: ${res.status}`);

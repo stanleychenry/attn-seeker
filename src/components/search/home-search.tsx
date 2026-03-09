@@ -18,6 +18,7 @@ import { liteClient } from "algoliasearch/lite";
 import { GLOBAL_INDEX_NAME } from "@/lib/algolia-sync";
 
 const APP_ID = process.env.NEXT_PUBLIC_ALGOLIA_APP_ID || "";
+// Must be a search-only key (no Add/Edit/Delete). See docs/home-search-setup.md § Security.
 const API_KEY = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY || "";
 
 const searchClient = liteClient(APP_ID, API_KEY);
@@ -327,7 +328,7 @@ export function HomeSearch() {
     return (
       <div className="w-full max-w-[600px] rounded-lg border border-black/10 bg-white px-6 py-4 font-tiempos-text text-black/60">
         Search is not configured. Add NEXT_PUBLIC_ALGOLIA_APP_ID and
-        NEXT_PUBLIC_ALGOLIA_SEARCH_KEY, then sync the index via POST
+        NEXT_PUBLIC_ALGOLIA_SEARCH_KEY (search-only key), then sync the index via POST
         /api/admin/sync-search.
       </div>
     );

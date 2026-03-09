@@ -96,11 +96,15 @@ These are the secret keys and settings your site needs (same as in your `.env.lo
    - **Name:** `NEXT_PUBLIC_XANO_BASE_URL`  
      **Value:** (paste from .env.local)
 
-   - **Name:** `NEXT_PUBLIC_ALGOLIA_APP_ID`  
+   - **Name:** `NEXT_PUBLIC_ALGOLIA_APP_ID`
      **Value:** (paste from .env.local)
 
-   - **Name:** `NEXT_PUBLIC_ALGOLIA_SEARCH_KEY`  
+   - **Name:** `NEXT_PUBLIC_ALGOLIA_SEARCH_KEY`
+     **Value:** (paste from .env.local — must be a **search-only** key from Algolia; never use the Admin key here.)
+
+   - **Name:** `ALGOLIA_ADMIN_KEY`
      **Value:** (paste from .env.local)
+     _(Server-only; for sync and server search. Not exposed to the browser.)_
 
    - **Name:** `RESEND_API_KEY`  
      **Value:** (paste from .env.local)
