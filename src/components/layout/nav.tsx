@@ -13,6 +13,7 @@ const NAV_LINKS = [
   { label: "podcasts", href: "/podcasts" },
   { label: "events", href: "/events" },
   { label: "agency", href: "/agency" },
+  { label: "contact", href: "/agency/contact" },
 ] as const;
 
 export function Nav() {

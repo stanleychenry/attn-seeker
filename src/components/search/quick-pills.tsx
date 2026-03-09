@@ -3,7 +3,7 @@
 import { useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Mail, Radio, Building2, Calendar, Shuffle, type LucideIcon } from "lucide-react";
+import { Mail, Radio, Building2, Calendar, MessageCircle, Shuffle, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface QuickPill {
@@ -17,6 +17,7 @@ const DEFAULT_PILLS: QuickPill[] = [
   { label: "podcasts", icon: Radio, href: "/podcasts" },
   { label: "agency", icon: Building2, href: "/agency" },
   { label: "events", icon: Calendar, href: "/events" },
+  { label: "contact us", icon: MessageCircle, href: "/agency/contact" },
 ];
 
 export interface QuickPillsProps {

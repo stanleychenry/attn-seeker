@@ -12,7 +12,8 @@ import {
   Grid,
   SectionIntro,
 } from "@/components/ui";
-import { getServices, getFeaturedCaseStudies } from "@/lib/cms";
+import Link from "next/link";
+import { getServices, getFeaturedCaseStudies, getTeams } from "@/lib/cms";
 
 export const metadata = {
   title: "agency | attn:seeker",
@@ -26,10 +27,12 @@ export const revalidate = 300;
 export default async function AgencyPage() {
   let services: Awaited<ReturnType<typeof getServices>> = [];
   let caseStudies: Awaited<ReturnType<typeof getFeaturedCaseStudies>> = [];
+  let team: Awaited<ReturnType<typeof getTeams>> = [];
   try {
-    [services, caseStudies] = await Promise.all([
+    [services, caseStudies, team] = await Promise.all([
       getServices(),
       getFeaturedCaseStudies(),
+      getTeams(),
     ]);
   } catch (error) {
     console.error("Failed to fetch agency CMS data:", error);
@@ -37,6 +40,11 @@ export default async function AgencyPage() {
 
   const servicesPreview = services.slice(0, 4);
   const caseStudiesPreview = caseStudies.slice(0, 3);
+  const sortedTeam = [...team].sort((a, b) => {
+    if (a.featured && !b.featured) return -1;
+    if (!a.featured && b.featured) return 1;
+    return a.sortOrder - b.sortOrder;
+  });
 
   return (
     <>
@@ -190,7 +198,56 @@ export default async function AgencyPage() {
         </Container>
       </Section>
 
-      {/* 5. Who we work with */}
+      {/* 5. Team */}
+      <Section background="bone" padding="none" className="py-16">
+        <Container width="full">
+          <SectionIntro eyebrow="who we are" heading="team" />
+          {sortedTeam.length === 0 ? (
+            <p className="mt-6 font-tiempos-text text-black/60">No team members available.</p>
+          ) : (
+            <div className="mt-8 overflow-x-auto overflow-y-hidden pb-4 md:pb-6">
+              <div className="flex gap-4 md:gap-6" style={{ width: "max-content" }}>
+                {sortedTeam.map((member) => (
+                  <Link
+                    key={member.id}
+                    href={`/agency/team/${member.slug}`}
+                    className="group flex shrink-0 flex-col items-center text-center"
+                  >
+                    <div className="relative h-32 w-32 overflow-hidden rounded-full border-2 border-black/10 bg-black/5 md:h-40 md:w-40">
+                      {member.headshot ? (
+                        <Image
+                          src={member.headshot}
+                          alt=""
+                          fill
+                          className="object-cover transition-transform group-hover:scale-105"
+                          sizes="160px"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center font-obviously text-2xl text-black/30">
+                          {member.name.charAt(0)}
+                        </div>
+                      )}
+                    </div>
+                    <span className="mt-3 block font-obviously text-sm font-medium text-black group-hover:text-red">
+                      {member.name}
+                    </span>
+                    {member.role ? (
+                      <Caption className="mt-0.5 text-black/60">{member.role}</Caption>
+                    ) : null}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+          <div className="mt-8 flex justify-center">
+            <Button variant="ghost" href="/agency/team">
+              meet the team
+            </Button>
+          </div>
+        </Container>
+      </Section>
+
+      {/* 6. Who we work with */}
       <Section background="bone" padding="none" className="py-16">
         <Container width="standard">
           <SectionIntro
@@ -206,7 +263,7 @@ export default async function AgencyPage() {
         </Container>
       </Section>
 
-      {/* 6. CTA */}
+      {/* 7. CTA */}
       <Section background="red" padding="none" className="py-16 md:py-24">
         <Container width="standard" className="text-center">
           <Heading level={2} className="text-bone">
