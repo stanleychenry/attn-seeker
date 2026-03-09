@@ -1,0 +1,84 @@
+// Validates Memberstack JWT. Lambda reads $vars (request) and $env (from get_env) directly.
+middleware memberstack_jwt_auth {
+  input {
+    json vars
+    enum type {
+      values = ["pre", "post"]
+    }
+  }
+
+  stack {
+    util.get_env as $env
+
+    api.lambda {
+      code = """
+        // @ts-nocheck
+        return (async function() {
+          var headers = (typeof $input !== 'undefined' && $input && $input.vars && ($input.vars.http_headers || $input.vars.headers)) || {};
+          var secret = (typeof $var !== 'undefined' && $var && $var.env && ($var.env.MEMBERSTACK_SECRET_KEY || $var.env.MEMBERSTACK_API_KEY)) || '';
+          var authHeader = headers.authorization || headers.Authorization || '';
+
+          if (typeof authHeader !== 'string' || authHeader.indexOf('Bearer ') !== 0) {
+            return { member_id: null, error: 'Missing or invalid Authorization header' };
+          }
+
+          var token = authHeader.substring(7).trim();
+          if (!token) {
+            return { member_id: null, error: 'Missing token' };
+          }
+          if (!secret) {
+            return { member_id: null, error: 'Server misconfiguration' };
+          }
+
+          try {
+            var res = await fetch('https://admin.memberstack.com/members/verify-token', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': secret
+              },
+              body: JSON.stringify({ token: token })
+            });
+            var text = await res.text();
+            if (res.status !== 200) {
+              return { member_id: null, error: 'Invalid or expired token' };
+            }
+            var data = JSON.parse(text);
+            var memberId = (data && data.data && (data.data.id || data.data.user_id || data.data.member_id)) || (data && (data.member_id || data.user_id || data.sub || data.id)) || null;
+            if (!memberId) {
+              try {
+                var parts = token.split('.');
+                if (parts.length >= 2) {
+                  var payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+                  memberId = payload.id || payload.user_id || payload.sub || payload.member_id || null;
+                }
+              } catch (e) {}
+            }
+            if (!memberId) {
+              return { member_id: null, error: 'Invalid token response' };
+            }
+            return { member_id: memberId, error: null };
+          } catch (e) {
+            return { member_id: null, error: 'Invalid token response' };
+          }
+        })();
+      """
+      timeout = 10
+    } as $auth_result
+
+    precondition ($auth_result.error != null) {
+      error_type = "unauthorized"
+      error = $auth_result.error
+    }
+
+    precondition ($auth_result.member_id == null) {
+      error_type = "unauthorized"
+      error = "Unauthorized"
+    }
+  }
+
+  response = { auth_member_id: $auth_result.member_id }
+  response_strategy = "merge"
+  exception_policy = "critical"
+  tags = ["auth", "memberstack"]
+}
