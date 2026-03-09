@@ -48,10 +48,10 @@ export function QuickPills({ className, pills = DEFAULT_PILLS }: QuickPillsProps
           </Link>
         );
       })}
-      <a href="/go/random" className={pillClass} role="listitem">
+      <Link href="/go/random" className={pillClass} role="listitem">
         <Shuffle size={16} strokeWidth={1.5} className="flex-shrink-0" aria-hidden />
         surprise me
-      </a>
+      </Link>
     </div>
   );
 }

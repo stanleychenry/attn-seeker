@@ -6,7 +6,8 @@ export const metadata = {
   description: "workshops, talks, and gatherings for people who want to learn.",
 };
 
-export const dynamic = "force-dynamic";
+/** Cache the page and revalidate from Webflow every 5 minutes. */
+export const revalidate = 300;
 
 export default async function EventsPage() {
   let events: Awaited<ReturnType<typeof getEvents>> = [];

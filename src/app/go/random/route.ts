@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { NAV_LINKS } from "@/lib/constants";
 import {
   getYapArticleSlugs,
@@ -14,8 +14,8 @@ import {
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
-  const base = process.env.NEXT_PUBLIC_SITE_ORIGIN ?? "";
+export async function GET(request: NextRequest) {
+  const origin = process.env.NEXT_PUBLIC_SITE_ORIGIN || request.nextUrl.origin;
 
   try {
     const [
@@ -55,16 +55,11 @@ export async function GET() {
       ...jobSlugs.map((s) => `/agency/careers/${s}`),
     ].filter(Boolean);
 
-    if (urls.length === 0) {
-      return NextResponse.redirect(new URL("/", base || "http://localhost:3000"));
-    }
-
-    const randomUrl = urls[Math.floor(Math.random() * urls.length)] ?? "/";
-    const destination = base ? new URL(randomUrl, base) : randomUrl;
+    const path = urls.length > 0 ? urls[Math.floor(Math.random() * urls.length)] ?? "/" : "/";
+    const destination = new URL(path, origin);
 
     return NextResponse.redirect(destination);
   } catch {
-    const fallback = base ? new URL("/", base) : "/";
-    return NextResponse.redirect(fallback);
+    return NextResponse.redirect(new URL("/", origin));
   }
 }

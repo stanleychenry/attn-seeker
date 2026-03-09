@@ -34,6 +34,9 @@ export const metadata = {
     "700+ articles on marketing, social media, and building brands that matter. from the team at the attention seeker.",
 };
 
+/** Cache the page and revalidate from Webflow every 5 minutes. */
+export const revalidate = 300;
+
 export default async function LearnPage() {
   let pillarTopics: Topic[] = [];
   let featuredList: Awaited<ReturnType<typeof getFeaturedArticles>> = [];

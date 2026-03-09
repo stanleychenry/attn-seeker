@@ -8,6 +8,9 @@ export const metadata = {
   description: "listen to podcasts from the attention seeker.",
 };
 
+/** Cache the page and revalidate from Webflow every 5 minutes. */
+export const revalidate = 300;
+
 export default async function PodcastsPage() {
   let podcasts: Awaited<ReturnType<typeof getPodcasts>> = [];
   try {

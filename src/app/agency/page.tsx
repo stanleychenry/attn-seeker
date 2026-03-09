@@ -20,6 +20,9 @@ export const metadata = {
     "full-service organic social media agency for challenger brands. strategy, content, community management, and social media management.",
 };
 
+/** Cache the page and revalidate from Webflow every 5 minutes. */
+export const revalidate = 300;
+
 export default async function AgencyPage() {
   let services: Awaited<ReturnType<typeof getServices>> = [];
   let caseStudies: Awaited<ReturnType<typeof getFeaturedCaseStudies>> = [];
