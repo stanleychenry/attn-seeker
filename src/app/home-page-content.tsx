@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { STATS } from "@/lib/constants";
-import { HomeSearch } from "@/components/search";
+import { SearchBar } from "@/components/search";
 import { QuickPills } from "@/components/search/quick-pills";
 import { ProfileCircle } from "@/components/layout/profile-circle";
 
@@ -45,7 +45,7 @@ export function HomePageContent() {
         </p>
 
         <div className="mt-6 w-full max-w-[600px]">
-          <HomeSearch />
+          <SearchBar variant="hero" />
         </div>
 
         <div className="mt-3 w-full max-w-[600px]">

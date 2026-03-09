@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "sync-search": "curl -X POST http://localhost:3000/api/admin/sync-search"
   },
   "dependencies": {
     "@memberstack/dom": "^2.0.1",

@@ -20,6 +20,16 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Search (Algolia)
+
+The home page search bar searches an Algolia index (**attn_seeker_global**) that is filled from your CMS. **You must run the sync** or the index is empty and search shows nothing.
+
+- **Local:** With the dev server running, run `npm run sync-search`.
+- **Production:** After deploy or when CMS content changes, run:  
+  `curl -X POST https://your-domain.com/api/admin/sync-search -H "Authorization: Bearer YOUR_SYNC_SECRET"`
+
+Full setup (keys, when to run, synonyms, semantic search): see [docs/home-search-setup.md](docs/home-search-setup.md).
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

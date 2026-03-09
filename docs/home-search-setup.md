@@ -2,6 +2,15 @@
 
 The home page and learn page use **client-side Algolia** (InstantSearch): one index for home, one for learn. Search is instant and no server round-trip.
 
+## Why is search empty or not finding articles/episodes/team/services?
+
+**The search bar does not read from your CMS or database directly.** It reads from one Algolia index named **attn_seeker_global**. That index is **only** filled when you run the sync (see below). Nothing in the app code “breaks” this — if the index was never synced, or was synced in a different environment or Algolia app, the index is empty and search will show no (or wrong) results.
+
+**Fix:** Run the sync once, then after every deploy or when you change content in the CMS. Use the same Algolia app for both sync and the app (same `NEXT_PUBLIC_ALGOLIA_APP_ID` and `ALGOLIA_ADMIN_KEY` for that app).
+
+- **Local:** `npm run sync-search` (with dev server running) or `curl -X POST http://localhost:3000/api/admin/sync-search`
+- **Production:** `curl -X POST https://your-domain.com/api/admin/sync-search -H "Authorization: Bearer YOUR_SYNC_SECRET"`
+
 ## Security: two keys, different roles
 
 | Env var | Where used | **Rule** |
