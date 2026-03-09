@@ -3,37 +3,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useState, useCallback, useMemo } from "react";
 import { Search, X, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  InstantSearch,
-  useSearchBox,
-  useHits,
-  useInstantSearch,
-  Configure,
-} from "react-instantsearch";
 import { liteClient } from "algoliasearch/lite";
 import { GLOBAL_INDEX_NAME } from "@/lib/algolia-sync";
 import type { SearchResult } from "@/types/search";
 
-const APP_ID = process.env.NEXT_PUBLIC_ALGOLIA_APP_ID ?? "";
-const API_KEY = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY ?? "";
-const searchClient = liteClient(APP_ID, API_KEY);
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
-interface GlobalHit {
-  objectID: string;
-  contentType: string;
-  title: string;
-  description: string;
-  url: string;
-  thumbnailUrl?: string;
-  meta?: string;
-}
+const DEBOUNCE_MS = 200;
 
 // ---------------------------------------------------------------------------
 // Contact injection
@@ -77,16 +54,6 @@ function typeLabel(type: string): string {
   if (type === "show-episode") return "show episode";
   if (type === "podcast-episode") return "podcast episode";
   return type;
-}
-
-function mapHit(hit: GlobalHit): SearchResult {
-  return {
-    type: hit.contentType as SearchResult["type"],
-    title: hit.title,
-    description: hit.description,
-    url: hit.url,
-    thumbnailUrl: hit.thumbnailUrl,
-  };
 }
 
 // ---------------------------------------------------------------------------
@@ -184,53 +151,116 @@ function HitCard({
 }
 
 // ---------------------------------------------------------------------------
-// Inner component (uses InstantSearch hooks)
+// HomeSearch
 // ---------------------------------------------------------------------------
 
-function HomeSearchInner() {
+export function HomeSearch() {
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
-  const { status } = useInstantSearch();
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<SearchResult[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
-  const { refine, clear } = useSearchBox({
-    queryHook(q, search) {
-      // Only fire Algolia for queries with 2+ characters
-      if (q.trim().length >= 2) search(q);
-    },
-  });
-
-  const { hits } = useHits<GlobalHit>();
-  const [inputValue, setInputValue] = useState("");
-
-  const hasQuery = inputValue.trim().length > 0;
-  const isSearching = status === "loading" || status === "stalled";
-  const showResults = inputValue.trim().length >= 2;
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    setInputValue(val);
-    refine(val);
-  };
-
-  const handleClear = useCallback(() => {
-    setInputValue("");
-    clear();
-  }, [clear]);
+  // Algolia client — created once on the client side
+  const client = useMemo(() => {
+    const appId = process.env.NEXT_PUBLIC_ALGOLIA_APP_ID ?? "";
+    const apiKey = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY ?? "";
+    if (!appId || !apiKey) return null;
+    return liteClient(appId, apiKey);
+  }, []);
 
   const handleNavigate = useCallback(
     (url: string) => {
-      handleClear();
+      setQuery("");
+      setResults([]);
       router.push(url);
     },
-    [router, handleClear]
+    [router]
   );
 
-  // Close dropdown on outside click
   useEffect(() => {
-    if (!hasQuery) return;
+    const q = query.trim();
+
+    if (!q || q.length < 2) {
+      setResults([]);
+      setIsSearching(false);
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      if (abortRef.current) abortRef.current.abort();
+      return;
+    }
+
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (abortRef.current) abortRef.current.abort();
+
+    setIsSearching(true);
+
+    debounceRef.current = setTimeout(async () => {
+      if (!client) {
+        setIsSearching(false);
+        return;
+      }
+
+      const controller = new AbortController();
+      abortRef.current = controller;
+
+      try {
+        const response = await client.search({
+          requests: [{
+            indexName: GLOBAL_INDEX_NAME,
+            query: q,
+            hitsPerPage: 12,
+            attributesToRetrieve: [
+              "objectID",
+              "contentType",
+              "title",
+              "description",
+              "url",
+              "thumbnailUrl",
+            ],
+          }],
+        });
+
+        if (controller.signal.aborted) return;
+
+        const hits =
+          (response as { results?: { hits?: Record<string, unknown>[] }[] })
+            .results?.[0]?.hits ?? [];
+        const mapped: SearchResult[] = hits.map((hit) => ({
+          type: (hit.contentType as SearchResult["type"]) ?? "article",
+          title: (hit.title as string) ?? "",
+          description: (hit.description as string) ?? "",
+          url: (hit.url as string) ?? "/",
+          thumbnailUrl: hit.thumbnailUrl as string | undefined,
+        }));
+
+        const withContact = shouldInjectContact(q)
+          ? [CONTACT_RESULT, ...mapped]
+          : mapped;
+
+        setResults(withContact);
+      } catch (err) {
+        if (err instanceof Error && err.name === "AbortError") return;
+        console.error("[HomeSearch] error:", err);
+        setResults([]);
+      } finally {
+        if (!controller.signal.aborted) setIsSearching(false);
+      }
+    }, DEBOUNCE_MS);
+
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, [query, client]);
+
+  // Close on outside click
+  useEffect(() => {
+    if (!query.trim()) return;
     function handleClickOutside(e: MouseEvent | TouchEvent) {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        handleClear();
+        setQuery("");
+        setResults([]);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -239,12 +269,9 @@ function HomeSearchInner() {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("touchstart", handleClickOutside);
     };
-  }, [hasQuery, handleClear]);
+  }, [query]);
 
-  // Build results: Algolia hits + optional contact injection
-  const baseResults = showResults ? hits.map(mapHit) : [];
-  const injectContact = showResults && shouldInjectContact(inputValue);
-  const results = injectContact ? [CONTACT_RESULT, ...baseResults] : baseResults;
+  const hasQuery = query.trim().length > 0;
   const showFallback = hasQuery && !isSearching && results.length === 0;
   const total = results.length;
 
@@ -261,17 +288,17 @@ function HomeSearchInner() {
           />
           <input
             type="search"
-            value={inputValue}
-            onChange={handleChange}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
             placeholder="e.g. help with TikTok, case studies, who is Stanley..."
             className="ml-3 flex-1 bg-transparent font-tiempos-text text-lg text-black outline-none placeholder:text-black/55 focus:outline-none"
             aria-label="Search"
             autoComplete="off"
           />
-          {inputValue.length > 0 && (
+          {query.length > 0 && (
             <button
               type="button"
-              onClick={handleClear}
+              onClick={() => { setQuery(""); setResults([]); }}
               className="shrink-0 p-1 text-black/30 hover:text-black"
               aria-label="Clear search"
             >
@@ -299,17 +326,13 @@ function HomeSearchInner() {
             <div className="max-h-[60vh] overflow-y-auto">
               <div className="border-b border-black/10 px-4 py-2">
                 {showFallback ? (
-                  <p className="font-obviously text-[13px] text-black/50">
-                    suggested for you
-                  </p>
+                  <p className="font-obviously text-[13px] text-black/50">suggested for you</p>
                 ) : total === 1 ? (
-                  <p className="font-obviously text-[13px] text-black/50">
-                    1 result
-                  </p>
+                  <p className="font-obviously text-[13px] text-black/50">1 result</p>
+                ) : total > 0 ? (
+                  <p className="font-obviously text-[13px] text-black/50">{total.toLocaleString()} results</p>
                 ) : (
-                  <p className="font-obviously text-[13px] text-black/50">
-                    {total > 0 ? `${total.toLocaleString()} results` : ""}
-                  </p>
+                  <p className="font-obviously text-[13px] text-black/50"> </p>
                 )}
               </div>
 
@@ -333,10 +356,7 @@ function HomeSearchInner() {
                       <li key={item.url}>
                         <Link
                           href={item.url}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleNavigate(item.url);
-                          }}
+                          onClick={(e) => { e.preventDefault(); handleNavigate(item.url); }}
                           className={`group flex ${CARD_HEIGHT} w-full items-center gap-3 overflow-hidden border-b border-black/10 bg-white px-4 transition-colors last:border-b-0 hover:bg-black/[0.03] hover:border-red/20`}
                         >
                           <div className="min-w-0 flex-1">
@@ -362,18 +382,5 @@ function HomeSearchInner() {
         )}
       </AnimatePresence>
     </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Public export
-// ---------------------------------------------------------------------------
-
-export function HomeSearch() {
-  return (
-    <InstantSearch searchClient={searchClient} indexName={GLOBAL_INDEX_NAME}>
-      <Configure hitsPerPage={12} />
-      <HomeSearchInner />
-    </InstantSearch>
   );
 }
