@@ -24,9 +24,14 @@ const searchClient = liteClient(APP_ID, API_KEY);
 
 const CARD_HEIGHT = "h-14"; // same as search bar (56px)
 
-function HeroStyleSearchBox() {
-  const { query, refine, clear, isSearchStalled } = useSearchBox();
-  const [inputValue, setInputValue] = useState(query);
+function HeroStyleSearchBox({
+  inputValue,
+  setInputValue,
+}: {
+  inputValue: string;
+  setInputValue: (v: string) => void;
+}) {
+  const { refine, clear, isSearchStalled } = useSearchBox();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -155,8 +160,9 @@ function SearchHits() {
 
 function LearnSearchDropdown() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { indexUiState, setIndexUiState } = useInstantSearch();
-  const hasQuery = Boolean(indexUiState?.query?.trim());
+  const { setIndexUiState } = useInstantSearch();
+  const [inputValue, setInputValue] = useState("");
+  const hasQuery = Boolean(inputValue.trim());
 
   useEffect(() => {
     if (!hasQuery) return;
@@ -164,6 +170,7 @@ function LearnSearchDropdown() {
     function handleClickOutside(e: MouseEvent | TouchEvent) {
       const target = e.target as Node;
       if (containerRef.current && !containerRef.current.contains(target)) {
+        setInputValue("");
         setIndexUiState((prev) => ({ ...prev, query: "" }));
       }
     }
@@ -178,7 +185,7 @@ function LearnSearchDropdown() {
 
   return (
     <div ref={containerRef} className="relative w-full max-w-[600px]">
-      <HeroStyleSearchBox />
+      <HeroStyleSearchBox inputValue={inputValue} setInputValue={setInputValue} />
 
       <AnimatePresence>
         {hasQuery && (
