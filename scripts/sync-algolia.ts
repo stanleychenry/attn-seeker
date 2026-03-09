@@ -13,11 +13,10 @@ async function main() {
 
   if (result.ok) {
     console.log(`[sync-algolia] OK: ${result.totalRecords} records in ${result.index}`);
-    process.exit(0);
   } else {
-    console.error("[sync-algolia] Error:", result.error);
-    process.exit(1);
+    console.warn("[sync-algolia] Sync failed (build continues):", result.error);
   }
+  process.exit(0);
 }
 
 main();
