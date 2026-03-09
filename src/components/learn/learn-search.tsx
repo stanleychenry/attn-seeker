@@ -14,11 +14,11 @@ import {
   Configure,
 } from "react-instantsearch";
 import { liteClient } from "algoliasearch/lite";
+import { GLOBAL_INDEX_NAME } from "@/lib/algolia-sync";
 
 const APP_ID = process.env.NEXT_PUBLIC_ALGOLIA_APP_ID ?? "";
 // Must be a search-only key (no Add/Edit/Delete). See docs/home-search-setup.md § Security.
 const API_KEY = process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY ?? "";
-const INDEX_NAME = "yap_articles";
 
 const searchClient = liteClient(APP_ID, API_KEY);
 
@@ -77,17 +77,19 @@ function SearchStats() {
   );
 }
 
-/** One row: same height as search bar, full width, thumbnail left + title/topic right */
+/** One row: same height as search bar; uses attn_seeker_global record shape (contentType=article). */
 function ArticleHit({ hit }: { hit: Record<string, unknown> }) {
-  const title = (hit._highlightResult as { title?: { value?: string } } | undefined)?.title?.value ?? (hit.title as string) ?? "";
-  const topic = (hit.topic_name as string) ?? "";
-  const slug = (hit.slug as string) ?? "";
-  const thumbnail = (hit.thumbnail_url as string) ?? "";
-  const readingTime = hit.reading_time ? `${hit.reading_time} min read` : "";
+  const title =
+    (hit._highlightResult as { title?: { value?: string } } | undefined)?.title?.value ??
+    (hit.title as string) ??
+    "";
+  const url = (hit.url as string) ?? "";
+  const thumbnail = (hit.thumbnailUrl as string) ?? "";
+  const meta = (hit.meta as string) ?? "";
 
   return (
     <Link
-      href={`/yap-articles/${slug}`}
+      href={url}
       className={`group flex ${CARD_HEIGHT} w-full items-center gap-3 overflow-hidden border-b border-black/10 bg-white px-4 transition-colors last:border-b-0 hover:bg-black/[0.03] hover:border-red/20`}
     >
       <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded bg-black/5">
@@ -108,18 +110,11 @@ function ArticleHit({ hit }: { hit: Record<string, unknown> }) {
         )}
       </div>
       <div className="min-w-0 flex-1">
-        {topic ? (
-          <span className="font-obviously text-[10px] font-semibold uppercase tracking-wide text-red">
-            {topic}
-          </span>
-        ) : null}
         <h3
           className="font-obviously-wide truncate text-sm font-semibold text-black [&_mark]:rounded [&_mark]:bg-amber-100 [&_mark]:text-inherit"
           dangerouslySetInnerHTML={{ __html: title }}
         />
-        {readingTime ? (
-          <p className="font-obviously text-[11px] text-black/50">{readingTime}</p>
-        ) : null}
+        {meta ? <p className="font-obviously text-[11px] text-black/50">{meta}</p> : null}
       </div>
     </Link>
   );
@@ -198,8 +193,8 @@ function LearnSearchDropdown() {
 
 export function LearnSearch() {
   return (
-    <InstantSearch searchClient={searchClient} indexName={INDEX_NAME}>
-      <Configure hitsPerPage={20} />
+    <InstantSearch searchClient={searchClient} indexName={GLOBAL_INDEX_NAME}>
+      <Configure hitsPerPage={20} facetFilters={[["contentType:article"]]} />
       <LearnSearchDropdown />
     </InstantSearch>
   );
