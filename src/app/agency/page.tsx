@@ -12,7 +12,6 @@ import {
   Grid,
   SectionIntro,
 } from "@/components/ui";
-import Link from "next/link";
 import { getServices, getFeaturedCaseStudies, getTeams } from "@/lib/cms";
 import { TeamMarquee } from "./_components/team-marquee";
 
