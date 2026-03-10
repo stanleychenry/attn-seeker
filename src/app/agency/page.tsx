@@ -49,15 +49,15 @@ export default async function AgencyPage() {
   return (
     <>
       {/* 1. Hero */}
-      <Section background="bone" padding="none" className="py-16 md:py-32">
+      <Section background="black" padding="none" className="py-16 md:py-32">
         <Container width="standard">
           <Label className="block text-red">attn:agency</Label>
-          <Heading level={1} className="mt-4 text-black">
+          <Heading level={1} className="mt-4">
             we grow brands through organic social
           </Heading>
           <Body
             size="large"
-            className="mt-6 max-w-[700px] text-black/70"
+            className="mt-6 max-w-[700px] text-bone/70"
           >
             we&apos;re a full-service organic social media agency that builds
             audiences, creates content, and manages communities for challenger
@@ -102,7 +102,7 @@ export default async function AgencyPage() {
       </Section>
 
       {/* 3. What we do */}
-      <Section background="bone" padding="none" className="py-16">
+      <Section background="black" padding="none" className="py-16">
         <Container width="full">
           <SectionIntro
             eyebrow="what we do"
@@ -111,13 +111,13 @@ export default async function AgencyPage() {
           />
           <Grid cols={2} gap="md" className="mt-8">
             {servicesPreview.length === 0 ? (
-              <p className="font-tiempos-text text-black/60">No services available.</p>
+              <p className="font-tiempos-text text-bone/60">No services available.</p>
             ) : (
             servicesPreview.map((service) => (
-              <Card key={service.id} className="h-full rounded-lg p-6">
+              <Card key={service.id} className="h-full rounded-lg p-6 bg-white/[0.06]">
                 <div className="flex h-full flex-col">
                   <Heading level={3}>{service.name}</Heading>
-                  <Body size="small" className="mt-2 text-black/70">
+                  <Body size="small" className="mt-2 text-bone/70">
                     {service.shortDescription || (service.description ?? "")}
                   </Body>
                   <Button
@@ -140,20 +140,20 @@ export default async function AgencyPage() {
       </Section>
 
       {/* 4. Our work */}
-      <Section background="bone" padding="none" className="py-16">
+      <Section background="black" padding="none" className="py-16">
         <Container width="full">
           <SectionIntro eyebrow="our work" heading="case studies" />
           <Grid cols={3} gap="md" className="mt-8">
             {caseStudiesPreview.length === 0 ? (
-              <p className="font-tiempos-text text-black/60">No case studies available.</p>
+              <p className="font-tiempos-text text-bone/60">No case studies available.</p>
             ) : (
             caseStudiesPreview.map((cs) => (
               <Card
                 key={cs.id}
                 padding="none"
-                className="flex h-full flex-col overflow-hidden rounded-lg"
+                className="flex h-full flex-col overflow-hidden rounded-lg bg-white/[0.06]"
               >
-                <div className="relative h-48 w-full shrink-0 overflow-hidden bg-black/5">
+                <div className="relative h-48 w-full shrink-0 overflow-hidden bg-bone/5">
                   {(cs.coverImage || cs.thumbnailUrl) ? (
                     <Image
                       src={cs.coverImage || cs.thumbnailUrl || ""}
@@ -165,7 +165,7 @@ export default async function AgencyPage() {
                   ) : null}
                 </div>
                 <div className="flex flex-1 flex-col p-6">
-                  <Caption className="text-black/40">{cs.client || cs.industry || cs.name}</Caption>
+                  <Caption className="text-bone/40">{cs.client || cs.industry || cs.name}</Caption>
                   <Heading level={3} className="mt-1">
                     {cs.headline}
                   </Heading>
@@ -174,7 +174,7 @@ export default async function AgencyPage() {
                       <span className="font-obviously font-black text-[28px] text-red">
                         {cs.keyStat ?? (cs.stats && cs.stats[0] ? cs.stats[0].value : "")}
                       </span>{" "}
-                      <Caption className="text-black/55">
+                      <Caption className="text-bone/55">
                         {cs.keyStatLabel ?? (cs.stats && cs.stats[0] ? cs.stats[0].label : "")}
                       </Caption>
                     </div>
@@ -199,11 +199,11 @@ export default async function AgencyPage() {
       </Section>
 
       {/* 5. Team */}
-      <Section background="bone" padding="none" className="py-16">
+      <Section background="black" padding="none" className="py-16">
         <Container width="full">
           <SectionIntro eyebrow="who we are" heading="team" />
           {sortedTeam.length === 0 ? (
-            <p className="mt-6 font-tiempos-text text-black/60">No team members available.</p>
+            <p className="mt-6 font-tiempos-text text-bone/60">No team members available.</p>
           ) : (
             <div className="mt-8 overflow-x-auto overflow-y-hidden pb-4 md:pb-6">
               <div className="flex gap-4 md:gap-6" style={{ width: "max-content" }}>
@@ -213,7 +213,7 @@ export default async function AgencyPage() {
                     href={`/agency/team/${member.slug}`}
                     className="group flex shrink-0 flex-col items-center text-center"
                   >
-                    <div className="relative h-32 w-32 overflow-hidden rounded-full border-2 border-black/10 bg-black/5 md:h-40 md:w-40">
+                    <div className="relative h-32 w-32 overflow-hidden rounded-full border-2 border-bone/10 bg-bone/5 md:h-40 md:w-40">
                       {member.headshot ? (
                         <Image
                           src={member.headshot}
@@ -223,16 +223,16 @@ export default async function AgencyPage() {
                           sizes="160px"
                         />
                       ) : (
-                        <div className="flex h-full w-full items-center justify-center font-obviously text-2xl text-black/30">
+                        <div className="flex h-full w-full items-center justify-center font-obviously text-2xl text-bone/30">
                           {member.name.charAt(0)}
                         </div>
                       )}
                     </div>
-                    <span className="mt-3 block font-obviously text-sm font-medium text-black group-hover:text-red">
+                    <span className="mt-3 block font-obviously text-sm font-medium text-bone group-hover:text-red">
                       {member.name}
                     </span>
                     {member.role ? (
-                      <Caption className="mt-0.5 text-black/60">{member.role}</Caption>
+                      <Caption className="mt-0.5 text-bone/60">{member.role}</Caption>
                     ) : null}
                   </Link>
                 ))}
@@ -248,13 +248,13 @@ export default async function AgencyPage() {
       </Section>
 
       {/* 6. Who we work with */}
-      <Section background="bone" padding="none" className="py-16">
+      <Section background="black" padding="none" className="py-16">
         <Container width="standard">
           <SectionIntro
             eyebrow="who we work with"
             heading="challenger brands that want to win"
           />
-          <Body size="standard" className="mt-6 max-w-[700px] text-black/70">
+          <Body size="standard" className="mt-6 max-w-[700px] text-bone/70">
             we work best with brands in the #2 or #3 market position, or new
             entrants who want to disrupt their category. you need a leader who
             sees the vision for organic, and you&apos;re tired of diminishing

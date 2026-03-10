@@ -56,7 +56,7 @@ export default async function ServiceDetailPage({ params }: PageParams) {
   return (
     <>
       {/* 1. Hero */}
-      <Section background="bone" padding="none" className="py-16 md:py-24">
+      <Section background="black" padding="none" className="py-16 md:py-24">
         <Container width="standard">
           <Link
             href="/agency/services"
@@ -69,12 +69,12 @@ export default async function ServiceDetailPage({ params }: PageParams) {
           </Heading>
           <Body
             size="large"
-            className="mt-6 max-w-[700px] text-black/70"
+            className="mt-6 max-w-[700px] text-bone/70"
           >
             {description}
           </Body>
           {coverImage && (
-            <div className="relative mt-8 aspect-video w-full overflow-hidden bg-black/5">
+            <div className="relative mt-8 aspect-video w-full overflow-hidden bg-bone/5">
               <Image
                 src={coverImage}
                 alt=""
@@ -89,10 +89,10 @@ export default async function ServiceDetailPage({ params }: PageParams) {
 
       {/* 2. Body content */}
       {service.body && (
-        <Section background="bone" padding="none" className="py-8 md:py-16">
+        <Section background="black" padding="none" className="py-8 md:py-16">
           <Container width="content">
             <div
-              className="prose prose-lg max-w-none font-tiempos-text text-black/80 prose-headings:font-obviously prose-headings:font-semibold prose-headings:text-black prose-headings:lowercase"
+              className="prose prose-lg max-w-none font-tiempos-text text-bone/80 prose-headings:font-obviously prose-headings:font-semibold prose-headings:text-bone prose-headings:lowercase"
               dangerouslySetInnerHTML={{ __html: service.body }}
             />
           </Container>
@@ -101,7 +101,7 @@ export default async function ServiceDetailPage({ params }: PageParams) {
 
       {/* 3. Key benefits */}
       {service.keyBenefits && (Array.isArray(service.keyBenefits) ? service.keyBenefits.length > 0 : service.keyBenefits) && (
-        <Section background="bone" padding="none" className="py-8 md:py-16">
+        <Section background="black" padding="none" className="py-8 md:py-16">
           <Container width="standard">
             <SectionIntro
               eyebrow="what you get"
@@ -118,7 +118,7 @@ export default async function ServiceDetailPage({ params }: PageParams) {
                     aria-hidden
                   />
                   <div
-                    className="font-tiempos-text text-lg text-black/70 [&_p]:mb-2 [&_p:last-child]:mb-0 [&_p:first-child]:mt-0"
+                    className="font-tiempos-text text-lg text-bone/70 [&_p]:mb-2 [&_p:last-child]:mb-0 [&_p:first-child]:mt-0"
                     dangerouslySetInnerHTML={{
                       __html: typeof benefit === "string" ? benefit : String(benefit),
                     }}
@@ -132,7 +132,7 @@ export default async function ServiceDetailPage({ params }: PageParams) {
 
       {/* 4. Process */}
       {service.process && (Array.isArray(service.process) ? service.process.length > 0 : typeof service.process === "string") && (
-        <Section background="bone" padding="none" className="py-8 md:py-16">
+        <Section background="black" padding="none" className="py-8 md:py-16">
           <Container width="standard">
             <SectionIntro
               eyebrow="how it works"
@@ -144,17 +144,17 @@ export default async function ServiceDetailPage({ params }: PageParams) {
                   key={typeof item === "object" && item && "step" in item ? item.step : i}
                   className={
                     i < (Array.isArray(service.process) ? service.process : []).length - 1
-                      ? "md:border-r md:border-black/10 md:pr-8"
+                      ? "md:border-r md:border-bone/10 md:pr-8"
                       : ""
                   }
                 >
                   <span className="font-obviously font-black text-[40px] text-red">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <h3 className="mt-2 font-obviously-wide font-semibold text-lg lowercase text-black">
+                  <h3 className="mt-2 font-obviously-wide font-semibold text-lg lowercase text-bone">
                     {typeof item === "object" && item && "step" in item ? item.step : String(i + 1)}
                   </h3>
-                  <p className="mt-2 font-tiempos-text text-base text-black/70">
+                  <p className="mt-2 font-tiempos-text text-base text-bone/70">
                     {typeof item === "object" && item && "description" in item ? item.description : String(item)}
                   </p>
                 </div>
@@ -166,7 +166,7 @@ export default async function ServiceDetailPage({ params }: PageParams) {
 
       {/* 5. Other services */}
       {otherServicesFiltered.length > 0 && (
-        <Section background="bone" padding="none" className="py-8 md:py-16">
+        <Section background="black" padding="none" className="py-8 md:py-16">
           <Container width="standard">
             <Heading level={2} className="mb-6">
               other services
@@ -176,13 +176,13 @@ export default async function ServiceDetailPage({ params }: PageParams) {
                 <Link
                   key={s.id}
                   href={`/agency/services/${s.slug}`}
-                  className="block rounded-lg border border-black/10 bg-white p-4 transition-colors hover:border-red/30"
+                  className="block rounded-lg border border-bone/10 bg-white/[0.06] p-4 transition-colors hover:border-red/30"
                 >
-                  <h3 className="font-obviously-wide font-semibold text-base text-black">
+                  <h3 className="font-obviously-wide font-semibold text-base text-bone">
                     {s.name}
                   </h3>
                   {(s.shortDescription ?? s.description) && (
-                    <p className="mt-1 line-clamp-2 font-tiempos-text text-sm text-black/60">
+                    <p className="mt-1 line-clamp-2 font-tiempos-text text-sm text-bone/60">
                       {s.shortDescription ?? s.description}
                     </p>
                   )}
