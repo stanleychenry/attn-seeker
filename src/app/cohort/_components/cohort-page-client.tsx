@@ -72,7 +72,7 @@ export function CohortPageClient() {
       {/* ── SECTION 2: Announcement Bar ── */}
       <div className="bg-black border-b border-bone/10 py-[10px] text-center">
         <p className="font-obviously text-bone/70 lowercase text-[13px] px-4">
-          founding cohort opens 20 april 2026 · 6 spots available · founding member pricing locked for life
+          founding member pricing: $1,495/month · closes 20 april 2026 or when 6 spots are sold · standard rate: $2,990/month
         </p>
       </div>
 
@@ -190,7 +190,7 @@ export function CohortPageClient() {
                 </p>
               </div>
               <p className="font-obviously text-bone/55 lowercase text-[13px] mt-[40px]">
-                6 spots. founding member pricing. launching 20 april 2026.
+                founding member: $1,495/month → standard rate after april 20: $2,990/month · 6 spots available
               </p>
             </div>
             {/* Right column — Stanley hero image (square, subject centred) */}
@@ -934,82 +934,122 @@ export function CohortPageClient() {
       {/* ── SECTION 16: Pricing ── */}
       <section id="pricing" className="bg-black border-t border-bone/10 py-[64px] md:py-3xl">
         <div className="mx-auto max-w-standard px-6 md:px-8">
+
+          {/* Section intro */}
           <p className="font-obviously font-medium text-red lowercase text-[14px]">
-            founding member pricing
+            founding member pricing closes 20 april 2026
           </p>
           <h2
             className="font-obviously-wide font-semibold lowercase text-bone leading-[1.1] mt-xs"
             style={{ fontSize: "clamp(32px, 4vw, 48px)" }}
           >
-            half the price.
+            act now or pay
             <br />
-            locked for life.
+            double forever.
           </h2>
           <p className="font-tiempos-text text-bone text-[20px] leading-[1.6] mt-md max-w-[640px]">
-            The standard attn:seeker Cohort Programme rate is $2,990 per month. Founding members pay
-            $1,495 per month: half the price, locked for the life of their continuous enrolment. This
-            pricing does not return after the founding cohort closes.
+            The standard rate for the attn:seeker Cohort Programme is $2,990 per month. For the next
+            6 weeks, or until 6 founding spots are sold, whichever comes first, founding members pay
+            $1,495 per month. That rate is then locked for the lifetime of their continuous
+            enrolment. It never goes up. It never comes back. When this window closes, it closes
+            permanently.
           </p>
-          {/* Pricing cards — white on black for maximum contrast at conversion moment */}
+
+          {/* Urgency bar */}
+          <div className="bg-[#111111] border border-bone/10 rounded-card px-8 py-6 mt-xl">
+            <div className="flex flex-col md:flex-row gap-6 md:gap-0">
+              <div className="md:w-1/2 md:pr-8 md:border-r md:border-bone/15">
+                <p className="font-obviously font-medium text-red lowercase text-[13px]">
+                  founding pricing closes
+                </p>
+                <p className="font-obviously-wide font-bold text-bone lowercase text-[28px] leading-tight mt-1">
+                  20 april 2026
+                </p>
+                <p className="font-obviously text-bone/55 lowercase text-[13px] mt-1">
+                  or when 6 spots are sold
+                </p>
+              </div>
+              <div className="md:w-1/2 md:pl-8">
+                <p className="font-obviously font-medium text-red lowercase text-[13px]">
+                  founding spots remaining
+                </p>
+                {/* Update this number manually as spots fill */}
+                <p className="font-obviously-narrow font-black text-red text-[48px] leading-none mt-1">
+                  6
+                </p>
+                <p className="font-obviously text-bone/55 lowercase text-[13px] mt-1">
+                  update manually as spots fill
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Pricing cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-xl">
-            {/* Monthly */}
+
+            {/* Card 1: Standard rate (anchor — intentionally subdued) */}
             <div className="bg-white rounded-card p-8">
-              <p className="font-obviously font-medium text-red lowercase text-[13px]">
-                founding member monthly
+              <p className="font-obviously font-medium text-black/40 lowercase text-[13px]">
+                standard rate — after 20 april 2026
               </p>
-              <p className="font-obviously-narrow font-black text-black text-[64px] leading-none mt-2">
-                $1,495
+              <p className="font-obviously-narrow font-black text-black/40 text-[64px] leading-none mt-2">
+                $2,990
               </p>
-              <p className="font-obviously text-black/55 lowercase text-[14px]">per month + gst</p>
+              <p className="font-obviously text-black/40 lowercase text-[14px]">per month + gst</p>
+              <p className="font-tiempos-fine text-black/40 text-[14px] mt-1">
+                $29,900 per year (pay annually — 2 months free)
+              </p>
               <div className="border-t border-black/10 my-6" />
               <ul className="space-y-3">
                 {[
                   "All programme inclusions",
-                  "Founding member pricing locked for life while continuously enrolled",
+                  "Standard rate — not locked",
                   "12-month minimum commitment",
-                  "Billing on the 15th of each month",
+                  "Available after founding cohort closes",
                 ].map((item, i) => (
                   <li key={i} className="flex gap-3 items-start">
-                    <span className="text-red mt-[5px] text-[8px] flex-shrink-0">●</span>
-                    <span className="font-tiempos-text text-black text-[16px] leading-[1.5]">
+                    <div className="w-4 h-[1px] bg-black/25 mt-[11px] flex-shrink-0" />
+                    <span className="font-tiempos-text text-black/40 text-[16px] leading-[1.5]">
                       {item}
                     </span>
                   </li>
                 ))}
               </ul>
-              <Link
-                href={APPLY_PATH}
-                className="block w-full text-center bg-red text-bone font-obviously font-medium lowercase text-[16px] py-4 rounded-button hover:bg-dark-red mt-6"
-              >
-                apply — monthly
-              </Link>
+              <button className="block w-full text-center bg-black/60 text-bone font-obviously font-medium lowercase text-[14px] py-4 rounded-button mt-6 cursor-default">
+                this is what you&apos;ll pay if you wait
+              </button>
             </div>
-            {/* Annual */}
+
+            {/* Card 2: Founding rate (the offer) */}
             <div>
-              <div className="inline-block bg-red text-bone font-obviously font-medium lowercase text-[12px] px-4 py-1 rounded-pill mb-3">
-                best value — 2 months free
+              <div className="inline-block bg-red text-bone font-obviously font-medium lowercase text-[12px] px-4 py-[6px] rounded-pill mb-0 relative z-10">
+                founding member — closes 20 april 2026
               </div>
-              <div className="bg-white rounded-card p-8">
+              <div className="bg-white rounded-card p-8 border-2 border-red -mt-[1px]">
                 <p className="font-obviously font-medium text-red lowercase text-[13px]">
-                  founding member annual
+                  founding member rate — locked for life
                 </p>
                 <p className="font-obviously-narrow font-black text-black text-[64px] leading-none mt-2">
-                  $14,950
+                  $1,495
                 </p>
-                <p className="font-obviously text-black/55 lowercase text-[14px]">per year + gst</p>
-                <p className="font-tiempos-fine italic text-red text-[14px] mt-1">
-                  Save $2,990 vs monthly. Equivalent to 10 months.
+                <p className="font-obviously text-black/55 lowercase text-[14px]">per month + gst</p>
+                <p className="font-tiempos-fine text-black/55 text-[14px] mt-1">
+                  $14,950 per year (pay annually — 2 months free)
+                </p>
+                <p className="font-tiempos-headline font-medium text-red text-[18px] mt-3">
+                  $17,940 saved in year one. More every year after that.
                 </p>
                 <div className="border-t border-black/10 my-6" />
                 <ul className="space-y-3">
                   {[
                     "All programme inclusions",
-                    "Founding member pricing locked for life while continuously enrolled",
+                    "Founding member rate locked for life while continuously enrolled",
                     "12-month minimum commitment",
-                    "Annual payment processed upfront. Two months effectively free.",
+                    "Billing on the 15th of each month",
+                    "Rate never increases as long as you stay enrolled",
                   ].map((item, i) => (
                     <li key={i} className="flex gap-3 items-start">
-                      <span className="text-red mt-[5px] text-[8px] flex-shrink-0">●</span>
+                      <div className="w-[2px] h-4 bg-red mt-1 flex-shrink-0" />
                       <span className="font-tiempos-text text-black text-[16px] leading-[1.5]">
                         {item}
                       </span>
@@ -1020,31 +1060,48 @@ export function CohortPageClient() {
                   href={APPLY_PATH}
                   className="block w-full text-center bg-red text-bone font-obviously font-medium lowercase text-[16px] py-4 rounded-button hover:bg-dark-red mt-6"
                 >
-                  apply — annual
+                  apply for founding cohort
                 </Link>
+                <p className="font-obviously text-black/55 lowercase text-[13px] mt-3 text-center">
+                  takes less than 5 minutes. no payment required to apply.
+                </p>
               </div>
             </div>
           </div>
-          {/* ROI framing — white card */}
-          <div className="bg-white rounded-card px-10 py-8 max-w-[640px] mt-xl">
-            <p className="font-obviously font-medium text-red lowercase text-[13px]">
-              the return on $17,940
+
+          {/* Lifetime compounding block */}
+          <div className="mt-xl max-w-[700px]">
+            <p className="font-obviously font-medium text-red lowercase text-[14px]">
+              what this decision is actually worth
             </p>
-            <p className="font-tiempos-headline font-medium text-black text-[22px] leading-[1.5] mt-4">
-              At $17,940 for a founding member&apos;s first year, a 10% revenue increase on an $800K
-              business pays back the entire investment 4.5x over. The average founding cohort member
-              is targeting 30 to 60% growth. The maths is not complicated.
+            <h3
+              className="font-obviously-wide font-semibold lowercase text-bone leading-[1.1] mt-xs"
+              style={{ fontSize: "32px" }}
+            >
+              the gap compounds every single month.
+            </h3>
+            <p className="font-tiempos-text text-bone text-[20px] leading-[1.6] mt-4">
+              The difference between founding member pricing and the standard rate is $1,495 per
+              month. That&apos;s $17,940 in year one. In year two it&apos;s $35,880. In year three,
+              $53,820. The founding rate is locked for the lifetime of your continuous enrolment,
+              which means the longer you stay, the more the gap between what you pay and what
+              everyone else pays keeps growing.
+            </p>
+            <p className="font-tiempos-text text-bone text-[20px] leading-[1.6] mt-4">
+              This is not a sale. Sales end and the price resets. This is a permanent structural
+              advantage for the first 6 people who decide.
             </p>
           </div>
-          <p className="font-tiempos-text text-bone/55 text-[16px] mt-6 max-w-[640px]">
-            The standard cohort rate after the founding cohort closes: $2,990/month. Founding member
-            rate: $1,495/month. Locked for life.
+
+          {/* Fine print */}
+          <p className="font-tiempos-fine text-bone/40 text-[13px] mt-8 max-w-[700px]">
+            All prices exclude GST. 12-month minimum commitment required. Founding member rate of
+            $1,495/month is locked for continuous enrolment — any break in membership forfeits the
+            founding rate permanently. Standard rate applies to all members who join after the
+            founding cohort closes on 20 April 2026 or when 6 spots are sold. Full terms in the
+            Individual Member Agreement and Standard Terms and Conditions.
           </p>
-          <p className="font-tiempos-fine text-bone/40 text-[13px] mt-8 max-w-[640px]">
-            All prices exclude GST. 12-month minimum commitment required. Founding member pricing is
-            locked at $1,495/month for continuous enrolment. Cancellation terms are detailed in the
-            Individual Member Agreement. Billing cycle: 15th to 14th of each month.
-          </p>
+
         </div>
       </section>
 
@@ -1102,8 +1159,9 @@ export function CohortPageClient() {
             this price.
           </h2>
           <p className="font-tiempos-text text-bone text-[20px] leading-[1.6] mt-6">
-            Founding member pricing is $1,495/month: half the standard rate, locked for life. The
-            cohort opens 20 April 2026. Once the six spots are filled, this cohort closes.
+            Founding member pricing is $1,495/month. The standard rate after April 20 is
+            $2,990/month. That gap is permanent: the founding rate locks for life. Six spots. When
+            they&apos;re gone, they&apos;re gone.
           </p>
           <div className="mt-8">
             <p className="font-obviously-narrow font-black text-red text-[48px] leading-none">6</p>
