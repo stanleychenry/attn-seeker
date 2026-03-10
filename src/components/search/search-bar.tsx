@@ -37,6 +37,7 @@ export function SearchBar({ variant, darkNav, onFocus, className }: SearchBarPro
     variant === "hero" ? HERO_PLACEHOLDERS[0]! : COMPACT_PLACEHOLDER
   );
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isFocused, setIsFocused] = useState(false);
 
   const isHero = variant === "hero";
 
@@ -52,10 +53,15 @@ export function SearchBar({ variant, darkNav, onFocus, className }: SearchBarPro
   }, [isHero]);
 
   function handleFocus() {
+    setIsFocused(true);
     onFocus?.();
   }
 
-  const showDropdown = query.length >= 2;
+  function handleBlur() {
+    setIsFocused(false);
+  }
+
+  const showDropdown = isFocused && query.length >= 2;
 
   return (
     <div
@@ -90,6 +96,7 @@ export function SearchBar({ variant, darkNav, onFocus, className }: SearchBarPro
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={handleFocus}
+          onBlur={handleBlur}
           placeholder={placeholder}
           className={cn(
             "flex-1 ml-3 bg-transparent outline-none font-tiempos-text text-black placeholder:text-black/55 focus:outline-none",
@@ -112,6 +119,7 @@ export function SearchBar({ variant, darkNav, onFocus, className }: SearchBarPro
 
       {showDropdown && (
         <div
+          onMouseDown={(e) => e.preventDefault()}
           className={cn(
             "absolute top-full left-0 right-0 mt-2 bg-white shadow-[0_8px_32px_rgba(0,0,0,0.15)] border border-black/5 overflow-y-auto z-50",
             isHero ? "rounded-xl max-h-[400px]" : "rounded-lg max-h-[320px]"
