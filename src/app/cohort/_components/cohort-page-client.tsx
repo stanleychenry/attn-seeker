@@ -154,65 +154,57 @@ export function CohortPageClient() {
       )}
 
       {/* ── SECTION 3: Hero ── */}
-      <section className="bg-black pt-[96px] pb-[96px] md:pt-[128px] md:pb-[96px]">
-        <div className="mx-auto max-w-standard px-6 md:px-8">
-          <div className="flex flex-col md:flex-row md:items-start gap-8">
-            {/* Left column */}
-            <div className="md:w-[60%]">
-              <p className="font-obviously font-medium text-red lowercase text-[14px] tracking-[0.01em] mb-xs">
-                attn:founders
-              </p>
-              <h1
-                className="font-obviously-wide font-bold lowercase text-bone leading-none max-w-[580px]"
-                style={{ fontSize: "clamp(40px, 6vw, 72px)", letterSpacing: "-0.02em" }}
-              >
-                stop running
-                <br />
-                the business.
-                <br />
-                start building it.
-              </h1>
-              <p className="font-tiempos-text text-bone text-[18px] md:text-[20px] leading-[1.6] mt-md max-w-[500px]">
-                The attn:seeker Cohort Programme is a 12-month peer group and coaching programme for
-                service business owners doing $500K to $5M. Built on the same system that took
-                attn:seeker from zero to 1.2 billion organic views and a team of 18, without a single
-                paid ad.
-              </p>
-              <div className="mt-lg">
-                <Link
-                  href={APPLY_PATH}
-                  className="inline-block bg-red text-bone font-obviously font-medium lowercase text-[16px] px-8 py-4 rounded-button hover:bg-dark-red"
-                >
-                  apply for founding cohort
-                </Link>
-                <p className="font-obviously text-bone/55 lowercase text-[13px] mt-3">
-                  takes less than 5 minutes. no payment required.
-                </p>
-              </div>
-              <p className="font-obviously text-bone/55 lowercase text-[13px] mt-[40px]">
-                founding member: $1,495/month → standard rate after april 20: $2,990/month · 6 spots available
-              </p>
-            </div>
-            {/* Right column — Stanley hero image (square, subject centred) */}
-            <div className="md:w-[40%] w-full aspect-square relative flex-shrink-0">
-              {!heroImgError ? (
-                <Image
-                  src="/images/cohort/stanley-hero.jpg"
-                  alt="Stanley Henry"
-                  fill
-                  className="object-cover object-center"
-                  style={{ borderRadius: 0 }}
-                  onError={() => setHeroImgError(true)}
-                />
-              ) : (
-                <div className="w-full h-full bg-red flex items-center justify-center">
-                  <span className="font-obviously-wide font-bold text-bone lowercase text-[22px]">
-                    attn:seeker
-                  </span>
-                </div>
-              )}
-            </div>
+      <section className="relative min-h-[85vh] flex items-center overflow-hidden">
+        {/* Background image */}
+        {!heroImgError ? (
+          <Image
+            src="/images/cohort/stanley-hero.jpg"
+            alt="Stanley Henry"
+            fill
+            className="object-cover object-center"
+            priority
+            onError={() => setHeroImgError(true)}
+          />
+        ) : (
+          <div className="absolute inset-0 bg-black" />
+        )}
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/65" />
+        {/* Content */}
+        <div className="relative z-10 w-full mx-auto max-w-standard px-6 md:px-8 pt-[96px] pb-[96px] md:pt-[128px] md:pb-[96px]">
+          <p className="font-obviously font-medium text-red lowercase text-[14px] tracking-[0.01em] mb-xs">
+            attn:founders
+          </p>
+          <h1
+            className="font-obviously-wide font-bold lowercase text-bone leading-none max-w-[580px]"
+            style={{ fontSize: "clamp(40px, 6vw, 72px)", letterSpacing: "-0.02em" }}
+          >
+            stop running
+            <br />
+            the business.
+            <br />
+            start building it.
+          </h1>
+          <p className="font-tiempos-text text-bone text-[18px] md:text-[20px] leading-[1.6] mt-md max-w-[500px]">
+            The attn:seeker Cohort Programme is a 12-month peer group and coaching programme for
+            service business owners doing $500K to $5M. Built on the same system that took
+            attn:seeker from zero to 1.2 billion organic views and a team of 18, without a single
+            paid ad.
+          </p>
+          <div className="mt-lg">
+            <Link
+              href={APPLY_PATH}
+              className="inline-block bg-red text-bone font-obviously font-medium lowercase text-[16px] px-8 py-4 rounded-button hover:bg-dark-red"
+            >
+              apply for founding cohort
+            </Link>
+            <p className="font-obviously text-bone/55 lowercase text-[13px] mt-3">
+              takes less than 5 minutes. no payment required.
+            </p>
           </div>
+          <p className="font-obviously font-medium text-bone lowercase text-[13px] mt-[40px]">
+            founding member: $1,495/month → standard rate after april 20: $2,990/month · 6 spots available
+          </p>
         </div>
       </section>
 
@@ -255,7 +247,7 @@ export function CohortPageClient() {
             sound familiar?
           </p>
           <h2
-            className="font-obviously-wide font-semibold lowercase text-bone leading-[1.1] mt-xs max-w-[580px]"
+            className="font-obviously-wide font-semibold lowercase text-bone leading-[1.1] mt-xs"
             style={{ fontSize: "clamp(32px, 4vw, 48px)" }}
           >
             you&apos;ve built something real.
@@ -312,7 +304,7 @@ export function CohortPageClient() {
         <div className="mx-auto max-w-standard px-6 md:px-8">
           <p className="font-obviously font-medium text-red lowercase text-[14px]">the real cost</p>
           <h2
-            className="font-obviously-wide font-semibold lowercase text-bone leading-[1.1] mt-xs max-w-[580px]"
+            className="font-obviously-wide font-semibold lowercase text-bone leading-[1.1] mt-xs"
             style={{ fontSize: "clamp(32px, 4vw, 48px)" }}
           >
             every year you wait
@@ -357,7 +349,7 @@ export function CohortPageClient() {
             the architecture that changes it
           </p>
           <h2
-            className="font-obviously-wide font-semibold lowercase text-bone leading-[1.1] mt-xs max-w-[560px]"
+            className="font-obviously-wide font-semibold lowercase text-bone leading-[1.1] mt-xs"
             style={{ fontSize: "clamp(32px, 4vw, 48px)" }}
           >
             what if the ceiling
@@ -719,16 +711,6 @@ export function CohortPageClient() {
                 ))}
               </div>
             </div>
-          </div>
-          {/* Pull quote placeholder */}
-          <div className="mt-xl max-w-[680px]">
-            <div className="w-[35px] h-[2px] bg-red mb-4" />
-            <p className="font-tiempos-headline font-medium text-bone text-[20px] leading-[1.5]">
-              [Quote from a peer, client, or media figure about Stanley&apos;s calibre — coming soon]
-            </p>
-            <p className="font-obviously font-medium text-bone/55 lowercase text-[14px] mt-3">
-              — attribution
-            </p>
           </div>
         </div>
       </section>
