@@ -14,6 +14,7 @@ import {
 } from "@/components/ui";
 import Link from "next/link";
 import { getServices, getFeaturedCaseStudies, getTeams } from "@/lib/cms";
+import { TeamMarquee } from "./_components/team-marquee";
 
 export const metadata = {
   title: "agency | attn:seeker",
@@ -205,39 +206,7 @@ export default async function AgencyPage() {
           {sortedTeam.length === 0 ? (
             <p className="mt-6 font-tiempos-text text-bone/60">No team members available.</p>
           ) : (
-            <div className="mt-8 overflow-x-auto overflow-y-hidden pb-4 md:pb-6">
-              <div className="flex gap-4 md:gap-6" style={{ width: "max-content" }}>
-                {sortedTeam.map((member) => (
-                  <Link
-                    key={member.id}
-                    href={`/agency/team/${member.slug}`}
-                    className="group flex shrink-0 flex-col items-center text-center"
-                  >
-                    <div className="relative h-32 w-32 overflow-hidden rounded-full border-2 border-bone/10 bg-bone/5 md:h-40 md:w-40">
-                      {member.headshot ? (
-                        <Image
-                          src={member.headshot}
-                          alt=""
-                          fill
-                          className="object-cover transition-transform group-hover:scale-105"
-                          sizes="160px"
-                        />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center font-obviously text-2xl text-bone/30">
-                          {member.name.charAt(0)}
-                        </div>
-                      )}
-                    </div>
-                    <span className="mt-3 block font-obviously text-sm font-medium text-bone group-hover:text-red">
-                      {member.name}
-                    </span>
-                    {member.role ? (
-                      <Caption className="mt-0.5 text-bone/60">{member.role}</Caption>
-                    ) : null}
-                  </Link>
-                ))}
-              </div>
-            </div>
+            <TeamMarquee team={sortedTeam} />
           )}
           <div className="mt-8 flex justify-center">
             <Button variant="ghost" href="/agency/team">
