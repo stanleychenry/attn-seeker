@@ -1,6 +1,6 @@
 /**
  * Server-side Algolia search. Uses ALGOLIA_ADMIN_KEY only; no keys are exposed to the client.
- * Used by /api/search for YAP articles. Home and learn search use client-side InstantSearch with a search-only key.
+ * Used by server-side routes that need Algolia access. Home and nav search query Algolia client-side via liteClient.
  */
 
 import { algoliasearch } from "algoliasearch";
