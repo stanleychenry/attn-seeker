@@ -53,17 +53,6 @@ export function HomePageContent() {
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 flex justify-center pb-8">
-        <p className="font-obviously font-normal text-[13px] lowercase text-bone/85">
-          <span>{STATS.followerCount} followers</span>
-          <span className="mx-2">·</span>
-          <span>{STATS.viewCount} views</span>
-          <span className="mx-2">·</span>
-          <span>{STATS.countries} countries</span>
-          <span className="mx-2">·</span>
-          <span>{STATS.paidAds} paid ads</span>
-        </p>
-      </div>
     </div>
   );
 }
