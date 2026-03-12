@@ -193,17 +193,18 @@ export default function ShikakuGameClient() {
   }, [isComplete, timer]);
 
   useEffect(() => {
-    if (!isComplete || !authUser || submittedRef.current) return;
+    if (!isComplete || !authUser?.email || submittedRef.current) return;
     submittedRef.current = true;
     const today = new Date().toISOString().split("T")[0];
     submitGameResult({
+      user_email: authUser.email,
       game_type: "shikaku",
       date: today,
       completed: true,
       time_seconds: timer,
       rectangles_used: rectangles.length,
     }).catch(() => {});
-  }, [isComplete, timer, authUser?.id, rectangles.length]);
+  }, [isComplete, timer, authUser?.email, rectangles.length]);
 
   const getCellFromPosition = useCallback((clientX: number, clientY: number) => {
     const el = boardRef.current;

@@ -116,7 +116,7 @@ export function useSeekers(): UseSeekersReturn {
     setIsLoading(true);
     setError(null);
     try {
-      const data = await getDashboard();
+      const data = await getDashboard(authUser.email);
       setUser(
         mapDashboardToSeekers(
           authUser.email,
