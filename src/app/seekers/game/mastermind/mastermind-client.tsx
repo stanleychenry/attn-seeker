@@ -151,18 +151,17 @@ export default function MastermindGameClient() {
   }, [gameState, guesses, timer]);
 
   useEffect(() => {
-    if (gameState !== "won" || !authUser?.email || submittedRef.current) return;
+    if (gameState !== "won" || !authUser || submittedRef.current) return;
     submittedRef.current = true;
     const today = new Date().toISOString().split("T")[0];
     submitGameResult({
-      user_email: authUser.email,
       game_type: "mastermind",
       date: today,
       completed: true,
       time_seconds: timer,
       guesses_used: guesses.length,
     }).catch(() => {});
-  }, [gameState, timer, authUser?.email, guesses.length]);
+  }, [gameState, timer, authUser?.id, guesses.length]);
 
   const handleColourSelect = useCallback(
     (colourId: string) => {

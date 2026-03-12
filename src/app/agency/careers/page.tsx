@@ -47,22 +47,19 @@ export default async function CareersPage() {
             <div>
               <Heading level={3}>own it</Heading>
               <Body size="small" className="mt-2 text-black/70">
-                we trust our people to take ownership. no micromanaging, no
-                hand-holding. you run your work.
+                Do what you say you&apos;ll do, and put your hand up when you don&apos;t.
               </Body>
             </div>
             <div>
               <Heading level={3}>back each other</Heading>
               <Body size="small" className="mt-2 text-black/70">
-                we&apos;re a team first. we celebrate wins together and pick
-                each other up when things get hard.
+                No one here wins alone. Be honest, be kind, and don&apos;t wait until it&apos;s too late.
               </Body>
             </div>
             <div>
               <Heading level={3}>never settle</Heading>
               <Body size="small" className="mt-2 text-black/70">
-                good enough isn&apos;t good enough. we push for better work,
-                better ideas, and better results.
+                Stay curious, stay coachable, and keep making it better.
               </Body>
             </div>
           </div>

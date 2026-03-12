@@ -206,18 +206,17 @@ export default function AkariGameClient() {
   }, [isComplete, timer]);
 
   useEffect(() => {
-    if (!isComplete || !authUser?.email || submittedRef.current) return;
+    if (!isComplete || !authUser || submittedRef.current) return;
     submittedRef.current = true;
     const today = new Date().toISOString().split("T")[0];
     submitGameResult({
-      user_email: authUser.email,
       game_type: "akari",
       date: today,
       completed: true,
       time_seconds: timer,
       bulbs_used: bulbs.size,
     }).catch(() => {});
-  }, [isComplete, timer, authUser?.email, bulbs.size]);
+  }, [isComplete, timer, authUser?.id, bulbs.size]);
 
   const getIlluminatedCells = useCallback(
     (bulbSet: Set<string>): Set<string> => {

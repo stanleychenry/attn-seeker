@@ -53,7 +53,7 @@ export default function ProfilePageClient() {
     }
     setProfileLoading(true);
     try {
-      const data = await getUserProfile(authUser.email);
+      const data = await getUserProfile();
       if (data.code) {
         setProfile(null);
         return;
@@ -80,7 +80,6 @@ export default function ProfilePageClient() {
     setSaveMessage(null);
     try {
       const result = await updateProfile({
-        email: authUser.email,
         first_name: firstName.trim() || undefined,
         last_name: lastName.trim() || undefined,
       });
@@ -100,7 +99,7 @@ export default function ProfilePageClient() {
     if (!authUser?.email) return;
     setFrequencySaving(true);
     try {
-      const result = await updateEmailFrequency(authUser.email, emailFrequency);
+      const result = await updateEmailFrequency(emailFrequency);
       if (result.success) {
         setSaveMessage("email preference saved");
       } else {
@@ -122,7 +121,7 @@ export default function ProfilePageClient() {
     if (!authUser?.email) return;
     setDeleting(true);
     try {
-      const result = await deleteAccount(authUser.email);
+      const result = await deleteAccount();
       if (result.success) {
         await logout();
         router.push("/?account=deleted");

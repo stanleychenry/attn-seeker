@@ -20,7 +20,7 @@ export default function StoreClient() {
   const [redeemingId, setRedeemingId] = useState<string | number | null>(null);
 
   const load = useCallback(async () => {
-    if (!isLoggedIn || !user?.email) {
+    if (!isLoggedIn || !user) {
       setBalance(null);
       setItems([]);
       setLoading(false);
@@ -30,7 +30,7 @@ export default function StoreClient() {
     setError(null);
     try {
       const [dash, storeList] = await Promise.all([
-        getDashboard(user.email),
+        getDashboard(),
         getStoreItems(),
       ]);
       setBalance(dash.yap_dollars ?? 0);
@@ -49,11 +49,11 @@ export default function StoreClient() {
   }, [load]);
 
   const handleRedeem = async (item: XanoStoreItem) => {
-    if (!user?.email) return;
+    if (!user) return;
     const id = item.id;
     setRedeemingId(id);
     try {
-      const result = await redeemReward(user.email, id);
+      const result = await redeemReward(id);
       if (result.message === "Success" && result.new_balance != null) {
         setBalance(result.new_balance);
       }

@@ -18,9 +18,9 @@ function url(path: string, params?: Record<string, string>) {
   return `${u}${u.includes("?") ? "&" : "?"}${search}`;
 }
 
-function authHeaders(): Record<string, string> {
+async function authHeaders(): Promise<Record<string, string>> {
   const headers: Record<string, string> = { "Content-Type": "application/json" };
-  const token = getMemberstackToken();
+  const token = await getMemberstackToken();
   if (token) headers["Authorization"] = `Bearer ${token}`;
   return headers;
 }
@@ -28,7 +28,7 @@ function authHeaders(): Record<string, string> {
 async function get<T>(path: string, params?: Record<string, string>): Promise<T> {
   const res = await fetch(url(path, params), {
     method: "GET",
-    headers: authHeaders(),
+    headers: await authHeaders(),
   });
   if (!res.ok) throw new Error(`Xano GET ${path}: ${res.status}`);
   return res.json() as Promise<T>;
@@ -37,7 +37,7 @@ async function get<T>(path: string, params?: Record<string, string>): Promise<T>
 async function post<T>(path: string, body: Record<string, unknown>): Promise<T> {
   const res = await fetch(url(path), {
     method: "POST",
-    headers: authHeaders(),
+    headers: await authHeaders(),
     body: JSON.stringify(body),
   });
   if (!res.ok) throw new Error(`Xano POST ${path}: ${res.status}`);
@@ -102,7 +102,6 @@ export interface XanoUserProfile {
 }
 
 export interface XanoUpdateProfilePayload {
-  email: string;
   first_name?: string;
   last_name?: string;
   phone_number?: string;
@@ -135,7 +134,6 @@ export interface XanoLeaderboardEntry {
 }
 
 export interface XanoSubmitGamePayload {
-  user_email: string;
   game_type: string;
   date: string;
   completed?: boolean;
@@ -154,8 +152,8 @@ export interface XanoSubmitGameResult {
 
 // --- API functions ---
 
-export async function getDashboard(email: string): Promise<XanoDashboard> {
-  return get<XanoDashboard>("get_dashboard", { email });
+export async function getDashboard(): Promise<XanoDashboard> {
+  return get<XanoDashboard>("get_dashboard");
 }
 
 export async function getStoreItems(): Promise<XanoStoreItem[]> {
@@ -164,14 +162,13 @@ export async function getStoreItems(): Promise<XanoStoreItem[]> {
 }
 
 export async function redeemReward(
-  email: string,
   rewardId: string | number
 ): Promise<XanoRedeemResult> {
-  return post<XanoRedeemResult>("redeem_reward", { email, reward_id: rewardId });
+  return post<XanoRedeemResult>("redeem_reward", { reward_id: rewardId });
 }
 
-export async function getUserProfile(email: string): Promise<XanoUserProfile> {
-  return get<XanoUserProfile>("get_user_profile", { email });
+export async function getUserProfile(): Promise<XanoUserProfile> {
+  return get<XanoUserProfile>("get_user_profile");
 }
 
 export async function updateProfile(
@@ -181,17 +178,15 @@ export async function updateProfile(
 }
 
 export async function updateEmailFrequency(
-  email: string,
   emailFrequency: string
 ): Promise<{ success?: boolean; message?: string }> {
   return post<{ success?: boolean; message?: string }>("seekers/update_email_frequency", {
-    email,
     email_frequency: emailFrequency,
   });
 }
 
-export async function deleteAccount(email: string): Promise<{ success?: boolean; message?: string }> {
-  return post<{ success?: boolean; message?: string }>("seekers/delete_account", { email });
+export async function deleteAccount(): Promise<{ success?: boolean; message?: string }> {
+  return post<{ success?: boolean; message?: string }>("seekers/delete_account", {});
 }
 
 export async function getGameLeaderboard(params: {

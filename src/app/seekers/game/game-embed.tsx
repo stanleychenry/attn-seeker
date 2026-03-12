@@ -59,14 +59,12 @@ export default function GameEmbed({ game }: GameEmbedProps) {
 
       if (data.type !== "GAME_COMPLETE") return;
 
-      const email = user?.email;
-      if (!email) return;
+      if (!user) return;
 
       const today = new Date().toISOString().split("T")[0];
       const d = data.data ?? {};
       try {
         await submitGameResult({
-          user_email: email,
           game_type: data.game ?? game,
           date: today,
           completed: (d.completed as boolean) ?? true,
