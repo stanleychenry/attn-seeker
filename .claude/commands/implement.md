@@ -1,10 +1,10 @@
-﻿Implement a plan from the plans folder.
+Implement a plan from the plans folder.
 
 Usage: /implement [paste plan filename or full path]
 
 Steps:
-1. Open and read the specified plan file from T:\Kevan Hedwig\Cohort\plans\
-2. Re-read CLAUDE.md and affected files to confirm current state matches what the plan expects
+1. Open and read the specified plan file from T:\Kevan Hedwig\attn-seeker\plans\
+2. Re-read CLAUDE.md and all affected files listed in the plan to confirm current state matches what the plan expects
 3. Execute every task in the plan in sequence
 4. Check off each task as completed (update [ ] to [x] in the plan file)
 5. When all steps are done:
