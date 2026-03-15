@@ -1,11 +1,22 @@
 "use client";
 
+import { useEffect } from "react";
 import Image from "next/image";
 import { HomeSearch } from "@/components/search";
 import { QuickPills } from "@/components/search/quick-pills";
 import { ProfileCircle } from "@/components/layout/profile-circle";
 
+declare global {
+  function fbq(track: string, event: string, params?: object, options?: object): void;
+}
+
 export default function ThankYouPage() {
+  useEffect(() => {
+    const sessionId = new URLSearchParams(window.location.search).get("session_id");
+    // TODO: value should be dynamic when this page is used for multiple products
+    fbq("track", "Purchase", { currency: "NZD", value: 79 }, { eventID: sessionId });
+  }, []);
+
   return (
     <div className="relative flex h-screen flex-col items-center justify-center overflow-hidden bg-black px-sm">
       <div className="fixed top-4 right-6 z-50">
