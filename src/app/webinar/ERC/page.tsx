@@ -134,7 +134,7 @@ export default function ErcWebinarPage() {
         <div className="absolute inset-0 bg-black/65" />
         {/* Content */}
         <div className="relative mx-auto w-full max-w-[900px] [container-type:inline-size]">
-          <h1 className="w-full overflow-hidden whitespace-nowrap font-obviously-wide font-black leading-[0.9] lowercase text-white [font-size:clamp(1.5rem,_7vw,_4.5rem)]">
+          <h1 className="w-full whitespace-nowrap font-obviously-wide font-black leading-[1.15] lowercase text-white [font-size:clamp(1.5rem,_6vw,_4rem)]">
             get your first<br />10,000 followers
           </h1>
           <div className="mt-6 md:mt-8 md:grid md:grid-cols-[1fr,auto] md:gap-10 md:items-start">
