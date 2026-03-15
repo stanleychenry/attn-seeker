@@ -134,16 +134,16 @@ export default function ErcWebinarPage() {
         <div className="absolute inset-0 bg-black/65" />
         {/* Content */}
         <div className="relative mx-auto w-full max-w-[900px]">
-          <div className="md:grid md:grid-cols-[1fr,auto] md:gap-10 md:items-center">
+          <h1 className="w-full font-obviously-wide font-black leading-[0.92] lowercase text-white text-[2.25rem] md:text-[4rem] lg:text-[5.5rem]">
+            get your first<br />10,000 followers
+          </h1>
+          <div className="mt-6 md:mt-8 md:grid md:grid-cols-[1fr,auto] md:gap-10 md:items-center">
             <div className="min-w-0 max-w-full">
-              <h1 className="font-obviously-wide text-h1-mobile font-black leading-tight lowercase text-white md:text-h1">
-                get your first 10K followers
-              </h1>
-              <p className="mt-4 font-tiempos-text text-body-lg-mobile text-white/90 md:text-body-lg">
+              <p className="font-tiempos-text text-[1.2rem] leading-relaxed text-white/90 md:text-[1.375rem]">
                 The exact framework behind 1 billion+ organic views, taught live
                 in 90 minutes.
               </p>
-              <p className="mt-2 font-obviously text-body-sm text-red md:text-body">
+              <p className="mt-2 font-obviously text-body text-red md:text-body-lg">
                 Live Workshop | {EVENT_DATE}, {EVENT_TIME} | 90 Minutes | $79 NZD
               </p>
             </div>
