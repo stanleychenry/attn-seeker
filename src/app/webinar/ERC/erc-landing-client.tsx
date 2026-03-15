@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Script from "next/script";
 import { STRIPE_PAYMENT_URL } from "./constants";
 
 const CTA = ({
@@ -22,6 +23,22 @@ const CTA = ({
     {children}
   </a>
 );
+
+export function StripeBuyButton() {
+  const BuyButton = "stripe-buy-button" as unknown as React.ElementType;
+  return (
+    <>
+      <Script
+        src="https://js.stripe.com/v3/buy-button.js"
+        strategy="lazyOnload"
+      />
+      <BuyButton
+        buy-button-id="buy_btn_1TAzkaS32BzFhGHoMTDEamWa"
+        publishable-key="pk_live_51Om1JLS32BzFhGHoc1xshj6RliKsJPKPu448jscHMkcIyM4N3DaVqoGDWVqhwJf9zIplNak4rLKqi1lmQiHZZio700daW6cPBD"
+      />
+    </>
+  );
+}
 
 const FAQ_ITEMS = [
   {
@@ -83,7 +100,7 @@ export function ErcLandingClient() {
             rel="noopener noreferrer"
             className="flex-1 rounded-lg bg-red py-3 text-center font-obviously text-base font-semibold text-white no-underline transition hover:bg-dark-red"
           >
-            Get Your Spot
+            Buy Now
           </a>
         </div>
       </div>
