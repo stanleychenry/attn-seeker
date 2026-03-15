@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { EVENT_DATE, EVENT_TIME, IMAGE_BASE } from "./constants";
-import { ErcLandingClient, CTA } from "./erc-landing-client";
+import { ErcLandingClient, CTA, StripeBuyButton } from "./erc-landing-client";
+import { MetaPixelEvent } from "@/components/meta-pixel";
 
 export const metadata: Metadata = {
   title: "The Easily Repeatable Content System | Live Workshop",
@@ -117,10 +118,23 @@ const AUDIENCE_ITEMS = [
 export default function ErcWebinarPage() {
   return (
     <div className="min-h-screen bg-[#0d0d0d] pb-20 text-white md:pb-0">
-      {/* Section 1: Hero — text block first, portrait image (hero-stanley) beside on desktop, below on mobile */}
-      <section className="px-4 pt-8 pb-12 md:pt-16 md:pb-20">
-        <div className="mx-auto w-full max-w-[900px]">
-          <div className="md:grid md:grid-cols-[1fr,minmax(0,340px)] md:gap-10 md:items-start">
+      <MetaPixelEvent event="ViewContent" />
+      {/* Section 1: Hero — full bleed background image, text left, Stripe card right */}
+      <section className="relative flex min-h-screen flex-col justify-center overflow-hidden px-4 py-16 md:py-24">
+        {/* Background image */}
+        <Image
+          src={`${IMAGE_BASE}/hero-stanley3.jpg`}
+          alt=""
+          fill
+          className="object-cover object-center"
+          priority
+          sizes="100vw"
+        />
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/65" />
+        {/* Content */}
+        <div className="relative mx-auto w-full max-w-[900px]">
+          <div className="md:grid md:grid-cols-[1fr,auto] md:gap-10 md:items-center">
             <div className="min-w-0 max-w-full">
               <h1 className="font-obviously-wide text-h1-mobile font-black leading-tight lowercase text-white md:text-h1">
                 get your first 10K followers
@@ -132,19 +146,9 @@ export default function ErcWebinarPage() {
               <p className="mt-2 font-obviously text-body-sm text-red md:text-body">
                 Live Workshop | {EVENT_DATE}, {EVENT_TIME} | 90 Minutes | $79 NZD
               </p>
-              <div id="hero-cta" className="mt-6">
-                <CTA>Get Your Spot for $79 NZD</CTA>
-              </div>
             </div>
-            <div className="relative mt-8 aspect-[3/4] w-full min-w-0 overflow-hidden rounded-lg md:mt-0 md:w-[340px]">
-              <Image
-                src={`${IMAGE_BASE}/hero-stanley.jpg`}
-                alt="Stanley Henry presenting"
-                fill
-                className="object-cover object-center"
-                priority
-                sizes="(max-width: 768px) 100vw, 340px"
-              />
+            <div id="hero-cta" className="mt-8 flex justify-center md:mt-0 md:block">
+              <StripeBuyButton />
             </div>
           </div>
         </div>
@@ -222,7 +226,7 @@ export default function ErcWebinarPage() {
             can build your own ERC and start posting it the next day.
           </p>
           <div className="mt-6">
-            <CTA>Join the Live Workshop for $79 NZD</CTA>
+            <CTA>Buy Now</CTA>
           </div>
         </div>
       </section>
@@ -266,8 +270,8 @@ export default function ErcWebinarPage() {
               </a>
             ))}
           </div>
-          <div className="mt-10 text-center">
-            <CTA>Learn the System Behind These Results</CTA>
+          <div className="mt-10">
+            <CTA>Buy Now</CTA>
           </div>
         </div>
       </section>
@@ -310,7 +314,7 @@ export default function ErcWebinarPage() {
             ))}
           </ul>
           <div className="mt-8">
-            <CTA>Get Your Spot for $79 NZD</CTA>
+            <CTA>Buy Now</CTA>
           </div>
         </div>
       </section>
@@ -384,9 +388,7 @@ export default function ErcWebinarPage() {
               loading="lazy"
             />
             <div className="mt-6 w-full">
-              <CTA className="block w-full text-center">
-                Get Your Spot for $79 NZD
-              </CTA>
+              <CTA className="block w-full text-center">Buy Now</CTA>
             </div>
           </div>
         </div>
@@ -406,7 +408,7 @@ export default function ErcWebinarPage() {
             learn the exact system behind over 1 billion organic views.
           </p>
           <div className="mt-8">
-            <CTA>Get Your Spot for $79 NZD</CTA>
+            <CTA>Buy Now</CTA>
           </div>
         </div>
       </section>
