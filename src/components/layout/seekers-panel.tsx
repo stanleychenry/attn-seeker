@@ -126,6 +126,9 @@ export function SeekersPanel({
         <Link href="/seekers/dashboard" className="text-black hover:text-red" onClick={onClose}>
           seekers dashboard
         </Link>
+        <Link href="/seekers/profile" className="text-black hover:text-red" onClick={onClose}>
+          profile
+        </Link>
         <Link href="/seekers/store" className="text-black hover:text-red" onClick={onClose}>
           rewards store
         </Link>

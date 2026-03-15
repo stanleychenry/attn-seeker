@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Heading, Section, Container } from "@/components/ui";
+import { Container } from "@/components/ui";
 import { useAuth } from "@/hooks/use-auth";
 import { useSeekers } from "@/hooks/use-seekers";
 import {
@@ -11,9 +11,57 @@ import {
   updateEmailFrequency,
   deleteAccount,
   type XanoUserProfile,
+  type XanoUpdateProfilePayload,
 } from "@/lib/xano";
 
-const TIER_DOT_COLOR: Record<string, string> = {
+type Tab = "profile" | "email" | "account";
+
+const TABS: { id: Tab; label: string }[] = [
+  { id: "profile", label: "profile" },
+  { id: "email", label: "email preferences" },
+  { id: "account", label: "account" },
+];
+
+const EMAIL_FREQUENCIES = [
+  {
+    value: "daily",
+    label: "daily",
+    description: "every weekday morning. never miss an issue.",
+  },
+  {
+    value: "3x_week",
+    label: "3x per week",
+    description: "monday, wednesday, and friday. the highlights.",
+  },
+  {
+    value: "sunday_digest",
+    label: "sunday digest",
+    description: "one weekly roundup every sunday. short and sweet.",
+  },
+];
+
+const INDUSTRIES = [
+  "advertising & marketing",
+  "arts & entertainment",
+  "construction",
+  "education",
+  "finance & insurance",
+  "food & beverage",
+  "health & wellness",
+  "hospitality & tourism",
+  "legal",
+  "manufacturing",
+  "media & publishing",
+  "non-profit",
+  "professional services",
+  "real estate",
+  "retail",
+  "technology",
+  "transport & logistics",
+  "other",
+];
+
+const TIER_DOT: Record<string, string> = {
   bronze: "bg-amber-600",
   silver: "bg-gray-400",
   gold: "bg-yellow-500",
@@ -21,95 +69,176 @@ const TIER_DOT_COLOR: Record<string, string> = {
   black: "bg-black",
 };
 
-const EMAIL_FREQUENCIES = [
-  { value: "daily", label: "daily" },
-  { value: "weekly", label: "weekly" },
-  { value: "monthly", label: "monthly" },
-  { value: "none", label: "none" },
-];
+type FormData = Omit<XanoUpdateProfilePayload, "email">;
 
+const EMPTY: FormData = {
+  first_name: "",
+  last_name: "",
+  phone_number: "",
+  birthday: "",
+  pronouns: "",
+  street_address: "",
+  suburb_city: "",
+  region_state: "",
+  postcode: "",
+  country: "",
+  job_title: "",
+  company_name: "",
+  industry: "",
+  social_instagram: "",
+  social_tiktok: "",
+  social_linkedin: "",
+  social_youtube: "",
+  social_x: "",
+  social_facebook: "",
+  social_threads: "",
+  website: "",
+  referral_source: "",
+};
+
+function profileToForm(d: XanoUserProfile): FormData {
+  const birthday = d.birthday
+    ? (() => {
+        try {
+          return new Date(d.birthday as string).toISOString().split("T")[0];
+        } catch {
+          return d.birthday as string;
+        }
+      })()
+    : "";
+  return {
+    first_name: d.first_name ?? "",
+    last_name: d.last_name ?? "",
+    phone_number: d.phone_number ?? "",
+    birthday,
+    pronouns: d.pronouns ?? "",
+    street_address: d.street_address ?? "",
+    suburb_city: d.suburb_city ?? "",
+    region_state: d.region_state ?? "",
+    postcode: d.postcode ?? "",
+    country: d.country ?? "",
+    job_title: d.job_title ?? "",
+    company_name: d.company_name ?? "",
+    industry: d.industry ?? "",
+    social_instagram: d.social_instagram ?? "",
+    social_tiktok: d.social_tiktok ?? "",
+    social_linkedin: d.social_linkedin ?? "",
+    social_youtube: d.social_youtube ?? "",
+    social_x: d.social_x ?? "",
+    social_facebook: d.social_facebook ?? "",
+    social_threads: d.social_threads ?? "",
+    website: d.website ?? "",
+    referral_source: d.referral_source ?? "",
+  };
+}
+
+// ── Shared input styles ───────────────────────────────────────────────────────
+const input =
+  "w-full rounded-[8px] border border-black/20 bg-white px-4 py-2.5 font-tiempos-text text-sm text-black transition-colors focus:border-red focus:outline-none placeholder:text-black/40";
+const inputReadonly =
+  "w-full cursor-not-allowed rounded-[8px] border border-black/10 bg-black/[0.03] px-4 py-2.5 font-tiempos-text text-sm text-black/40";
+const sectionLabel =
+  "mb-5 font-obviously text-[10px] font-medium uppercase tracking-[0.1em] text-red";
+const card = "rounded-[8px] bg-white p-6";
+
+// ── Field wrapper ─────────────────────────────────────────────────────────────
+function Field({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <label className="mb-1.5 block font-obviously text-xs lowercase text-black/55">
+        {label}
+      </label>
+      {children}
+    </div>
+  );
+}
+
+// ── Main component ────────────────────────────────────────────────────────────
 export default function ProfilePageClient() {
   const router = useRouter();
   const { user: authUser, isLoggedIn, logout } = useAuth();
-  const { user: seekersUser, activity, isLoading: seekersLoading } = useSeekers();
+  const { user: seekersUser, isLoading: seekersLoading } = useSeekers();
 
+  const [activeTab, setActiveTab] = useState<Tab>("profile");
   const [profile, setProfile] = useState<XanoUserProfile | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- setProfileLoading used for future loading UI
-  const [profileLoading, setProfileLoading] = useState(true);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [form, setForm] = useState<FormData>(EMPTY);
+
   const [saving, setSaving] = useState(false);
-  const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const [saveMsg, setSaveMsg] = useState<string | null>(null);
+
   const [emailFrequency, setEmailFrequency] = useState("daily");
-  const [frequencySaving, setFrequencySaving] = useState(false);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [freqSaving, setFreqSaving] = useState(false);
+  const [freqMsg, setFreqMsg] = useState<string | null>(null);
+
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [deleteErr, setDeleteErr] = useState<string | null>(null);
 
   const loadProfile = useCallback(async () => {
-    if (!authUser?.email) {
-      setProfile(null);
-      setProfileLoading(false);
-      return;
-    }
-    setProfileLoading(true);
+    if (!authUser?.email) return;
     try {
       const data = await getUserProfile(authUser.email);
-      if (data.code) {
-        setProfile(null);
-        return;
-      }
+      if (data.code) return;
       setProfile(data);
-      setFirstName(data.first_name ?? authUser.name.split(/\s+/)[0] ?? "");
-      setLastName(data.last_name ?? authUser.name.split(/\s+/).slice(1).join(" ") ?? "");
+      setForm(profileToForm(data));
       setEmailFrequency(data.email_frequency ?? "daily");
     } catch {
-      setProfile(null);
-    } finally {
-      setProfileLoading(false);
+      /* silent */
     }
-  }, [authUser?.email, authUser?.name]);
+  }, [authUser?.email]);
 
   useEffect(() => {
     loadProfile();
   }, [loadProfile]);
 
-  const handleSaveProfile = async (e: React.FormEvent) => {
+  const set = (field: keyof FormData, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+    setSaveMsg(null);
+  };
+
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!authUser?.email) return;
     setSaving(true);
-    setSaveMessage(null);
+    setSaveMsg(null);
     try {
-      const result = await updateProfile({
-        email: authUser.email,
-        first_name: firstName.trim() || undefined,
-        last_name: lastName.trim() || undefined,
+      const payload: XanoUpdateProfilePayload = { email: authUser.email };
+      (Object.keys(form) as Array<keyof FormData>).forEach((k) => {
+        const v = (form[k] ?? "").trim();
+        if (v && v !== "select industry") {
+          (payload as unknown as Record<string, string>)[k] = v;
+        }
       });
-      if (result.message === "Profile updated successfully") {
-        setSaveMessage("saved!");
-      } else {
-        setSaveMessage(result.message ?? "error saving");
-      }
+      const result = await updateProfile(payload);
+      setSaveMsg(
+        result.message === "Profile updated successfully"
+          ? "saved!"
+          : result.message ?? "error saving"
+      );
     } catch {
-      setSaveMessage("error saving");
+      setSaveMsg("error saving");
     } finally {
       setSaving(false);
     }
   };
 
-  const handleSaveFrequency = async () => {
+  const handleSaveFreq = async () => {
     if (!authUser?.email) return;
-    setFrequencySaving(true);
+    setFreqSaving(true);
+    setFreqMsg(null);
     try {
       const result = await updateEmailFrequency(authUser.email, emailFrequency);
-      if (result.success) {
-        setSaveMessage("email preference saved");
-      } else {
-        setSaveMessage(result.message ?? "error saving");
-      }
+      setFreqMsg(result.success ? "saved!" : result.message ?? "error saving");
     } catch {
-      setSaveMessage("error saving");
+      setFreqMsg("error saving");
     } finally {
-      setFrequencySaving(false);
+      setFreqSaving(false);
     }
   };
 
@@ -118,310 +247,610 @@ export default function ProfilePageClient() {
     router.push("/");
   };
 
-  const handleConfirmDelete = async () => {
+  const handleDelete = async () => {
     if (!authUser?.email) return;
     setDeleting(true);
+    setDeleteErr(null);
     try {
       const result = await deleteAccount(authUser.email);
       if (result.success) {
         await logout();
         router.push("/?account=deleted");
       } else {
-        setSaveMessage(result.message ?? "error deleting");
+        setDeleteErr(result.message ?? "error deleting");
         setDeleting(false);
       }
     } catch {
-      setSaveMessage("error deleting");
+      setDeleteErr("error deleting");
       setDeleting(false);
     }
   };
 
   if (!isLoggedIn || !authUser) {
     return (
-      <Section background="bone" padding="none" className="py-16 md:py-24">
+      <div className="min-h-screen bg-bone py-24">
         <Container width="standard">
           <p className="font-tiempos-text text-black/60">
-            sign in to view your profile.
+            Sign in to view your profile.
           </p>
         </Container>
-      </Section>
+      </div>
     );
   }
 
   const displayName =
-    [firstName, lastName].filter(Boolean).join(" ") || authUser.name;
-  const initials = (firstName[0] ?? "") + (lastName[0] ?? "") || authUser.name.slice(0, 2).toUpperCase();
-  const stats = seekersUser
-    ? [
-        { label: "status points", value: seekersUser.statusPoints.toLocaleString() },
-        { label: "yap dollars", value: `$${seekersUser.yapDollars}`, color: "text-red" },
-        { label: "day streak", value: `${seekersUser.currentStreak} days` },
-        { label: "articles read", value: String(seekersUser.articlesRead) },
-      ]
-    : [];
+    [form.first_name, form.last_name].filter(Boolean).join(" ") ||
+    authUser.name;
+  const initials =
+    ((form.first_name?.[0] ?? "") + (form.last_name?.[0] ?? "")).toUpperCase() ||
+    authUser.name.slice(0, 2).toUpperCase();
 
   return (
-    <>
-      <Section background="bone" padding="none" className="py-16 md:py-24">
+    <div className="min-h-screen bg-bone">
+      {/* ── Header ─────────────────────────────────────────────────── */}
+      <div className="border-b border-black/10 py-12 md:py-16">
         <Container width="standard">
-          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-red">
-            <span className="font-obviously-wide text-2xl font-bold text-bone">
-              {initials}
-            </span>
-          </div>
-          <h1 className="mt-5 font-obviously-wide text-[clamp(1.5rem,4vw,2.5rem)] font-bold leading-[1.1]">
-            {displayName.toLowerCase()}
-          </h1>
-          <p className="mt-2 font-obviously text-xs text-black/40">
-            {authUser.email}
-            {profile?.membership_number && (
-              <> · membership #{profile.membership_number}</>
-            )}
-          </p>
-          {seekersUser && (
-            <div className="mt-3 flex items-center gap-2">
-              <span
-                className={`h-2.5 w-2.5 rounded-full ${
-                  TIER_DOT_COLOR[seekersUser.tier] ?? "bg-black"
-                }`}
-              />
-              <span className="font-obviously text-sm font-medium text-black/70">
-                {seekersUser.tier} tier
+          <div className="flex items-center gap-5">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-red">
+              <span className="font-obviously-wide text-xl font-bold text-bone">
+                {initials}
               </span>
             </div>
-          )}
-        </Container>
-      </Section>
-
-      {stats.length > 0 && (
-        <Section background="bone" padding="none" className="pt-0">
-          <Container width="standard">
-            <div className="rounded-lg bg-white p-6">
-              <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-                {stats.map((stat) => (
-                  <div key={stat.label}>
-                    <p className="font-obviously text-xs text-black/55">
-                      {stat.label}
-                    </p>
-                    <p
-                      className={`mt-1 font-obviously-narrow text-2xl font-black leading-none ${
-                        (stat as { color?: string }).color ?? "text-black"
-                      }`}
-                    >
-                      {stat.value}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </Container>
-        </Section>
-      )}
-
-      <Section background="bone" padding="none" className="py-8 md:py-12">
-        <Container width="standard">
-          <Heading level={2} className="mb-6">
-            edit profile
-          </Heading>
-          <form
-            onSubmit={handleSaveProfile}
-            className="space-y-5 rounded-lg bg-white p-6"
-          >
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="mb-1.5 block font-obviously text-xs text-black/55">
-                  first name
-                </label>
-                <input
-                  type="text"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  className="w-full rounded-lg border border-black/20 bg-white px-4 py-2.5 font-tiempos-text text-sm transition-colors focus:border-red focus:outline-none"
-                />
-              </div>
-              <div>
-                <label className="mb-1.5 block font-obviously text-xs text-black/55">
-                  last name
-                </label>
-                <input
-                  type="text"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  className="w-full rounded-lg border border-black/20 bg-white px-4 py-2.5 font-tiempos-text text-sm transition-colors focus:border-red focus:outline-none"
-                />
-              </div>
-            </div>
-
             <div>
-              <label className="mb-1.5 block font-obviously text-xs text-black/55">
-                email
-              </label>
-              <input
-                type="email"
-                value={authUser.email}
-                readOnly
-                disabled
-                className="w-full cursor-not-allowed rounded-lg border border-black/10 bg-black/[0.03] px-4 py-2.5 font-tiempos-text text-sm text-black/40"
-              />
-            </div>
-
-            <div className="border-t border-black/5 pt-2">
-              <p className="mb-2 font-obviously text-xs text-black/55">
-                email frequency
+              <h1 className="font-obviously-wide text-[clamp(1.25rem,3vw,2rem)] font-bold leading-[1.1] lowercase">
+                {displayName.toLowerCase()}
+              </h1>
+              <p className="mt-1 font-obviously text-xs text-black/40">
+                {authUser.email}
+                {profile?.membership_number && (
+                  <> · member #{profile.membership_number}</>
+                )}
               </p>
-              <div className="flex flex-wrap gap-2">
+              {seekersUser && !seekersLoading && (
+                <div className="mt-2 flex items-center gap-2">
+                  <span
+                    className={`h-2 w-2 rounded-full ${
+                      TIER_DOT[seekersUser.tier] ?? "bg-black"
+                    }`}
+                  />
+                  <span className="font-obviously text-xs lowercase text-black/55">
+                    {seekersUser.tier} tier
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        </Container>
+      </div>
+
+      {/* ── Tab nav ────────────────────────────────────────────────── */}
+      <div className="border-b border-black/10">
+        <Container width="standard">
+          <div className="flex">
+            {TABS.map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveTab(tab.id)}
+                className={`border-b-2 px-5 py-4 font-obviously text-sm font-medium lowercase transition-colors ${
+                  activeTab === tab.id
+                    ? "border-red text-red"
+                    : "border-transparent text-black/50 hover:text-black/80"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </Container>
+      </div>
+
+      {/* ── Content ────────────────────────────────────────────────── */}
+      <div className="py-10 md:py-14">
+        <Container width="standard">
+          {/* ════ PROFILE TAB ════ */}
+          {activeTab === "profile" && (
+            <form onSubmit={handleSave} className="space-y-10">
+              {/* Personal */}
+              <section>
+                <p className={sectionLabel}>personal</p>
+                <div className={`${card} space-y-5`}>
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                    <Field label="first name">
+                      <input
+                        type="text"
+                        value={form.first_name ?? ""}
+                        onChange={(e) => set("first_name", e.target.value)}
+                        className={input}
+                        placeholder="first name"
+                      />
+                    </Field>
+                    <Field label="last name">
+                      <input
+                        type="text"
+                        value={form.last_name ?? ""}
+                        onChange={(e) => set("last_name", e.target.value)}
+                        className={input}
+                        placeholder="last name"
+                      />
+                    </Field>
+                  </div>
+                  <Field label="email">
+                    <input
+                      type="email"
+                      value={authUser.email}
+                      readOnly
+                      disabled
+                      className={inputReadonly}
+                    />
+                  </Field>
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                    <Field label="phone number">
+                      <input
+                        type="tel"
+                        value={form.phone_number ?? ""}
+                        onChange={(e) => set("phone_number", e.target.value)}
+                        className={input}
+                        placeholder="+64 21 000 000"
+                      />
+                    </Field>
+                    <Field label="birthday">
+                      <input
+                        type="date"
+                        value={form.birthday ?? ""}
+                        onChange={(e) => set("birthday", e.target.value)}
+                        className={input}
+                      />
+                    </Field>
+                  </div>
+                  <Field label="pronouns">
+                    <input
+                      type="text"
+                      value={form.pronouns ?? ""}
+                      onChange={(e) => set("pronouns", e.target.value)}
+                      className={input}
+                      placeholder="e.g. they/them"
+                    />
+                  </Field>
+                </div>
+              </section>
+
+              {/* Address */}
+              <section>
+                <p className={sectionLabel}>address</p>
+                <div className={`${card} space-y-5`}>
+                  <Field label="street address">
+                    <input
+                      type="text"
+                      value={form.street_address ?? ""}
+                      onChange={(e) => set("street_address", e.target.value)}
+                      className={input}
+                      placeholder="123 main street"
+                    />
+                  </Field>
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                    <Field label="suburb / city">
+                      <input
+                        type="text"
+                        value={form.suburb_city ?? ""}
+                        onChange={(e) => set("suburb_city", e.target.value)}
+                        className={input}
+                        placeholder="auckland"
+                      />
+                    </Field>
+                    <Field label="region / state">
+                      <input
+                        type="text"
+                        value={form.region_state ?? ""}
+                        onChange={(e) => set("region_state", e.target.value)}
+                        className={input}
+                        placeholder="auckland"
+                      />
+                    </Field>
+                  </div>
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                    <Field label="postcode">
+                      <input
+                        type="text"
+                        value={form.postcode ?? ""}
+                        onChange={(e) => set("postcode", e.target.value)}
+                        className={input}
+                        placeholder="1010"
+                      />
+                    </Field>
+                    <Field label="country">
+                      <input
+                        type="text"
+                        value={form.country ?? ""}
+                        onChange={(e) => set("country", e.target.value)}
+                        className={input}
+                        placeholder="new zealand"
+                      />
+                    </Field>
+                  </div>
+                </div>
+              </section>
+
+              {/* Work */}
+              <section>
+                <p className={sectionLabel}>work</p>
+                <div className={`${card} space-y-5`}>
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                    <Field label="job title">
+                      <input
+                        type="text"
+                        value={form.job_title ?? ""}
+                        onChange={(e) => set("job_title", e.target.value)}
+                        className={input}
+                        placeholder="marketing manager"
+                      />
+                    </Field>
+                    <Field label="company">
+                      <input
+                        type="text"
+                        value={form.company_name ?? ""}
+                        onChange={(e) => set("company_name", e.target.value)}
+                        className={input}
+                        placeholder="company name"
+                      />
+                    </Field>
+                  </div>
+                  <Field label="industry">
+                    <select
+                      value={form.industry ?? ""}
+                      onChange={(e) => set("industry", e.target.value)}
+                      className={input}
+                    >
+                      <option value="">select industry</option>
+                      {INDUSTRIES.map((ind) => (
+                        <option key={ind} value={ind}>
+                          {ind}
+                        </option>
+                      ))}
+                    </select>
+                  </Field>
+                </div>
+              </section>
+
+              {/* Social */}
+              <section>
+                <p className={sectionLabel}>social & web</p>
+                <div className={`${card} space-y-5`}>
+                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                    <Field label="instagram">
+                      <input
+                        type="text"
+                        value={form.social_instagram ?? ""}
+                        onChange={(e) => set("social_instagram", e.target.value)}
+                        className={input}
+                        placeholder="@handle"
+                      />
+                    </Field>
+                    <Field label="tiktok">
+                      <input
+                        type="text"
+                        value={form.social_tiktok ?? ""}
+                        onChange={(e) => set("social_tiktok", e.target.value)}
+                        className={input}
+                        placeholder="@handle"
+                      />
+                    </Field>
+                    <Field label="linkedin">
+                      <input
+                        type="text"
+                        value={form.social_linkedin ?? ""}
+                        onChange={(e) => set("social_linkedin", e.target.value)}
+                        className={input}
+                        placeholder="linkedin.com/in/yourname"
+                      />
+                    </Field>
+                    <Field label="youtube">
+                      <input
+                        type="text"
+                        value={form.social_youtube ?? ""}
+                        onChange={(e) => set("social_youtube", e.target.value)}
+                        className={input}
+                        placeholder="@channel"
+                      />
+                    </Field>
+                    <Field label="x / twitter">
+                      <input
+                        type="text"
+                        value={form.social_x ?? ""}
+                        onChange={(e) => set("social_x", e.target.value)}
+                        className={input}
+                        placeholder="@handle"
+                      />
+                    </Field>
+                    <Field label="facebook">
+                      <input
+                        type="text"
+                        value={form.social_facebook ?? ""}
+                        onChange={(e) => set("social_facebook", e.target.value)}
+                        className={input}
+                        placeholder="facebook.com/yourpage"
+                      />
+                    </Field>
+                    <Field label="threads">
+                      <input
+                        type="text"
+                        value={form.social_threads ?? ""}
+                        onChange={(e) => set("social_threads", e.target.value)}
+                        className={input}
+                        placeholder="@handle"
+                      />
+                    </Field>
+                    <Field label="website">
+                      <input
+                        type="url"
+                        value={form.website ?? ""}
+                        onChange={(e) => set("website", e.target.value)}
+                        className={input}
+                        placeholder="https://yoursite.com"
+                      />
+                    </Field>
+                  </div>
+                </div>
+              </section>
+
+              {/* Other */}
+              <section>
+                <p className={sectionLabel}>other</p>
+                <div className={card}>
+                  <Field label="how did you hear about us?">
+                    <input
+                      type="text"
+                      value={form.referral_source ?? ""}
+                      onChange={(e) => set("referral_source", e.target.value)}
+                      className={input}
+                      placeholder="instagram, a friend, google..."
+                    />
+                  </Field>
+                </div>
+              </section>
+
+              {/* Save */}
+              <div className="flex items-center gap-4">
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="rounded-[8px] bg-red px-8 py-3 font-obviously text-sm font-medium lowercase text-bone transition-colors hover:bg-[#CC0000] disabled:opacity-60"
+                >
+                  {saving ? "saving..." : "save changes"}
+                </button>
+                {saveMsg && (
+                  <span className="font-obviously text-xs text-black/55">
+                    {saveMsg}
+                  </span>
+                )}
+              </div>
+            </form>
+          )}
+
+          {/* ════ EMAIL PREFERENCES TAB ════ */}
+          {activeTab === "email" && (
+            <div className="max-w-[560px]">
+              <div className="mb-8">
+                <h2 className="font-obviously-wide text-2xl font-semibold lowercase">
+                  email preferences
+                </h2>
+                <p className="mt-2 font-tiempos-text text-sm text-black/60">
+                  Choose how often you receive the YAP newsletter. Changes may
+                  take up to 24 hours to apply.
+                </p>
+              </div>
+
+              <div className="space-y-3">
                 {EMAIL_FREQUENCIES.map((opt) => (
                   <button
                     key={opt.value}
                     type="button"
-                    onClick={() => setEmailFrequency(opt.value)}
-                    className={`rounded-full px-4 py-2 font-obviously text-xs ${
+                    onClick={() => {
+                      setEmailFrequency(opt.value);
+                      setFreqMsg(null);
+                    }}
+                    className={`w-full rounded-[8px] p-5 text-left transition-all ${
                       emailFrequency === opt.value
-                        ? "border-2 border-red bg-red/5 text-red"
-                        : "border border-black/20 text-black/70"
+                        ? "border-2 border-red bg-red/[0.04]"
+                        : "border border-black/15 bg-white hover:border-black/30"
                     }`}
                   >
-                    {opt.label}
+                    <p
+                      className={`font-obviously text-sm font-medium lowercase ${
+                        emailFrequency === opt.value ? "text-red" : "text-black"
+                      }`}
+                    >
+                      {opt.label}
+                    </p>
+                    <p className="mt-1 font-tiempos-text text-sm text-black/55">
+                      {opt.description}
+                    </p>
                   </button>
                 ))}
               </div>
-              <button
-                type="button"
-                onClick={handleSaveFrequency}
-                disabled={frequencySaving}
-                className="mt-2 rounded-full border border-black/20 px-4 py-2 font-obviously text-xs text-black/60"
-              >
-                {frequencySaving ? "saving…" : "save email preference"}
-              </button>
-            </div>
 
-            <div className="pt-2">
-              <button
-                type="submit"
-                disabled={saving}
-                className="rounded-full bg-red px-8 py-2.5 font-obviously text-xs font-medium text-bone transition-colors hover:bg-red/90"
-              >
-                {saving ? "saving…" : "save changes"}
-              </button>
-              {saveMessage && (
-                <span className="ml-3 font-obviously text-xs text-black/55">
-                  {saveMessage}
-                </span>
-              )}
-            </div>
-          </form>
-        </Container>
-      </Section>
-
-      {!seekersLoading && activity.length > 0 && (
-        <Section
-          background="bone"
-          padding="none"
-          className="border-t border-black/10 py-8 md:py-12"
-        >
-          <Container width="standard">
-            <Heading level={2} className="mb-6">
-              activity history
-            </Heading>
-            <div className="max-h-[500px] divide-y divide-black/5 overflow-y-auto rounded-lg bg-white">
-              {activity.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex items-center justify-between px-5 py-4"
+              <div className="mt-6 flex items-center gap-4">
+                <button
+                  type="button"
+                  onClick={handleSaveFreq}
+                  disabled={freqSaving}
+                  className="rounded-[8px] bg-red px-8 py-3 font-obviously text-sm font-medium lowercase text-bone transition-colors hover:bg-[#CC0000] disabled:opacity-60"
                 >
-                  <div>
-                    <p className="font-tiempos-text text-sm text-black/80">
-                      {item.description}
+                  {freqSaving ? "saving..." : "save preferences"}
+                </button>
+                {freqMsg && (
+                  <span className="font-obviously text-xs text-black/55">
+                    {freqMsg}
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* ════ ACCOUNT TAB ════ */}
+          {activeTab === "account" && (
+            <div className="max-w-[560px] space-y-10">
+              {/* Stats */}
+              {seekersUser && !seekersLoading && (
+                <section>
+                  <p className={sectionLabel}>your stats</p>
+                  <div className={card}>
+                    <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
+                      {[
+                        {
+                          label: "status points",
+                          value: seekersUser.statusPoints.toLocaleString(),
+                        },
+                        {
+                          label: "yap dollars",
+                          value: `$${seekersUser.yapDollars}`,
+                          accent: true,
+                        },
+                        {
+                          label: "day streak",
+                          value: String(seekersUser.currentStreak),
+                        },
+                        {
+                          label: "articles read",
+                          value: String(seekersUser.articlesRead),
+                        },
+                      ].map((stat) => (
+                        <div key={stat.label}>
+                          <p className="font-obviously text-[10px] uppercase tracking-[0.08em] text-black/40">
+                            {stat.label}
+                          </p>
+                          <p
+                            className={`mt-1 font-obviously-narrow text-3xl font-black leading-none ${
+                              stat.accent ? "text-red" : "text-black"
+                            }`}
+                          >
+                            {stat.value}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </section>
+              )}
+
+              {/* Membership */}
+              {profile?.membership_number && (
+                <section>
+                  <p className={sectionLabel}>membership</p>
+                  <div className={card}>
+                    <p className="font-obviously text-[10px] uppercase tracking-[0.08em] text-black/40">
+                      member number
                     </p>
-                    <p className="mt-0.5 font-obviously text-[10px] text-black/40">
-                      {new Date(item.timestamp).toLocaleDateString("en-NZ", {
-                        day: "numeric",
-                        month: "short",
-                      })}
+                    <p className="mt-1 font-obviously-wide text-xl font-semibold lowercase">
+                      #{profile.membership_number}
+                    </p>
+                    {seekersUser && (
+                      <div className="mt-4 flex items-center gap-2">
+                        <span
+                          className={`h-2.5 w-2.5 rounded-full ${
+                            TIER_DOT[seekersUser.tier] ?? "bg-black"
+                          }`}
+                        />
+                        <span className="font-obviously text-sm font-medium lowercase text-black/70">
+                          {seekersUser.tier} tier
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </section>
+              )}
+
+              {/* Actions */}
+              <section>
+                <p className={sectionLabel}>account actions</p>
+                <div className="space-y-3">
+                  <div>
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      className="rounded-[8px] border border-black/20 px-6 py-3 font-obviously text-sm font-medium lowercase text-black transition-colors hover:border-black/40 hover:bg-black/[0.03]"
+                    >
+                      log out
+                    </button>
+                  </div>
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setDeleteOpen(true);
+                        setDeleteErr(null);
+                      }}
+                      className="rounded-[8px] border border-red/40 px-6 py-3 font-obviously text-sm font-medium lowercase text-red transition-colors hover:bg-red/[0.05]"
+                    >
+                      delete account
+                    </button>
+                    <p className="mt-2 font-obviously text-xs text-black/40">
+                      removes your seekers data. does not delete your
+                      memberstack login.
                     </p>
                   </div>
-                  <span className="ml-4 shrink-0 font-obviously-narrow text-sm font-black text-red">
-                    +{item.pointsEarned} pts
-                  </span>
                 </div>
-              ))}
+              </section>
+
+              <p className="font-obviously text-xs text-black/40">
+                need help?{" "}
+                <a
+                  href="mailto:hello@attnseeker.com"
+                  className="text-red hover:underline"
+                >
+                  hello@attnseeker.com
+                </a>
+              </p>
             </div>
-          </Container>
-        </Section>
-      )}
-
-      <Section
-        background="bone"
-        padding="none"
-        className="border-t border-black/10 py-8 md:py-16"
-      >
-        <Container width="standard">
-          <div className="flex flex-col items-start gap-4">
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="rounded-full border border-black/20 px-6 py-2.5 font-obviously text-xs font-medium text-black/60 transition-colors hover:border-black/40"
-            >
-              log out
-            </button>
-            <button
-              type="button"
-              onClick={() => setDeleteModalOpen(true)}
-              className="rounded-full border border-red/50 px-6 py-2.5 font-obviously text-xs font-medium text-red transition-colors hover:bg-red/10"
-            >
-              delete account
-            </button>
-            <p className="font-obviously text-xs text-black/40">
-              need help? email{" "}
-              <a
-                href="mailto:hello@attnseeker.com"
-                className="text-red hover:underline"
-              >
-                hello@attnseeker.com
-              </a>
-            </p>
-          </div>
+          )}
         </Container>
-      </Section>
+      </div>
 
-      {deleteModalOpen && (
+      {/* ── Delete modal ───────────────────────────────────────────── */}
+      {deleteOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
           role="dialog"
           aria-modal="true"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setDeleteOpen(false);
+          }}
         >
-          <div className="mx-4 max-w-md rounded-lg bg-white p-6">
-            <h3 className="font-obviously-wide text-lg font-semibold">
+          <div className="mx-4 w-full max-w-md rounded-[8px] bg-white p-8">
+            <h3 className="font-obviously-wide text-lg font-semibold lowercase">
               delete account
             </h3>
-            <p className="mt-2 font-tiempos-text text-sm text-black/70">
-              This will remove your seekers account and data. You can sign up
-              again later. This does not delete your Memberstack login.
+            <p className="mt-3 font-tiempos-text text-sm text-black/70">
+              This will remove your seekers account and all your data. You can
+              sign up again at any time. This does not delete your Memberstack
+              login.
             </p>
-            {saveMessage && (
-              <p className="mt-2 font-obviously text-xs text-red">{saveMessage}</p>
+            {deleteErr && (
+              <p className="mt-3 font-obviously text-xs text-red">
+                {deleteErr}
+              </p>
             )}
-            <div className="mt-6 flex gap-3">
+            <div className="mt-8 flex gap-3">
               <button
                 type="button"
-                onClick={() => setDeleteModalOpen(false)}
+                onClick={() => setDeleteOpen(false)}
                 disabled={deleting}
-                className="rounded-full border border-black/20 px-5 py-2.5 font-obviously text-xs"
+                className="rounded-[8px] border border-black/20 px-5 py-2.5 font-obviously text-sm lowercase"
               >
                 cancel
               </button>
               <button
                 type="button"
-                onClick={handleConfirmDelete}
+                onClick={handleDelete}
                 disabled={deleting}
-                className="rounded-full bg-red px-5 py-2.5 font-obviously text-xs font-medium text-bone"
+                className="rounded-[8px] bg-red px-5 py-2.5 font-obviously text-sm font-medium lowercase text-bone transition-colors hover:bg-[#CC0000] disabled:opacity-60"
               >
-                {deleting ? "deleting…" : "delete account"}
+                {deleting ? "deleting..." : "yes, delete"}
               </button>
             </div>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
