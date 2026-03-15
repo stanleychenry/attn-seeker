@@ -14,6 +14,7 @@ export interface AuthUser {
   id: string;
   name: string;
   email: string;
+  planIds: string[];
 }
 
 interface AuthContextValue {
@@ -33,13 +34,17 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-function memberToUser(member: { id: string; auth?: { email?: string }; customFields?: Record<string, unknown> }): AuthUser {
+function memberToUser(member: { id: string; auth?: { email?: string }; customFields?: Record<string, unknown>; planConnections?: Array<{ planId: string; active?: boolean; status?: string }> }): AuthUser {
   const email = member.auth?.email ?? "";
   const name = (member.customFields?.name as string) ?? (member.customFields?.firstName as string) ?? email.split("@")[0] ?? "user";
+  const planIds = (member.planConnections ?? [])
+    .filter((pc) => pc.active !== false && pc.status !== "canceled")
+    .map((pc) => pc.planId);
   return {
     id: member.id,
     name,
     email,
+    planIds,
   };
 }
 

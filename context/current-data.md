@@ -256,3 +256,66 @@ The codebase uses:
 ---
 
 This overview should give another AI or developer a complete mental model of what exists and how it fits together. For deeper detail on CMS schema, design tokens, or Xano middleware setup, use the referenced docs and the source files above.
+
+---
+
+## 16. Current Status & Open Items
+
+*Last updated: 2026-03-15*
+
+### Recent build (committed this session)
+- Favicon replaced — `src/app/favicon.ico` removed, `src/app/icon.png` added (red "a" monogram from `public/brand/logos/Favicon.png`). Next.js App Router picks this up automatically.
+- Careers page copy updated — "own it", "back each other", "never settle" values rewritten to match Stanley's voice.
+- `xano-workspace/` committed — full export of Xano backend (tables, APIs, middleware, functions). Version-controlled for history.
+- `run-sync.mts` committed — 3-line script to trigger Algolia sync manually.
+- `plans/` committed — contains `2026-03-09-home-search-algolia-rebuild.md`.
+- `.claude/commands/create-plan.md` and `implement.md` fixed — both had incorrect path pointing to `T:\Kevan Hedwig\Cohort\plans\`. Now correctly point to `T:\Kevan Hedwig\attn-seeker\plans\`. Also added decision logic to create-plan: isolated changes (text, copy, single component) don't need a plan; changes that could ripple across the site do.
+
+### Recent build (2026-03-15)
+**app.attnseeker.com subdomain — staff & client dashboards**
+Plan: `plans/2026-03-15-app-subdomain-dashboards.md` — complete.
+
+Files created:
+- `src/middleware.ts` — routes all `app.*` hostname requests to `/app/*` paths internally
+- `src/app/(app)/layout.tsx` — dashboard shell with auth guard (redirects unauthenticated users to `/seekers/login`, redirects users without client/staff plan to main site)
+- `src/app/(app)/dashboard/page.tsx` — placeholder dashboard page
+
+Files modified:
+- `src/hooks/use-auth.tsx` — `AuthUser` now includes `planIds: string[]` from Memberstack `planConnections`
+- `src/components/layout/seekers-panel.tsx` — "dashboard" renamed to "seekers dashboard"; client/staff plan holders get an extra "client dashboard" or "staff dashboard" link at the top
+- `src/components/layout/client-layout.tsx` — `/app` added to `NO_NAV_FOOTER_PATHS`
+- `src/lib/memberstack.ts` — added `setCookieOnRootDomain: true` so auth cookie is shared across subdomains
+
+Infrastructure:
+- `app.attnseeker.com` added as a domain in Vercel (verified, SSL provisioning)
+- Env vars added to Vercel + `.env.local`: `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_MEMBERSTACK_CLIENT_PLAN_ID`, `NEXT_PUBLIC_MEMBERSTACK_STAFF_PLAN_ID`
+- Memberstack plan IDs: Client = `pln_client-0zy70bv2`, Staff = `pln_staff-hey80brr`
+- Deployed to production
+
+### Open items
+
+**app.attnseeker.com DNS — waiting on IT**
+CNAME record needs to be added by IT: `app` → `cname.vercel-dns.com` on `attnseeker.com`.
+Email sent to IT this session. Once live, `app.attnseeker.com` will be fully active.
+
+**app.attnseeker.com dashboard content**
+The subdomain infrastructure is live but the dashboard page is a placeholder. Actual client and staff dashboard UI is a separate build — do not start until the DNS is confirmed working.
+
+**Memberstack secret key in .env.local**
+`MEMBERSTACK_SECRET_KEY=sk_598aec4d74b499a01498` appears to be invalid or expired (returns 401 from Memberstack admin API). Not blocking current work but worth refreshing from Memberstack → Settings → Secret Keys.
+
+**Algolia home search rebuild**
+Plan exists at `plans/2026-03-09-home-search-algolia-rebuild.md`. Status: ready to implement.
+Blocked on: Algolia plan upgrade to enable NeuralSearch (Stanley to do manually in Algolia dashboard).
+Steps 1–4 of the plan can be done without the upgrade. Step 5 (NeuralSearch) needs the upgrade first.
+
+**Xano token-based auth migration**
+A refactor was attempted to remove email from all Xano API calls and identify users via Memberstack JWT instead. It was reverted because it broke the site — Xano endpoints still require email and weren't updated. Thorough investigation found three blockers:
+1. `memberstack_jwt_auth` middleware exists but is NOT applied to the seekers API group — needs to be wired in Xano
+2. User table has no `memberstack_id` field — would need a new column + backfill for all existing users
+3. `redeem_reward` and `update_email_frequency` use email for downstream Stripe/Zapier/Beehiiv calls (fixable by reading `$user.email` after lookup, but still needs updating)
+Current state: email-based auth still in place and working. This is a proper backend migration — needs a plan, Xano backend first, then frontend. Do NOT retry frontend-only.
+
+### Preferences noted this session
+- Investigate thoroughly before making changes that affect live functionality. "Get it done once and get it done right."
+- For commands: `/create-plan` should always wait for Stanley's approval before implementing.

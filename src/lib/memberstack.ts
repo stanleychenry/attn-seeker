@@ -19,6 +19,7 @@ export async function getMemberstack(): Promise<MemberstackInstance | null> {
     instance = memberstackDOM.init({
       publicKey: key,
       useCookies: true,
+      setCookieOnRootDomain: true,
     });
   }
   return instance;

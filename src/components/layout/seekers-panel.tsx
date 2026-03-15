@@ -31,6 +31,10 @@ function relativeTime(iso: string): string {
   return d.toLocaleDateString();
 }
 
+const CLIENT_PLAN_ID = process.env.NEXT_PUBLIC_MEMBERSTACK_CLIENT_PLAN_ID ?? "";
+const STAFF_PLAN_ID = process.env.NEXT_PUBLIC_MEMBERSTACK_STAFF_PLAN_ID ?? "";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://app.attnseeker.com";
+
 export function SeekersPanel({
   open,
   onClose,
@@ -38,7 +42,7 @@ export function SeekersPanel({
   open: boolean;
   onClose: () => void;
 }) {
-  const { logout } = useAuth();
+  const { logout, user: authUser } = useAuth();
   const { user: seekersUser, activity } = useSeekers();
 
   if (!open) return null;
@@ -48,6 +52,9 @@ export function SeekersPanel({
 
   const tierColor = tierToColor(user.tier);
   const recentActivity = activity.slice(0, 3);
+
+  const isClient = authUser?.planIds.includes(CLIENT_PLAN_ID);
+  const isStaff = authUser?.planIds.includes(STAFF_PLAN_ID);
 
   return (
     <div
@@ -106,8 +113,18 @@ export function SeekersPanel({
       <Divider className="my-4" />
 
       <nav className="flex flex-col gap-2 font-obviously text-[14px] lowercase">
+        {isClient && (
+          <a href={`${APP_URL}/dashboard`} className="text-red hover:text-red/70" onClick={onClose}>
+            client dashboard
+          </a>
+        )}
+        {isStaff && (
+          <a href={`${APP_URL}/dashboard`} className="text-red hover:text-red/70" onClick={onClose}>
+            staff dashboard
+          </a>
+        )}
         <Link href="/seekers/dashboard" className="text-black hover:text-red" onClick={onClose}>
-          dashboard
+          seekers dashboard
         </Link>
         <Link href="/seekers/store" className="text-black hover:text-red" onClick={onClose}>
           rewards store

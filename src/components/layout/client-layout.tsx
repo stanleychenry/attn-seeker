@@ -7,7 +7,7 @@ import { Nav } from "./nav";
 import { Footer } from "./footer";
 
 const AUTH_PATHS = ["/seekers/login", "/seekers/signup"];
-const NO_NAV_FOOTER_PATHS = ["/webinar", "/coaching", "/workshop", "/cohort"];
+const NO_NAV_FOOTER_PATHS = ["/webinar", "/coaching", "/workshop", "/cohort", "/thank-you", "/app"];
 
 export function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
