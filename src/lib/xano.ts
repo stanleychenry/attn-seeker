@@ -184,7 +184,7 @@ export async function updateEmailFrequency(
   email: string,
   emailFrequency: string
 ): Promise<{ success?: boolean; message?: string }> {
-  return post<{ success?: boolean; message?: string }>("seekers/update_email_frequency", {
+  return post<{ success?: boolean; message?: string }>("update_email_frequency", {
     email,
     email_frequency: emailFrequency,
   });

@@ -233,8 +233,8 @@ export default function ProfilePageClient() {
     setFreqSaving(true);
     setFreqMsg(null);
     try {
-      const result = await updateEmailFrequency(authUser.email, emailFrequency);
-      setFreqMsg(result.success ? "saved!" : result.message ?? "error saving");
+      await updateEmailFrequency(authUser.email, emailFrequency);
+      setFreqMsg("saved!");
     } catch {
       setFreqMsg("error saving");
     } finally {
