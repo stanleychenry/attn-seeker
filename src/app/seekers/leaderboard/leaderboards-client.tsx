@@ -68,10 +68,17 @@ export default function LeaderboardsClient() {
           return res.json();
         })
         .then((data: unknown) => {
-          const list = Array.isArray(data) ? data : [];
+          let list = Array.isArray(data) ? (data as LeaderboardEntry[]) : [];
+          if (game.scoreColumn === "guesses") {
+            list = [...list].sort((a, b) => {
+              const ag = a.guesses ?? a.guesses_used ?? a.guessesUsed ?? Infinity;
+              const bg = b.guesses ?? b.guesses_used ?? b.guessesUsed ?? Infinity;
+              return Number(ag) - Number(bg);
+            });
+          }
           setBoards((prev) =>
             prev.map((b, idx) =>
-              idx === i ? { ...b, entries: list as LeaderboardEntry[], loading: false } : b
+              idx === i ? { ...b, entries: list, loading: false } : b
             )
           );
         })
