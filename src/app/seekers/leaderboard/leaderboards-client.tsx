@@ -9,6 +9,7 @@ interface LeaderboardEntry {
   timeSeconds?: number;
   guesses_used?: number;
   guessesUsed?: number;
+  guesses?: number;
   [key: string]: unknown;
 }
 
@@ -38,7 +39,7 @@ function formatScore(entry: LeaderboardEntry, scoreColumn: "time" | "guesses"): 
       return `${m}:${String(s).padStart(2, "0")}`;
     }
   } else {
-    const g = entry.guesses_used ?? entry.guessesUsed;
+    const g = entry.guesses ?? entry.guesses_used ?? entry.guessesUsed;
     if (g != null) {
       const n = Number(g);
       return `${n} guess${n !== 1 ? "es" : ""}`;
