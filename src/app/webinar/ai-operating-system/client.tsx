@@ -28,7 +28,7 @@ function RegisterButton({
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        "inline-block rounded-button bg-red text-black font-obviously-wide lowercase font-semibold transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red focus-visible:ring-offset-2 focus-visible:ring-offset-black",
+        "inline-block rounded-button bg-red text-bone font-obviously-wide lowercase font-semibold transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red focus-visible:ring-offset-2 focus-visible:ring-offset-black",
         large ? "px-10 py-5 text-xl md:text-2xl" : "px-6 py-4 text-base md:text-lg",
         className
       )}
@@ -68,78 +68,66 @@ function StickyNav() {
 
 function HeroSection() {
   return (
-    <section className="relative bg-black pt-16 overflow-hidden">
-      {/* Subtle background texture */}
+    <section className="relative bg-black pt-16 min-h-[90vh] flex items-center overflow-hidden">
+      {/* Full-bleed background photo */}
       <div className="absolute inset-0 z-0">
         <Image
-          src={IMG("hero-bg-abstract.jpg")}
+          src={IMG("stanley-hero.jpg")}
           alt=""
           fill
-          className="object-cover opacity-[0.12]"
+          className="object-cover object-center"
           priority
           aria-hidden="true"
         />
+        {/* Left-to-right gradient: opaque on left where text is, clear on right */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/75 to-black/30" />
+        {/* Top-to-bottom gradient: darker at top so headline pops */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/20 to-transparent" />
       </div>
 
-      <div className="relative z-10 max-w-[1100px] mx-auto px-4 md:px-8 py-16 md:py-24 lg:py-28">
-        <div className="grid md:grid-cols-[1fr_420px] lg:grid-cols-[1fr_500px] gap-10 md:gap-16 items-center">
-          {/* Left: Copy */}
-          <div>
-            {/* Badge */}
-            <div className="inline-flex items-center gap-3 mb-7">
-              <div className="w-0.5 h-5 bg-red rounded-full" />
-              <span className="font-tiempos-text text-bone/60 text-sm uppercase tracking-widest">
-                Live Workshop&nbsp;&nbsp;·&nbsp;&nbsp;Tuesday 31 March 2026
-              </span>
-            </div>
-
-            {/* Headline */}
-            <h1
-              className="font-obviously-wide lowercase text-bone leading-[1.0] mb-6"
-              style={{ fontSize: "clamp(36px, 6vw, 76px)" }}
-            >
-              what took me 3 months to build, you&apos;ll get in 2 hours.
-            </h1>
-
-            {/* Subheading */}
-            <p className="font-tiempos-text text-bone text-xl md:text-[22px] leading-[1.6] mb-6">
-              Build Your AI Brain — a live 2-hour workshop with Stanley Henry.
-              Learn the exact 5-layer AI system I built to run my business.
-              Leave with your foundation set up.
-            </p>
-
-            {/* Timezones */}
-            <p className="font-tiempos-text text-bone/50 text-sm md:text-[15px] mb-9">
-              11am New Zealand&nbsp;&nbsp;·&nbsp;&nbsp;9am
-              Sydney&nbsp;&nbsp;·&nbsp;&nbsp;6pm New
-              York&nbsp;&nbsp;·&nbsp;&nbsp;3pm Los Angeles
-            </p>
-
-            {/* CTA */}
-            <div className="mb-5">
-              <RegisterButton large className="w-full md:w-auto" />
-            </div>
-
-            {/* Note */}
-            <p className="font-tiempos-text text-bone/50 text-sm leading-relaxed max-w-[480px]">
-              Every attendee gets the full template download included. The
-              folder structure, all context templates, and the prompts to fill
-              them in. Yours just for showing up.
-            </p>
+      <div className="relative z-10 w-full max-w-[1100px] mx-auto px-4 md:px-8 py-20 md:py-28">
+        <div className="max-w-[600px]">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-3 mb-7">
+            <div className="w-0.5 h-5 bg-red rounded-full" />
+            <span className="font-tiempos-text text-bone/60 text-sm uppercase tracking-widest">
+              Live Workshop&nbsp;&nbsp;·&nbsp;&nbsp;Tuesday 31 March 2026
+            </span>
           </div>
 
-          {/* Right: Photo */}
-          <div className="relative w-full aspect-[3/4] md:aspect-auto md:h-[600px] lg:h-[680px]">
-            <Image
-              src={IMG("stanley-hero.jpg")}
-              alt="Stanley Henry, CEO of attn:seeker"
-              fill
-              className="object-cover object-top"
-              style={{ borderRadius: 0 }}
-              priority
-              sizes="(max-width: 768px) 100vw, 500px"
-            />
+          {/* Headline */}
+          <h1
+            className="font-obviously-wide lowercase text-bone leading-[1.0] mb-6"
+            style={{ fontSize: "clamp(40px, 6.5vw, 82px)" }}
+          >
+            build your ai brain.
+          </h1>
+
+          {/* Subheading */}
+          <p className="font-tiempos-text text-bone text-xl md:text-[22px] leading-[1.6] mb-6">
+            A live 2-hour workshop with Stanley Henry. Learn the exact 5-layer
+            AI system I built to run my business. Leave with your foundation
+            set up.
+          </p>
+
+          {/* Timezones */}
+          <p className="font-tiempos-text text-bone/50 text-sm md:text-[15px] mb-9">
+            11am New Zealand&nbsp;&nbsp;·&nbsp;&nbsp;9am
+            Sydney&nbsp;&nbsp;·&nbsp;&nbsp;6pm New
+            York&nbsp;&nbsp;·&nbsp;&nbsp;3pm Los Angeles
+          </p>
+
+          {/* CTA */}
+          <div className="mb-5">
+            <RegisterButton large className="w-full md:w-auto" />
           </div>
+
+          {/* Note */}
+          <p className="font-tiempos-text text-bone/50 text-sm leading-relaxed">
+            Every attendee gets the full template download included. The folder
+            structure, all context templates, and the prompts to fill them in.
+            Yours just for showing up.
+          </p>
         </div>
       </div>
     </section>
@@ -215,16 +203,15 @@ function ValueStackSection() {
         </div>
 
         {/* Template mockup visual */}
-        <div className="mt-16 border border-black/10 overflow-hidden">
-          <div className="relative w-full aspect-[16/7]">
-            <Image
-              src={IMG("template-mockup.jpg")}
-              alt="The full template download — folder structure, context templates, and prompts"
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 1100px"
-            />
-          </div>
+        <div className="mt-16 border border-black/10">
+          <Image
+            src={IMG("template-mockup.jpg")}
+            alt="The full template download — folder structure, context templates, and prompts"
+            width={1600}
+            height={900}
+            style={{ width: "100%", height: "auto" }}
+            sizes="(max-width: 768px) 100vw, 1100px"
+          />
           <div className="px-6 py-4 bg-black/5">
             <p className="font-tiempos-text text-black/60 text-sm text-center">
               The complete template pack — included with every registration.
@@ -367,8 +354,8 @@ function FrameworkSection() {
                   key={layer.n}
                   className="flex gap-6 pb-8 border-b border-bone/10 last:border-0 last:pb-0"
                 >
-                  <div className="shrink-0 w-20">
-                    <span className="font-obviously-wide text-red text-sm uppercase tracking-wide">
+                  <div className="shrink-0">
+                    <span className="font-obviously-wide text-red text-sm uppercase tracking-wide whitespace-nowrap">
                       Layer {layer.n}
                     </span>
                   </div>
@@ -390,13 +377,13 @@ function FrameworkSection() {
           </div>
 
           {/* Right: Diagram */}
-          <div className="relative w-full aspect-square md:sticky md:top-24">
+          <div className="w-full md:sticky md:top-24">
             <Image
               src={IMG("ai-layers-diagram.jpg")}
               alt="The 5-layer AI operating system diagram"
-              fill
-              className="object-cover"
-              style={{ borderRadius: 0 }}
+              width={1200}
+              height={1200}
+              style={{ width: "100%", height: "auto" }}
               sizes="(max-width: 768px) 100vw, 50vw"
             />
           </div>
@@ -409,7 +396,7 @@ function FrameworkSection() {
 // ─── Who This Is For ──────────────────────────────────────────────────────────
 
 const WHO_FOR_ITEMS = [
-  "You run a service business and you are still the bottleneck on everything",
+  "You run a business and you are still the bottleneck on everything",
   "You use ChatGPT or Claude occasionally but you have no system around it",
   "You are spending hours on work that should take 20 minutes",
   "You know AI is important but you do not know where to actually start",
@@ -461,13 +448,13 @@ function AboutSection() {
       <div className="max-w-[1100px] mx-auto px-4 md:px-8">
         <div className="grid md:grid-cols-[360px_1fr] gap-12 md:gap-16 items-start">
           {/* Photo */}
-          <div className="relative w-full aspect-[3/4] md:w-[360px] md:aspect-auto md:h-[500px]">
+          <div className="w-full md:w-[360px]">
             <Image
               src={IMG("stanley-about.JPG")}
               alt="Stanley Henry, CEO of The Attention Seeker"
-              fill
-              className="object-cover object-top"
-              style={{ borderRadius: 0 }}
+              width={720}
+              height={960}
+              style={{ width: "100%", height: "auto" }}
               sizes="(max-width: 768px) 100vw, 360px"
             />
           </div>
@@ -486,11 +473,9 @@ function AboutSection() {
                 based in Auckland, New Zealand.
               </p>
               <p>
-                We work with brands like Pizza Hut New Zealand, One NZ, and AA
-                Insurance. Clients we have worked with have generated 50 million
-                views in 20 days, grown from 15,000 to 110,000 followers, and
-                built some of the most watched social media in their categories
-                globally.
+                We have 1.4 million followers across our own platforms and
+                generate over 1.2 billion organic views every year. No paid
+                ads. Just content that works.
               </p>
               <p>
                 In late 2025 I started building an AI operating system for my
