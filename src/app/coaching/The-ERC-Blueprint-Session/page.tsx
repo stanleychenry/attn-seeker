@@ -6,11 +6,11 @@ import { CTA, ErcBlueprintFAQ } from "./erc-blueprint-client";
 export const metadata: Metadata = {
   title: "The ERC Blueprint Session | The Attention Seeker",
   description:
-    "A 60-minute strategy session where we build your Easily Repeatable Content Series from scratch. Includes pre-session research, custom blueprint, production plan, and 30 days of support. $497 NZD.",
+    "A 60-minute strategy session where we build your Easily Repeatable Content Series from scratch. Includes pre-session research, custom blueprint, production plan, and 30 days of support. $697 NZD.",
   openGraph: {
     title: "The ERC Blueprint Session | The Attention Seeker",
     description:
-      "A 60-minute strategy session where we build your Easily Repeatable Content Series from scratch. Includes pre-session research, custom blueprint, production plan, and 30 days of support. $497 NZD.",
+      "A 60-minute strategy session where we build your Easily Repeatable Content Series from scratch. Includes pre-session research, custom blueprint, production plan, and 30 days of support. $697 NZD.",
     images: [{ url: `${IMAGE_BASE}/hero-stanley.jpg` }],
   },
 };

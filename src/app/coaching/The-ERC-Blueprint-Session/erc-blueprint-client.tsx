@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { STRIPE_ERC_BLUEPRINT_URL } from "./constants";
 
-const CTA_LABEL = "reserve my blueprint session | $497 NZD";
+const CTA_LABEL = "reserve my blueprint session | $697 NZD";
 const CTA_MICRO = "60-minute 1-on-1 session. Pre-call research included. Satisfaction guaranteed.";
 
 export function CTA({
