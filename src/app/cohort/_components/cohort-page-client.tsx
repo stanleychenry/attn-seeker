@@ -187,9 +187,8 @@ export function CohortPageClient() {
           </h1>
           <p className="font-tiempos-text text-bone text-[18px] md:text-[20px] leading-[1.6] mt-md max-w-[500px]">
             The attn:seeker Cohort Programme is a 12-month peer group and coaching programme for
-            service business owners doing $500K to $5M. Built on the same system that took
-            attn:seeker from zero to 1.2 billion organic views and a team of 18, without a single
-            paid ad.
+            service business owners doing $500K to $5M. This is where you build a business that
+            operates on your standards without needing you in every room.
           </p>
           <div className="mt-lg">
             <Link
@@ -213,10 +212,10 @@ export function CohortPageClient() {
         <div className="mx-auto max-w-full px-6 md:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-full md:px-4">
             {[
-              { number: "1.2B", label: "organic views generated" },
-              { number: "1.4M", label: "followers across our platforms" },
-              { number: "35K", label: "daily newsletter readers" },
-              { number: "7 yrs", label: "zero paid ads" },
+              { number: "7", label: "years in business" },
+              { number: "18", label: "full-time staff" },
+              { number: "1.4M", label: "followers across platforms" },
+              { number: "1.2B", label: "organic views for clients" },
             ].map((stat, i) => (
               <div
                 key={i}
@@ -233,10 +232,6 @@ export function CohortPageClient() {
               </div>
             ))}
           </div>
-          <p className="font-tiempos-text text-bone/70 text-[16px] text-center mt-8 max-w-standard mx-auto px-6">
-            Every number above was earned organically. No paid media. No shortcuts. That&apos;s the
-            system we teach.
-          </p>
         </div>
       </section>
 
@@ -252,34 +247,36 @@ export function CohortPageClient() {
           >
             you&apos;ve built something real.
             <br />
-            and you&apos;re still the bottleneck.
+            but you&apos;re still the one
+            <br />
+            holding it together.
           </h2>
           <p className="font-tiempos-text text-bone text-[20px] leading-[1.6] mt-md max-w-[680px]">
-            You&apos;re past the early years. Revenue is real. The team is real. But something
-            isn&apos;t adding up. Every new client means more of you. Every expansion means more
-            hours. The ceiling isn&apos;t the market. It&apos;s the way you&apos;ve built the thing.
+            You&apos;re past the early days. You&apos;ve got serious revenue. You even have a team.
+            But the business still relies on your capacity to spin all the plates. Every new client,
+            every milestone, demands more of you, not less. Your capacity is the ceiling. And
+            it&apos;s costing you the business you actually want.
           </p>
-          <div className="mt-lg max-w-[680px] space-y-6">
+          <p className="font-obviously font-medium text-red lowercase text-[14px] mt-lg">
+            see if this sounds like you...
+          </p>
+          <div className="mt-4 max-w-[680px] space-y-6">
             {[
               {
                 statement: "Revenue has plateaued.",
-                sub: "Not because the market is slow. Because growth requires more of you, and you've run out of you.",
+                sub: "Not because the market is slow. Because growth requires more of you, and you've got no more to give.",
               },
               {
-                statement: "You're the rainmaker, the closer, and the fallback.",
-                sub: "Your team is good. But nothing happens without you in the room.",
+                statement: "Your team is capable. But nothing happens without you.",
+                sub: "You've become the bottleneck. And it's slowing everything down.",
               },
               {
                 statement: "You have no real peers.",
-                sub: "The people around you are employees, clients, or friends who can't speak to this level. You're making big decisions alone.",
+                sub: "The people around you are employees, clients, or friends who can't speak to this level. You're making the biggest calls alone.",
               },
               {
                 statement: "You've tried the courses. You've read the books.",
-                sub: "Generic advice for generic problems. You needed someone to look at your specific machine.",
-              },
-              {
-                statement: "The business runs. But it doesn't run without you.",
-                sub: "That's not scale. That's a well-paid job.",
+                sub: "You've gotten as far as you can on generic advice. Now, you need to learn from someone who can look at your business and help you hit that next level.",
               },
             ].map((item, i) => (
               <div key={i}>
@@ -294,7 +291,8 @@ export function CohortPageClient() {
           </div>
           <div className="border-t border-bone/10 my-xl" />
           <p className="font-tiempos-headline font-medium text-bone text-[26px] max-w-[600px]">
-            This is not a motivation problem. It&apos;s an architecture problem.
+            Your business runs, but only because you&apos;re in it. It&apos;s not scalable. At this
+            stage, it&apos;s just a well-paying job.
           </p>
         </div>
       </section>
@@ -307,28 +305,34 @@ export function CohortPageClient() {
             className="font-obviously-wide font-semibold lowercase text-bone leading-[1.1] mt-xs"
             style={{ fontSize: "clamp(32px, 4vw, 48px)" }}
           >
-            every year you wait
+            every year you stay stuck
             <br />
-            is a year you pay for it.
+            is another year of potential
+            <br />
+            growth—gone.
           </h2>
           <p className="font-tiempos-text text-bone text-[20px] leading-[1.6] mt-md max-w-[680px]">
-            Most service business owners at $800K spend three to five more years working at $800K
-            before something fundamentally changes, or doesn&apos;t. Not because they lack ambition.
-            Because they lack the right architecture, the right peers, and someone who has already
-            solved the problem they&apos;re sitting in.
+            Most service business owners at $800K spend three to five more years at $800K. Not
+            because they lack ambition. But because, as long as nothing changes, their ceiling stays
+            exactly where it is.
           </p>
           <div className="mt-xl bg-[#111111] border border-bone/10 p-10 rounded-card max-w-[620px]">
             <p className="font-obviously font-medium text-red lowercase text-[13px]">
-              what the status quo actually costs
+              what staying here actually costs
             </p>
             <p className="font-tiempos-headline font-medium text-bone text-[20px] leading-[1.5] mt-4">
-              If you&apos;re at $800K today and a founding cohort member grows 40% in year one,
-              you&apos;re leaving $320,000 on the table this year alone. Over three years, that&apos;s
-              close to $1M.
+              Let&apos;s say you&apos;re at $800K today. Now let&apos;s say as a founding cohort
+              member, you could grow 40% in year one. So by not joining now, you&apos;d be leaving
+              $320,000 on the table this year alone. Over three years, that&apos;s close to $1M in
+              foregone revenue.
+            </p>
+            <p className="font-tiempos-headline font-medium text-bone text-[20px] leading-[1.5] mt-4">
+              Not because the opportunity wasn&apos;t there, but because you didn&apos;t have the
+              right peers, the right architecture, to level up.
             </p>
             <p className="font-tiempos-headline font-medium text-bone text-[20px] leading-[1.5] mt-4">
               The founding cohort costs $17,940 for the first year. The question is never whether you
-              can afford it. It&apos;s whether you can afford not to.
+              can afford it. It&apos;s whether you can afford another year of sitting at this plateau.
             </p>
           </div>
           <div className="mt-[40px]">
@@ -352,23 +356,23 @@ export function CohortPageClient() {
             className="font-obviously-wide font-semibold lowercase text-bone leading-[1.1] mt-xs"
             style={{ fontSize: "clamp(32px, 4vw, 48px)" }}
           >
-            what if the ceiling
+            what if that ceiling
             <br />
-            wasn&apos;t the ceiling?
+            disappeared this year?
           </h2>
           <p className="font-tiempos-text text-bone text-[20px] leading-[1.6] mt-md max-w-[680px]">
             The operators who cross $2M, $5M, $10M aren&apos;t smarter or more disciplined than you.
-            They&apos;re running a fundamentally different version of the business: one where the
-            system does the work, the team operates without them in every conversation, and the peer
-            group gives them the visibility they&apos;d never get alone.
+            They&apos;ve just built something different: a business where their standards are baked
+            into systems, the team operates from frameworks instead of their word, and the owner is
+            working on the business instead of being the one holding it all together.
           </p>
           <p className="font-tiempos-text text-bone text-[20px] leading-[1.6] mt-4 max-w-[680px]">
-            We&apos;ve spent seven years building that system at attn:seeker. We&apos;ve done it for
-            ourselves. We&apos;ve done it for the businesses we work with. Now we&apos;re building
-            the room where 6 operators get to do it together.
+            Stanley Henry did that at attn:seeker. He&apos;s done the same for his clients. Now,
+            he&apos;s building a room where operators get to do that together.
           </p>
           <p className="font-tiempos-headline font-medium text-bone text-[26px] max-w-[560px] mt-xl">
-            That&apos;s what we built the cohort for.
+            The cohort exists to build that version of your business. You get the system, the peer
+            group, and real access to someone who has already done what you&apos;re trying to do.
           </p>
         </div>
       </section>
@@ -386,11 +390,12 @@ export function CohortPageClient() {
             the attn:seeker cohort programme
           </h2>
           <p className="font-tiempos-text text-bone text-[20px] md:text-[22px] leading-[1.6] max-w-[640px] mx-auto mt-8">
-            A 12-month peer group and coaching programme for 6 service business owners who are ready
-            to build the version of their business that runs without them in every decision. Monthly
-            group coaching with Stanley Henry, weekly implementation calls with the attn:seeker team,
-            a private peer group, and the full ERC content system. Founding cohort. Founding pricing.
-            Starting 20 April 2026.
+            A 12-month peer group and coaching programme for service business owners who are ready to
+            build the version of their business that runs on their standards, whether or not
+            they&apos;re in the room. What you get: Monthly group coaching with Stanley Henry. Weekly
+            implementation calls with the attn:seeker team. A real peer group of operators at your
+            stage. And the full system behind 1.2 billion organic views, adapted for your business.
+            Founding cohort. Founding pricing. Starting 20 April 2026.
           </p>
           <div className="mt-[40px]">
             <Link
@@ -430,32 +435,32 @@ export function CohortPageClient() {
               {
                 label: "monthly",
                 title: "group coaching with stanley",
-                body: "120-minute live coaching session every month with Stanley Henry. Real businesses, real problems, real answers. Recorded. Two timezone sessions: 11am and 7am NZT. First Friday of each month.",
+                body: "120-minute live session. An interactive call where you get real answers to what you're working through right now. Choose from APAC and US/UK time zone options. First Friday of each month. Recorded.",
               },
               {
                 label: "weekly",
                 title: "implementation calls",
-                body: "Every week, a focused 60-minute implementation session run by the attn:seeker team. Work through your actual business, not hypotheticals. APAC: Monday 1pm NZT. Americas and UK: Tuesday 7am NZT.",
+                body: "60-minute sessions run by the attn:seeker team. This is where you get help executing on your goals for the month. Choose from APAC and US/UK time zone options.",
               },
               {
                 label: "always on",
                 title: "your peer group",
-                body: "A private WhatsApp community for the full cohort, plus a matched small core group. People at the same stage as you, working the same problems. Not a Facebook group. A real peer group.",
+                body: "A private WhatsApp community for the full cohort, plus a small core group. Six operators at your stage, working the same problems. These are the peers you've always needed but never had—until now.",
               },
               {
                 label: "quarterly",
                 title: "90-day sprint reviews",
-                body: "Three goals per quarter. Weekly tracking. Monthly review in the group coaching call. A structured cadence that keeps you moving toward the year's objective, not just running on the treadmill.",
+                body: "You'll set three goals per quarter and track your progress weekly. This is the accountability structure that keeps you building toward the year's objective instead of running on the treadmill.",
               },
               {
                 label: "guest sessions",
                 title: "expert access",
-                body: "Live sessions with specialists in cashflow, HR, legal, AI, and sales systems. Practical experts, not motivational speakers. All recorded for the cohort library.",
+                body: "Live sessions with specialists in cashflow, HR, legal, AI, and sales systems throughout the year. Practical, specialised insights. All recorded.",
               },
               {
                 label: "annual",
                 title: "in-person retreat",
-                body: "One in-person retreat per year, included. The annual moment where the group gets in the same room. Strategy, reflection, and the conversations that only happen face to face. Location to be confirmed.",
+                body: "One cohort retreat per year. This is your chance to be in the same room with the other operators you're building alongside. Location TBC. Flights and accommodation not included.",
               },
             ].map((card, i) => (
               <div key={i} className="bg-[#111111] border border-bone/10 rounded-card p-6">
@@ -581,20 +586,25 @@ export function CohortPageClient() {
             className="font-obviously-wide font-semibold lowercase text-bone leading-[1.1] mt-xs"
             style={{ fontSize: "clamp(32px, 4vw, 48px)" }}
           >
-            6 operators.
+            the group of true peers
             <br />
-            one peer group.
+            you&apos;ve been looking for
           </h2>
           <p className="font-tiempos-text text-bone text-[20px] leading-[1.6] mt-md max-w-[640px]">
-            The founding cohort is limited to 6 members. That is not a marketing number. It is the
-            actual size that makes peer learning work. Small enough for everyone to know
+            The founding cohort is limited to 6 members. Small enough for everyone to know
             everyone&apos;s business. Large enough for genuine diversity of perspective.
           </p>
           <p className="font-tiempos-text text-bone text-[20px] leading-[1.6] mt-4 max-w-[640px]">
-            Members are service business owners doing between $500,000 and $5,000,000 in annual
-            revenue. Agency owners. Creative studio founders. Consultants. B2B service businesses.
-            Different industries. Same stage. Same problem: they&apos;ve built something real, and
-            they&apos;re ready to build something that doesn&apos;t depend entirely on them.
+            Members are service business owners doing $500K to $5M. Agency owners. Creative studio
+            founders. Consultants. B2B service businesses. Different industries. Same stage. Same
+            problem: they&apos;ve built something real, and they&apos;re ready to stop being the
+            thing it depends on.
+          </p>
+          <p className="font-tiempos-text text-bone text-[20px] leading-[1.6] mt-4 max-w-[640px]">
+            If you&apos;re at this level, you already know what it&apos;s like to have nobody around
+            you who gets it. Your team can&apos;t. Your clients won&apos;t. Your friends don&apos;t
+            know the numbers. The peer group is the part of this programme that most members will
+            say, looking back, they didn&apos;t know they needed as badly as they did.
           </p>
           <div className="grid grid-cols-3 mt-[64px]">
             {[
@@ -622,15 +632,15 @@ export function CohortPageClient() {
               why we use an application
             </h3>
             <p className="font-tiempos-text text-bone text-[18px] leading-[1.6] mt-4 max-w-[640px]">
-              The application is not a filter for us. It&apos;s a filter for you. The peer group only
-              works when every member is at the right stage, with the right intention, and the right
-              commitment. We review every application personally. If we don&apos;t think it&apos;s a
-              mutual fit, we&apos;ll tell you why.
+              The application isn&apos;t for us. It&apos;s actually for you — and every future cohort
+              member. The peer group only works when every member is at the right stage, with the
+              right intention, and the right level of commitment. We review every application
+              personally. If it&apos;s not a mutual fit, we&apos;ll tell you why.
             </p>
             <p className="font-tiempos-text text-bone text-[18px] leading-[1.6] mt-4 max-w-[640px]">
-              Applying takes five minutes and commits you to nothing financially. If you&apos;re
-              accepted, you&apos;ll be invited to a 30-minute fit call before any payment is
-              discussed.
+              Applying takes five minutes and commits you to nothing financially. If we think
+              you&apos;re a fit, the next step is a 30-minute call with someone from the attn:seeker
+              team.
             </p>
           </div>
         </div>
@@ -671,26 +681,27 @@ export function CohortPageClient() {
                 stanley henry
               </h2>
               <p className="font-tiempos-headline font-medium text-bone/55 text-[20px] mt-2">
-                CEO, attn:seeker. 7 years building the machine.
+                CEO, attn:seeker.
               </p>
               <p className="font-tiempos-text text-bone text-[18px] leading-[1.6] mt-6">
-                Stanley Henry started attn:seeker in October 2019 with Claire Henry, his co-founder
-                and wife. In seven years, the agency grew to 18 people, 1.2 billion organic views for
-                clients, and a personal following of 65,000 across his platforms. All organic. No paid
-                ads. The YAP newsletter has 35,000 daily readers. The agency runs without Stanley in
-                the weeds of every client account.
+                Stanley Henry started attn:seeker in October 2019 with his co-founder and wife,
+                Claire Henry. In seven years, it&apos;s grown to 18 people, 1.2 billion organic views
+                for clients, 65,000 personal followers, 35,000 daily newsletter readers. The agency
+                runs without Stanley in the weeds of every client account. That didn&apos;t happen by
+                accident. It happened because he built the systems and people around him so the
+                business can run whether he&apos;s in it or not. That&apos;s what he&apos;s teaching
+                in the cohort.
               </p>
               <p className="font-tiempos-text text-bone text-[18px] leading-[1.6] mt-4">
-                He&apos;s also grown up publicly. Grew up in Manurewa, Auckland. One of four boys in
-                a low-income family. Now documenting the journey to 40, building systems, and talking
-                plainly about what actually moves a business. No borrowed credibility. No frameworks
-                built on someone else&apos;s context. Just the thing he built and the system behind
-                it.
+                He&apos;s also built this publicly. Grew up in Manurewa, Auckland. One of four boys
+                in a low-income household. Now documenting the journey to 40, talking plainly about
+                what actually moves a business. No borrowed frameworks or generic advice. The actual
+                system he built and the thinking behind it.
               </p>
               <p className="font-tiempos-text text-bone text-[18px] leading-[1.6] mt-4">
                 The cohort exists because the questions he gets every week are the same ones he had
-                five years ago, and the right answer isn&apos;t a course. It&apos;s a peer group, a
-                system, and someone who has already solved the problem. That&apos;s what this is.
+                five years ago. The right answer isn&apos;t a course. It&apos;s a peer group, a
+                system, and someone who has already solved the problem you&apos;re in.
               </p>
               {/* Credentials bar */}
               <div className="flex flex-wrap gap-6 mt-8">
@@ -712,6 +723,72 @@ export function CohortPageClient() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── SECTION 12b: Testimonials / Social Proof ── */}
+      <section className="bg-black border-t border-bone/10 py-[64px] md:py-3xl">
+        <div className="mx-auto max-w-wide px-6 md:px-8">
+          <div className="max-w-[560px] mb-[64px]">
+            <p className="font-obviously font-medium text-red lowercase text-[14px]">
+              results from the work
+            </p>
+            <h2
+              className="font-obviously-wide font-semibold lowercase text-bone leading-[1.1] mt-xs"
+              style={{ fontSize: "clamp(32px, 4vw, 48px)" }}
+            >
+              what working with
+              <br />
+              attn:seeker looks like
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              {
+                result: "15K to 110K followers. 50 million views. All in 20 days.",
+                context:
+                  "A buyers agent with a stagnant 15K following needed a strategy to break through. We built a single anchor content series. Twenty days later, they had 110K followers and 50M views — zero paid media.",
+                client: "Fresh Start Advisory",
+                category: "Buyers Agent · New Zealand",
+              },
+              {
+                result: "The only region globally where Pizza Hut is growing.",
+                context:
+                  "A legacy brand dismissed by younger audiences. Three years of full-service social management later, Pizza Hut NZ averages 15–20M organic views per month and is the only major pizza brand gaining market share in NZ.",
+                client: "Pizza Hut New Zealand",
+                category: "Food & Beverage · 3-year partnership",
+              },
+              {
+                result: "150,000 followers gained in 24 hours.",
+                context:
+                  "A fintech founder needed LinkedIn presence to support new business acquisition and investor confidence. We managed their personal brand and executed a targeted launch strategy that delivered 150K followers in a single day.",
+                client: "Steven Zinsli",
+                category: "Extraordinary · Fintech",
+              },
+            ].map((card, i) => (
+              <div key={i} className="bg-[#111111] border border-bone/10 rounded-card p-6 flex flex-col">
+                <div className="w-[35px] h-[2px] bg-red mb-4 flex-shrink-0" />
+                <p className="font-tiempos-headline font-medium text-bone text-[20px] leading-[1.4]">
+                  {card.result}
+                </p>
+                <p className="font-tiempos-text text-bone/55 text-[15px] leading-[1.5] mt-4 flex-grow">
+                  {card.context}
+                </p>
+                <div className="mt-6 pt-5 border-t border-bone/10">
+                  <p className="font-obviously-wide font-semibold lowercase text-bone text-[14px]">
+                    {card.client}
+                  </p>
+                  <p className="font-obviously text-bone/40 lowercase text-[12px] mt-1">
+                    {card.category}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="font-tiempos-fine text-bone/40 text-[13px] mt-8">
+            These results are from attn:seeker&apos;s agency work. Cohort member results will be
+            published from June 2026 as the founding cohort progresses.
+          </p>
         </div>
       </section>
 
@@ -804,11 +881,11 @@ export function CohortPageClient() {
               </h3>
               <div className="space-y-6">
                 {[
-                  "You're running a service business doing $500K to $5M and you've hit a ceiling.",
+                  "You're running a service business doing $500K to $5M and you've hit a ceiling that more effort won't move.",
                   "You want to build systems and a team that operate without you in every decision.",
                   "You're ready to commit 3 to 5 hours per week to the programme and the peer group.",
-                  "You want direct access to someone who has solved the problem you're in, not a curriculum manager.",
-                  "You understand that results come from implementation, not attendance.",
+                  "You want direct access to someone who has solved the problem you're in.",
+                  "You understand that results come from implementation, not just attending the sessions.",
                   "You want a peer group of operators at your level, not a community of beginners.",
                 ].map((item, i) => (
                   <div key={i} className="flex gap-4">
@@ -842,7 +919,10 @@ export function CohortPageClient() {
             </div>
           </div>
           <p className="font-tiempos-headline font-medium text-bone text-[22px] text-center mt-xl">
-            If the first list felt like a mirror, the application takes five minutes.
+            If the first list felt like a mirror,{" "}
+            <Link href={APPLY_PATH} className="text-red hover:underline">
+              head here to apply for the founding cohort.
+            </Link>
           </p>
         </div>
       </section>
@@ -855,11 +935,14 @@ export function CohortPageClient() {
             className="font-obviously-wide font-semibold lowercase text-bone leading-[1.1] mt-xs"
             style={{ fontSize: "clamp(32px, 4vw, 48px)" }}
           >
-            what happens next
+            i&apos;m interested.
+            <br />
+            what&apos;s next?
           </h2>
           <p className="font-tiempos-text text-bone text-[20px] leading-[1.6] mt-md max-w-[580px]">
-            The application takes five minutes. No payment is required at this stage. We review every
-            application personally and respond within 48 hours.
+            If the Cohort sounds like the unlock you&apos;ve been looking for, here&apos;s how the
+            application process works. No payment required at any stage until you&apos;ve had a
+            30-minute fit call with the team.
           </p>
           {/* Process steps */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mt-[64px] relative">
@@ -925,16 +1008,15 @@ export function CohortPageClient() {
             className="font-obviously-wide font-semibold lowercase text-bone leading-[1.1] mt-xs"
             style={{ fontSize: "clamp(32px, 4vw, 48px)" }}
           >
-            act now or pay
+            act now
             <br />
-            double forever.
+            or pay double later.
           </h2>
           <p className="font-tiempos-text text-bone text-[20px] leading-[1.6] mt-md max-w-[640px]">
-            The standard rate for the attn:seeker Cohort Programme is $2,990 per month. For the next
-            6 weeks, or until 6 founding spots are sold, whichever comes first, founding members pay
-            $1,495 per month. That rate is then locked for the lifetime of their continuous
-            enrolment. It never goes up. It never comes back. When this window closes, it closes
-            permanently.
+            The standard rate for the attn:seeker Cohort Programme is $2,990 per month. Founding
+            members pay $1,495 per month. That&apos;s half the rate, locked for the lifetime of
+            their continuous enrolment. It never goes up. This is not a sale. This is a permanent
+            fixed price for the first 6 people who decide.
           </p>
 
           {/* Urgency bar */}
@@ -1142,8 +1224,11 @@ export function CohortPageClient() {
           </h2>
           <p className="font-tiempos-text text-bone text-[20px] leading-[1.6] mt-6">
             Founding member pricing is $1,495/month. The standard rate after April 20 is
-            $2,990/month. That gap is permanent: the founding rate locks for life. Six spots. When
-            they&apos;re gone, they&apos;re gone.
+            $2,990/month. That gap is permanent: the founding rate locks for life. Six spots only.
+            When they&apos;re gone, they&apos;re gone.
+          </p>
+          <p className="font-tiempos-headline font-medium text-bone/70 text-[20px] leading-[1.5] mt-4">
+            The business you actually want is on the other side of this decision.
           </p>
           <div className="mt-8">
             <p className="font-obviously-narrow font-black text-red text-[48px] leading-none">6</p>
