@@ -460,7 +460,7 @@ export function CohortPageClient() {
               {
                 label: "annual",
                 title: "in-person retreat",
-                body: "One cohort retreat per year. This is your chance to be in the same room with the other operators you're building alongside. Location TBC. Flights and accommodation not included.",
+                body: "One cohort retreat per year. This is your chance to be in the same room with the other operators you're building alongside. Location TBC. The retreat is priced and invoiced separately — it is not included in your monthly membership fee.",
               },
             ].map((card, i) => (
               <div key={i} className="bg-[#111111] border border-bone/10 rounded-card p-6">
@@ -533,7 +533,7 @@ export function CohortPageClient() {
               ],
               [
                 "annual in-person retreat",
-                "One full cohort retreat per year. Location TBC. Flights and accommodation not included.",
+                "One full cohort retreat per year. Location TBC. The retreat is priced and invoiced separately — it is not included in your monthly membership fee.",
               ],
               [
                 "founding member pricing, locked for life",
