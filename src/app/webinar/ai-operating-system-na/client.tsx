@@ -107,7 +107,7 @@ function HeroSection() {
           <div className="inline-flex items-center gap-3 mb-7">
             <div className="w-0.5 h-5 bg-red rounded-full" />
             <span className="font-tiempos-text text-bone/60 text-sm uppercase tracking-widest">
-              Live Workshop&nbsp;&nbsp;·&nbsp;&nbsp;Tuesday 31 March 2026
+              Live Workshop&nbsp;&nbsp;·&nbsp;&nbsp;Tuesday 14 April 2026
             </span>
           </div>
 
@@ -297,7 +297,7 @@ function SolutionSection() {
             team with a single prompt.
           </p>
           <p>The AI does not replace my thinking. It executes it.</p>
-          <p>On 31 March I am teaching you exactly how to build this.</p>
+          <p>On 14 April I am teaching you exactly how to build this.</p>
         </div>
       </div>
     </section>
@@ -499,7 +499,7 @@ function AboutSection() {
                 coordination. Lead qualification.
               </p>
               <p>
-                It took me 3 months of trial and error to build. On 31 March I
+                It took me 3 months of trial and error to build. On 14 April I
                 am teaching you the exact system, live, in 2 hours.
               </p>
             </div>
@@ -605,7 +605,7 @@ function FinalCTASection() {
           build the system that runs your business.
         </h2>
         <p className="font-tiempos-text text-bone text-xl md:text-2xl leading-relaxed mb-10">
-          2 hours. Tuesday 31 March. You leave with your foundation built.
+          2 hours. Tuesday 14 April. You leave with your foundation built.
         </p>
         <RegisterButton large className="w-full md:w-auto mb-8" />
         <p className="font-tiempos-text text-bone/40 text-sm leading-relaxed">
