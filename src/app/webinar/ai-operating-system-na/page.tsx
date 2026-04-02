@@ -3,12 +3,12 @@ import { Footer } from "@/components/layout/footer";
 import { AiWebinarLandingNA } from "./client";
 
 export const metadata: Metadata = {
-  title: "Build Your AI Brain — Live AI Workshop with Stanley Henry | April 1",
+  title: "Build Your AI Brain — Live AI Workshop with Stanley Henry | April 14",
   description:
     "Learn the 5-layer AI system Stanley Henry built to run his business. 2-hour live workshop. $149 USD. Every attendee gets the full template download.",
   openGraph: {
     title:
-      "Build Your AI Brain — Live AI Workshop with Stanley Henry | April 1",
+      "Build Your AI Brain — Live AI Workshop with Stanley Henry | April 14",
     description:
       "Learn the 5-layer AI system Stanley Henry built to run his business. 2-hour live workshop. $149 USD. Every attendee gets the full template download.",
     images: [
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title:
-      "Build Your AI Brain — Live AI Workshop with Stanley Henry | April 1",
+      "Build Your AI Brain — Live AI Workshop with Stanley Henry | April 14",
     description:
       "Learn the 5-layer AI system Stanley Henry built to run his business. 2-hour live workshop. $149 USD. Every attendee gets the full template download.",
     images: ["/images/AI Webinar Landing Page/stanley-hero.jpg"],
