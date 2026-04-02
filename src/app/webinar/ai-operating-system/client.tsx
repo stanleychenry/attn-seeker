@@ -17,7 +17,7 @@ const IMG = (filename: string) =>
 function RegisterButton({
   className = "",
   large = false,
-  label = "Join The Build — $149/month",
+  label = "Join The Build — $149",
 }: {
   className?: string;
   large?: boolean;
@@ -72,7 +72,7 @@ function StickyNav() {
           priority
         />
         <RegisterButton
-          label="Join The Build — $149/mo"
+          label="Join The Build — $149"
           className="px-4 py-2 text-sm whitespace-nowrap"
         />
       </div>
@@ -123,7 +123,7 @@ function HeroSection() {
           <p className="font-tiempos-text text-bone text-xl md:text-[22px] leading-[1.6] mb-6">
             A live 2-hour workshop with Stanley Henry. Learn the exact 5-layer
             AI system I built to run my business. Leave with your foundation
-            set up. Stay for the community that keeps you building.
+            set up. Stay for the community that keeps you building. Cancel any time.
           </p>
 
           {/* Timezones */}
