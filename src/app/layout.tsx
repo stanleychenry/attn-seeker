@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 import { ClientLayout } from "@/components/layout/client-layout";
 import { Analytics } from "@vercel/analytics/next";
@@ -52,6 +53,10 @@ export default function RootLayout({
         <Analytics />
         <SpeedInsights />
         <MetaPixel />
+        <Script
+          src="https://app.ablecdp.com/pjs/cd84d4ba-8c88-4958-a742-eeaafce56d2d.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
