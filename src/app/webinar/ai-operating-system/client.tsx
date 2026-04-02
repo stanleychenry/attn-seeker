@@ -6,8 +6,8 @@ import { cn } from "@/lib/utils";
 import { MetaPixelEvent } from "@/components/meta-pixel";
 
 const STRIPE_URL =
-  process.env.NEXT_PUBLIC_STRIPE_AI_WEBINAR_URL ||
-  "https://buy.stripe.com/fZu00lfLR2ecaPx9Kh1ck0n";
+  process.env.NEXT_PUBLIC_STRIPE_THE_BUILD_URL ||
+  "https://buy.stripe.com/8x23cx439bOM1eX4pX1ck0q";
 
 const IMG = (filename: string) =>
   `/images/AI Webinar Landing Page/${filename}`;
@@ -17,7 +17,7 @@ const IMG = (filename: string) =>
 function RegisterButton({
   className = "",
   large = false,
-  label = "Register Now — $149 NZD",
+  label = "Join The Build — $149/month",
 }: {
   className?: string;
   large?: boolean;
@@ -72,7 +72,7 @@ function StickyNav() {
           priority
         />
         <RegisterButton
-          label="Register — $149 NZD"
+          label="Join The Build — $149/mo"
           className="px-4 py-2 text-sm whitespace-nowrap"
         />
       </div>
@@ -123,7 +123,7 @@ function HeroSection() {
           <p className="font-tiempos-text text-bone text-xl md:text-[22px] leading-[1.6] mb-6">
             A live 2-hour workshop with Stanley Henry. Learn the exact 5-layer
             AI system I built to run my business. Leave with your foundation
-            set up.
+            set up. Stay for the community that keeps you building.
           </p>
 
           {/* Timezones */}
@@ -140,9 +140,7 @@ function HeroSection() {
 
           {/* Note */}
           <p className="font-tiempos-text text-bone/50 text-sm leading-relaxed">
-            Every attendee gets the full template download included. The folder
-            structure, all context templates, and the prompts to fill them in.
-            Yours just for showing up.
+            $149/month NZD. Cancel anytime. Even if you cancel today, you keep full access for the month.
           </p>
         </div>
       </div>
@@ -183,6 +181,21 @@ const VALUE_ITEMS = [
     title: "The recording",
     body: "Sent to all attendees after the session. Rewatch any section. Share with a business partner.",
   },
+  {
+    n: "07",
+    title: "access to the build community on circle",
+    body: "A private community of business owners building AI systems. Watch Stanley build live. Ask questions. Share what you are building. Get feedback from people doing the same thing.",
+  },
+  {
+    n: "08",
+    title: "every webinar replay",
+    body: "Every past and future AI webinar replay lives inside The Build. Build Your AI Brain, How to Build a 7-Figure Business With No Employees, and every new webinar we run. All included.",
+  },
+  {
+    n: "09",
+    title: "behind-the-scenes content",
+    body: "Stanley documents everything he builds inside the community first. More detail than Instagram. Full walkthroughs. Real problems and how he solved them.",
+  },
 ];
 
 function ValueStackSection() {
@@ -193,7 +206,7 @@ function ValueStackSection() {
           className="font-obviously-wide lowercase text-black leading-[1.05] mb-5"
           style={{ fontSize: "clamp(30px, 5vw, 60px)" }}
         >
-          what $149 gets you.
+          what $149/month gets you.
         </h2>
         <p className="font-tiempos-text text-black/70 text-lg md:text-xl leading-relaxed mb-14 max-w-[640px]">
           This is not a webinar where you sit and take notes. You will be
@@ -418,6 +431,7 @@ const WHO_FOR_ITEMS = [
   "You know AI is important but you do not know where to actually start",
   "You want to build the machine, not just read about it",
   "You are done with generic AI outputs that sound nothing like you",
+  "You want a community of people building the same thing, not just a recording you watch alone",
 ];
 
 function WhoForSection() {
@@ -536,7 +550,19 @@ const FAQ_ITEMS = [
   },
   {
     q: "What happens after the webinar?",
-    a: "Two options if you want to go further. The AI Setup Session ($897 NZD) — we build your complete system with you. Or the Cohort ($2,990/month) — monthly coaching on all aspects of your business, weekly implementation calls, and a peer group. Both optional but ideal next steps if you want help implementing what you learn during the session.",
+    a: "You are already inside The Build. You have access to the community, all past webinar replays, and everything Stanley builds and documents. If you want more hands-on help, the AI Setup Session ($897) gives you two one-on-one calls to build your system together.",
+  },
+  {
+    q: "What is The Build?",
+    a: "The Build is a monthly community for business owners building AI systems. You get the live webinar, access to Circle, all past and future webinar replays, behind-the-scenes content from Stanley, and a community of people doing the same thing. $149/month. Cancel anytime.",
+  },
+  {
+    q: "Can I cancel anytime?",
+    a: "Yes. Cancel whenever you want. If you cancel, you keep access until the end of your billing period. Even if you sign up today and cancel today, you still get the full month including the webinar.",
+  },
+  {
+    q: "What if I only want the webinar?",
+    a: "Sign up, attend the webinar, download the templates, and cancel. You will not be charged again. But most people stay because the community and ongoing content are worth it.",
   },
 ];
 
@@ -610,10 +636,7 @@ function FinalCTASection() {
         </p>
         <RegisterButton large className="w-full md:w-auto mb-8" />
         <p className="font-tiempos-text text-bone/40 text-sm leading-relaxed">
-          Template pack included. Recording sent to all attendees.
-          <br />
-          11am New Zealand&nbsp;&nbsp;·&nbsp;&nbsp;9am
-          Sydney&nbsp;&nbsp;·&nbsp;&nbsp;6pm New York
+          $149/month NZD. Cancel anytime. Your first month includes the April 15 live webinar.
         </p>
       </div>
     </section>
